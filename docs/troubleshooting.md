@@ -165,8 +165,9 @@ allowed. Check ownership and permissions.
 
 ## Web build cannot call the bridge
 
-The bridge does not add CORS headers. A browser page on a different origin can
-send a request but cannot read the response. Options:
+The bridge does not add CORS headers. A browser page on a different origin
+cannot read the response, and requests that need a preflight are blocked before
+they are sent. Options:
 
 1. Serve the web export and the bridge behind the same origin with a reverse
    proxy.

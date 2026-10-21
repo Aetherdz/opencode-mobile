@@ -147,9 +147,10 @@ themselves, but they matter when choosing an exposure model.
    sessions that OpenCode already knows about.
 6. **No CORS support.** The web build is a UI preview unless served same-origin
    or behind a proxy.
-7. **No CSRF concern in the classic sense, but a browser page can still send
-   requests.** Without CORS it cannot read responses; it can still attempt
-   state-changing requests if it knows the token. Treat the token as a secret.
+7. **No CSRF concern in the classic sense, but CORS is not authentication.**
+   A browser page cannot read bridge responses without CORS, and preflighted
+   requests are blocked. Do not treat that as authorization; the token is the
+   only gate. Treat it as a secret.
 8. **Push is third-party.** Expo receives the push token and notification
    payload. Payloads contain IDs and generic text, not message bodies.
 9. **No automated dependency or container scanning in this repository yet.**
