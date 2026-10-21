@@ -54,6 +54,9 @@ entry describes the public repository state, not a stable release.
 - Device QA on Android and iOS is still pending.
 - The repository does not produce a release-signed APK yet.
 - Push notifications require an EAS project and a physical device.
+- `npm audit` reports build-time advisories in the Expo CLI/Metro dependency
+  chain. The bridge audit is clean. See the dependency audit status in
+  `docs/security.md`.
 
 ### Notes
 

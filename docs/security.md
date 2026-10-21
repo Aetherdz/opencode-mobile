@@ -158,6 +158,21 @@ themselves, but they matter when choosing an exposure model.
 10. **Debug APKs are not release artifacts.** Do not distribute a debug-signed
     APK as a production build.
 
+## Dependency audit status
+
+As of 2026-10-21:
+
+- `bridge`: `npm audit --omit=dev` reports 0 vulnerabilities.
+- `app`: `npm audit --omit=dev` reports 28 advisories, 19 high, in the
+  Expo CLI / Metro / `node-forge` / `uuid` dependency chains. The reported
+  issues are build-time or CLI paths, not app runtime code. npm's proposed fix
+  is a breaking downgrade to Expo 44, which is not compatible with this app.
+  The advisories are tracked upstream and must be re-checked before a release.
+
+Do not run `npm audit fix --force` on the app. It will replace the Expo SDK with
+an old, incompatible version. Review each advisory and upgrade through a tested
+Expo SDK release instead.
+
 ## Deployment checklist
 
 - [ ] `AUTH_TOKEN` is at least 32 random characters and unique to this bridge.

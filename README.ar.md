@@ -260,7 +260,7 @@ npx expo export --platform web
 - توقيع الإصدار وworkflow موثّق لإصدار APK.
 - تبديل model وagent عبر الـBridge.
 - Docker image وsystemd example للـBridge.
-- موقع ثابت لمشروع وinstaller طرفي لمستودع التوزيع.
+- موقع ثابت للمشروع ومثبّت طرفي لمستودع التوزيع.
 - Desktop wrapper فقط إذا لم يكفِ بناء الويب.
 
 ## الترخيص

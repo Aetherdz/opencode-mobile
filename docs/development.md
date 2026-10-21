@@ -111,6 +111,17 @@ Run the bridge build as well before a release:
 npm run build:bridge
 ```
 
+Dependency audit:
+
+```bash
+cd bridge && npm audit --omit=dev
+cd ../app && npm audit --omit=dev
+```
+
+The app audit currently reports build-time Expo CLI/Metro advisories. Do not run
+`npm audit fix --force`; it downgrades Expo to an incompatible major. See
+[docs/security.md](security.md).
+
 The app has no automated UI test suite yet. Device QA is a release gate, not an
 optional extra.
 
