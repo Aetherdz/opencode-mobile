@@ -1,0 +1,51 @@
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# Build outputs
+dist/
+build/
+web-build/
+.expo/
+expo-env.d.ts
+*.tsbuildinfo
+*.apk
+*.aab
+*.ipa
+
+# Generated native projects
+android/
+ios/
+.kotlin/
+*.orig.*
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.jks
+*.keystore
+*.p8
+*.p12
+*.mobileprovision
+
+# Local runtime data
+data/
+.smoke/
+uploads/
+.opencode-uploads/
+*.sqlite
+*.db
+
+# Logs and process files
+*.log
+*.pid
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

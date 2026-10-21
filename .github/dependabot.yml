@@ -1,0 +1,55 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /app
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    groups:
+      expo:
+        patterns:
+          - "expo"
+          - "expo-*"
+          - "@expo/*"
+      react-native:
+        patterns:
+          - "react-native"
+          - "react-native-*"
+          - "@react-native/*"
+          - "react"
+          - "react-dom"
+    labels:
+      - dependencies
+      - app
+
+  - package-ecosystem: npm
+    directory: /bridge
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    groups:
+      fastify:
+        patterns:
+          - "fastify"
+          - "@fastify/*"
+      test-and-build:
+        patterns:
+          - "vitest"
+          - "typescript"
+          - "tsx"
+          - "@types/*"
+    labels:
+      - dependencies
+      - bridge
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - ci

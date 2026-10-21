@@ -1,0 +1,74 @@
+name: Feature request
+description: Propose a focused improvement or a new capability.
+title: "feat: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This project is deliberately chat-only and self-hosted. A second agent,
+        a terminal UI, telemetry, or a cloud session store is out of scope.
+        Explain the problem before the solution.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What are you trying to do that is difficult or impossible today?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Describe the smallest useful version.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+    validations:
+      required: false
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - App UI
+        - Chat or streaming
+        - Questions or approvals
+        - Uploads or downloads
+        - Sessions
+        - Bridge API
+        - Security
+        - Web build
+        - Android build
+        - iOS build
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: impact
+    attributes:
+      label: Who benefits, and how?
+      description: A concrete use case is more useful than a general preference.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues and discussions.
+          required: true
+        - label: This does not require weakening authentication or the workdir allowlist.
+          required: true
+        - label: I understand this is a beta and the maintainer may decline scope.
+          required: true

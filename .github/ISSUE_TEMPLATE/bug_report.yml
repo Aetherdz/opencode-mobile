@@ -1,0 +1,142 @@
+name: Bug report
+description: Report a reproducible problem with the app or bridge.
+title: "bug: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Do not include tokens, private source code,
+        personal paths, or screenshots with real session data.
+
+        For a security issue, use the private reporting flow in SECURITY.md
+        instead of this form.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What happened, and what did you expect instead?
+      placeholder: A short, specific description.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Use a synthetic project and a throwaway token.
+      placeholder: |
+        1. Start the bridge with ...
+        2. Open the app and ...
+        3. Send ...
+      render: markdown
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Include the exact error code or message if there is one.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - App UI
+        - Chat or streaming
+        - Questions or approvals
+        - Uploads or downloads
+        - Session list or creation
+        - Bridge connection or authentication
+        - Push notifications
+        - Web build
+        - Android build
+        - iOS build
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: app-version
+    attributes:
+      label: App version
+      description: From package.json, app.json, or the Settings screen.
+      placeholder: "1.1.3"
+    validations:
+      required: true
+
+  - type: input
+    id: bridge-version
+    attributes:
+      label: Bridge version
+      description: From GET /config, or the bridge startup log.
+      placeholder: "0.1.0"
+    validations:
+      required: true
+
+  - type: input
+    id: opencode-version
+    attributes:
+      label: OpenCode version
+      placeholder: "2.0.24"
+    validations:
+      required: true
+
+  - type: input
+    id: platform
+    attributes:
+      label: Platform and device
+      description: Android/iOS version, device model, or browser.
+      placeholder: "Android 15, Pixel 8"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: connection
+    attributes:
+      label: Connection path
+      options:
+        - Local loopback
+        - Tailscale
+        - SSH tunnel
+        - Cloudflare Tunnel or other public tunnel
+        - Web browser
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: |
+        Remove tokens, paths, session titles, and personal data first.
+        Do not paste bridge/.env or data/files.json.
+      render: shell
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues.
+          required: true
+        - label: I removed tokens, private paths, and personal data.
+          required: true
+        - label: This is not a security vulnerability.
+          required: true

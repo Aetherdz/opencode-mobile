@@ -1,0 +1,23 @@
+{
+  "name": "opencode-mobile",
+  "version": "1.0.0-beta.1",
+  "private": true,
+  "description": "Unofficial mobile and web client for OpenCode with a local bridge.",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "install:app": "npm --prefix app ci",
+    "install:bridge": "npm --prefix bridge ci",
+    "typecheck:app": "cd app && npx tsc --noEmit",
+    "typecheck:bridge": "cd bridge && npm run typecheck",
+    "typecheck": "npm run typecheck:app && npm run typecheck:bridge",
+    "lint": "cd app && npm run lint",
+    "test": "cd bridge && npm test",
+    "build:bridge": "cd bridge && npm run build",
+    "dev:bridge": "cd bridge && npm run dev",
+    "dev:app": "cd app && npm run start",
+    "check": "npm run typecheck && npm run lint && npm run test"
+  }
+}
