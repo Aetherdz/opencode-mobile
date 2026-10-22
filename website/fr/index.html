@@ -98,7 +98,7 @@
     <main id="main">
       <section class="hero">
         <div class="hero-copy">
-          <p class="eyebrow">Client non officiel · Bêta publique</p>
+          <p class="eyebrow">Client non officiel <span aria-hidden="true">·</span> Bêta publique</p>
           <h1 class="display">
             Votre agent.<br />
             Votre machine.<br />
@@ -399,6 +399,9 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
     <footer class="site-footer">
       <div class="footer-brand">
         <span class="brand-mark" aria-hidden="true"><span>O</span><i aria-hidden="true"></i><b>C</b></span>
+        <div class="footer-brand-copy">
+          <strong>OpenCode Mobile</strong>
+          <p>Gardez l’agent près de vous, et les limites claires.</p>
         </div>
       </div>
       <nav class="footer-links" aria-label="Navigation de pied de page">

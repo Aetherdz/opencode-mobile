@@ -98,7 +98,7 @@
     <main id="main">
       <section class="hero">
         <div class="hero-copy">
-          <p class="eyebrow">عميل غير رسمي · نسخة تجريبية عامة</p>
+          <p class="eyebrow">عميل غير رسمي <span aria-hidden="true">·</span> نسخة تجريبية عامة</p>
           <h1 class="display">
             وكيلك.<br />
             جهازك.<br />
@@ -398,6 +398,9 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
     <footer class="site-footer">
       <div class="footer-brand">
         <span class="brand-mark" aria-hidden="true"><span>O</span><i aria-hidden="true"></i><b>C</b></span>
+        <div class="footer-brand-copy">
+          <strong>OpenCode Mobile</strong>
+          <p>وكيلك قريب منك، وحدودك واضحة.</p>
         </div>
       </div>
       <nav class="footer-links" aria-label="روابط التذييل">

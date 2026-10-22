@@ -32,6 +32,16 @@ for (const file of htmlFiles) {
 const errors = [];
 for (const file of htmlFiles) {
   const html = fs.readFileSync(file, "utf8");
+  if (html.includes('<footer class="site-footer">')) {
+    const footerStart = html.indexOf('<footer class="site-footer">');
+    const footerEnd = html.indexOf("</footer>", footerStart);
+    const footer = html.slice(footerStart, footerEnd < 0 ? html.length : footerEnd);
+    if (!footer.includes("footer-brand-copy")) errors.push(`${path.relative(root, file)}: footer brand copy is missing`);
+    const opens = [...footer.matchAll(/<div\b/g)].length;
+    const closes = [...footer.matchAll(/<\/div>/g)].length;
+    if (opens !== closes) errors.push(`${path.relative(root, file)}: unbalanced footer div markup (${opens} open, ${closes} close)`);
+    if (!footer.includes("footer-legal")) errors.push(`${path.relative(root, file)}: footer legal notice is missing`);
+  }
   const refs = [...html.matchAll(/\s(?:href|src)="([^"]+)"/g)].map((match) => match[1]);
   for (const raw of refs) {
     if (/^(?:[a-z]+:|\/\/|#)/i.test(raw)) {
@@ -65,6 +75,22 @@ for (const file of htmlFiles) {
         errors.push(`${path.relative(root, file)}: missing fragment ${raw}`);
       }
     }
+  }
+}
+
+const homePages = ["index.html", "ar/index.html", "fr/index.html", "es/index.html"];
+for (const relative of homePages) {
+  const file = path.join(root, relative);
+  const html = fs.readFileSync(file, "utf8");
+  const heroStart = html.indexOf('<section class="hero">');
+  const heroEnd = html.indexOf("</section>", heroStart);
+  if (heroStart < 0 || heroEnd < 0) {
+    errors.push(`${relative}: homepage hero section is missing`);
+    continue;
+  }
+  const hero = html.slice(heroStart, heroEnd);
+  for (const selector of ['class="eyebrow"', "<h1", 'class="lede"', 'class="actions"']) {
+    if (!hero.includes(selector)) errors.push(`${relative}: homepage hero is missing ${selector}`);
   }
 }
 
