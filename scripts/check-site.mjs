@@ -105,10 +105,30 @@ for (const relative of homePages) {
   if (!copyTarget) errors.push(`${relative}: install command copy button is missing`);
   const setupNote = html.slice(html.indexOf('class="cmd-note"'), html.indexOf('</p>', html.indexOf('class="cmd-note"')));
   if (!setupNote.includes("opencode-mobile")) errors.push(`${relative}: follow-up pairing command note is missing`);
-  if (relative === "index.html" && !hero.includes('class="hero-release"')) errors.push(`${relative}: Android release download panel is missing`);
+  if (!hero.includes('class="hero-release"')) errors.push(`${relative}: Android release download panel is missing from the hero`);
+  if (!html.includes('class="hero-facts"')) errors.push(`${relative}: transport/license/telemetry facts panel is missing`);
   if (hero.includes('aria-haspopup="true"')) errors.push(`${relative}: non-popup hero content declares aria-haspopup`);
   if (!html.includes('rel="icon"') || !html.includes("assets/favicon.svg")) errors.push(`${relative}: favicon link is missing`);
-  if (relative !== "index.html" && !hero.includes('class="hero-release"')) errors.push(`${relative}: localized Android release panel is missing`);
+  if (html.indexOf('id="download"') > html.indexOf('class="hero-facts"')) errors.push(`${relative}: download section must appear before transport/license/telemetry facts`);
+  if (html.indexOf('class="footer-legal"') < html.indexOf('id="download"')) errors.push(`${relative}: legal footer note must follow the full download section`);
+  if (html.indexOf('class="hero-facts"') < html.indexOf('id="download"') || html.indexOf('class="hero-facts"') > html.indexOf('class="footer-legal"')) errors.push(`${relative}: transport/license/telemetry facts must follow the full download panel and precede legal footer note`);
+  const factsStart = html.indexOf('class="hero-facts"');
+  const factsEnd = html.indexOf('</dl>', factsStart);
+  const factsSection = html.slice(factsStart, factsEnd < 0 ? html.length : factsEnd);
+  const footerLegal = html.slice(html.indexOf('class="footer-legal"'), html.indexOf('</p>', html.indexOf('class="footer-legal"')));
+  const localizedFacts = {
+    "index.html": ["Transport", "Loopback", "License", "MIT", "Telemetry"],
+    "ar/index.html": ["النقل", "Loopback", "الترخيص", "MIT", "التتبّع"],
+    "fr/index.html": ["Transport", "Loopback", "Licence", "MIT", "Télémétrie"],
+    "es/index.html": ["Transporte", "Loopback", "Licencia", "MIT", "Telemetría"],
+  }[relative];
+  for (const requiredFact of localizedFacts) {
+    if (!factsSection.includes(requiredFact)) errors.push(`${relative}: facts panel must include ${requiredFact}`);
+  }
+  if (!footerLegal.includes('id="year"')) errors.push(`${relative}: legal footer note year marker is missing`);
+  if (hero.indexOf('class="hero-release"') > hero.indexOf('class="hero-art"')) errors.push(`${relative}: hero download CTA must be grouped with the copy before artwork in DOM order`);
+  if (!hero.includes('class="actions"') || hero.indexOf('class="actions"') > hero.indexOf('class="hero-release"')) errors.push(`${relative}: primary actions must precede the APK card in hero copy`);
+  if (relative === "index.html" && !html.includes('href="#install"')) errors.push(`${relative}: setup link is missing`);
   if (relative === "index.html" && !hero.includes("Install the bridge")) errors.push(`${relative}: primary setup command is not promoted in the hero`);
 }
 

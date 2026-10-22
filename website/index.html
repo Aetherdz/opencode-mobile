@@ -107,34 +107,18 @@
             Install a small bridge on the machine that already runs OpenCode,
             then connect from your phone. No account or relay, and no app telemetry.
           </p>
+          <div class="actions">
+            <a class="button button-primary" href="#install">Install the bridge</a>
+            <a class="button button-quiet" href="https://github.com/Aetherdz/opencode-mobile/releases" rel="noreferrer">All releases</a>
+          </div>
           <div class="hero-release">
             <div class="hero-release-copy">
               <span class="hero-release-kicker">Android · Public beta</span>
               <strong>OpenCode Mobile <span>1.0.0-beta.3</span></strong>
               <small>Android 7+ · arm64 · Release APK</small>
             </div>
-            <a class="hero-release-button" href="https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.3/opencode-mobile-1.0.0-beta.3.apk" aria-label="Download OpenCode Mobile Android beta 1.0.0-beta.3">
-              <span>Download APK</span><b aria-hidden="true">↓</b>
-            </a>
+            <a class="hero-release-button" href="https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.3/opencode-mobile-1.0.0-beta.3.apk" aria-label="Download OpenCode Mobile Android beta 1.0.0-beta.3"><span>Download APK</span><b aria-hidden="true">↓</b></a>
           </div>
-          <div class="actions">
-            <a class="button button-primary" href="#install">Install the bridge</a>
-            <a class="button button-quiet" href="https://github.com/Aetherdz/opencode-mobile/releases" rel="noreferrer">All releases</a>
-          </div>
-          <dl class="hero-facts">
-            <div>
-              <dt>Transport</dt>
-              <dd>Loopback + temporary link</dd>
-            </div>
-            <div>
-              <dt>License</dt>
-              <dd>MIT</dd>
-            </div>
-            <div>
-              <dt>Telemetry</dt>
-              <dd>None in the app</dd>
-            </div>
-          </dl>
         </div>
 
         <div class="hero-art" aria-hidden="true">
@@ -322,54 +306,6 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
         </div>
       </section>
 
-      <section class="section section-download" id="download">
-        <div class="download-inner">
-          <div>
-            <p class="eyebrow">03 / The build</p>
-            <h2 class="display">Take the beta for a walk.</h2>
-            <p>
-              The beta ships as source, a release-signed Android build, and
-              bridge and web bundles. Keep the bridge private, and expect sharp
-              edges.
-            </p>
-            <p class="download-note">
-              Android 7.0+ on arm64. The APK is not distributed through Google
-              Play. Install it from the release page after quick setup:
-            </p>
-            <p class="download-note download-hash">
-              sha256&nbsp;e8368fa0ad8b10d0040da4319fd86277fe685fcb33b740794eccdbd8b85b3ed7
-            </p>
-          </div>
-          <div class="download-actions">
-            <a class="button button-outline" href="./#install">Set up the bridge</a>
-            <a
-              class="button button-primary"
-              href="https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.3/opencode-mobile-1.0.0-beta.3.apk"
-              rel="noreferrer"
-              >Download APK</a
-            >
-            <a
-              class="button button-outline"
-              href="https://github.com/Aetherdz/opencode-mobile/releases"
-              rel="noreferrer"
-              >Beta assets</a
-            >
-            <a
-              class="button button-outline"
-              href="https://github.com/Aetherdz/opencode-mobile-dist"
-              rel="noreferrer"
-              >Installers</a
-            >
-            <a
-              class="text-link"
-              href="https://github.com/Aetherdz/opencode-mobile/releases"
-              rel="noreferrer"
-              >SHA256SUMS and release notes</a
-            >
-          </div>
-        </div>
-      </section>
-
       <section class="section" id="next">
         <div class="section-head">
           <p class="eyebrow">04 / The rest</p>
@@ -399,9 +335,33 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
           </a>
         </div>
       </section>
+
+      <section class="section section-download" id="download">
+        <div class="download-inner">
+          <div>
+            <p class="eyebrow">03 / The build</p>
+            <h2 class="display">Take the beta for a walk.</h2>
+            <p>The beta ships as source, a release-signed Android build, and bridge and web bundles. Keep the bridge private, and expect sharp edges.</p>
+            <p class="download-note">Android 7.0+ on arm64. The APK is not distributed through Google Play. Install it from the release page after quick setup:</p>
+            <p class="download-note download-hash">sha256&nbsp;e8368fa0ad8b10d0040da4319fd86277fe685fcb33b740794eccdbd8b85b3ed7</p>
+          </div>
+          <div class="download-actions">
+            <a class="button button-outline" href="./#install">Set up the bridge</a>
+            <a class="button button-primary" href="https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.3/opencode-mobile-1.0.0-beta.3.apk" rel="noreferrer">Download APK</a>
+            <a class="button button-outline" href="https://github.com/Aetherdz/opencode-mobile/releases" rel="noreferrer">Beta assets</a>
+            <a class="button button-outline" href="https://github.com/Aetherdz/opencode-mobile-dist" rel="noreferrer">Installers</a>
+            <a class="text-link" href="https://github.com/Aetherdz/opencode-mobile/releases" rel="noreferrer">SHA256SUMS and release notes</a>
+          </div>
+        </div>
+      </section>
     </main>
 
     <footer class="site-footer">
+      <dl class="hero-facts">
+        <div><dt>Transport</dt><dd>Loopback + temporary link</dd></div>
+        <div><dt>License</dt><dd>MIT</dd></div>
+        <div><dt>Telemetry</dt><dd>None in the app</dd></div>
+      </dl>
       <div class="footer-brand">
         <img class="brand-mark" src="assets/brand-mark.svg?v=mobile-mark-2" width="40" height="40" alt="" aria-hidden="true" />
         <div class="footer-brand-copy">
@@ -438,7 +398,6 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
         <span id="year">2026</span>.
       </p>
     </footer>
-
     <script src="app.js" defer></script>
   </body>
 </html>

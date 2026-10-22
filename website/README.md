@@ -71,6 +71,9 @@ paths, so it works from a subdirectory as well as a domain root.
   localized homepages (`index.html`, `ar/index.html`, `fr/index.html`, and
   `es/index.html`) and keep the SHA-256 in the download section in sync with the
   latest release.
+- Keep the compact APK card in the hero copy. Place the full download panel
+  below “Read what you need,” followed by transport/license/telemetry facts
+  near the legal footer note.
 - Set an absolute `og:image` URL if a custom domain replaces GitHub Pages.
 - Add a canonical URL if a custom domain is chosen.
 - Keep README screenshots captured from the Expo app, not hand-drawn approximations.
