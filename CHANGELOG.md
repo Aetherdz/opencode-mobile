@@ -14,6 +14,10 @@ one-time ticket from `POST /ws-ticket` first.
 
 ### Added
 
+- Release-signed arm64 APK (`opencode-mobile-1.0.0-beta.2.apk`) attached to the
+  public release, with a per-asset `.sha256` file and a regenerated
+  `SHA256SUMS` covering every asset.
+- The website download section now prints the APK SHA-256 digest.
 - One-time, 30-second WebSocket tickets from `POST /ws-ticket`; tickets are
   consumed on first use and are rejected on replay.
 - WebSocket `Origin` checks for browser clients. Native clients without an
@@ -47,12 +51,24 @@ one-time ticket from `POST /ws-ticket` first.
 - Documentation now describes the ticket flow and the workdir enforcement
   boundaries.
 
+### Removed
+
+- The debug-signed APK from the beta 1 release. It was built with the public
+  Android debug key, so it is no longer offered for download; the beta 2
+  release-signed APK replaces it.
+
 ### Fixed
 
 - Release workflow no longer replaces the debug signing config while trying to
   sign the release build.
 - Website footer links no longer leak the referrer.
 - Website GitHub star-count fetch has a timeout and fails quietly.
+- The website star count is cached for 24 hours, keeps the last known value
+  when the GitHub API refuses a request, and backs off after a `403` or `429`
+  instead of retrying on every page view.
+- WebSocket keepalive pings no longer count against the per-socket message
+  limit, and that limit is raised to 300 messages per minute so a reconnect
+  burst is not mistaken for a flood.
 
 ## [1.0.0-beta.1] - 2026-10-22
 

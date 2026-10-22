@@ -958,6 +958,11 @@ main {
   line-height: 1.6;
 }
 
+.download-hash {
+  overflow-wrap: anywhere;
+  color: var(--muted);
+}
+
 .download-actions {
   display: grid;
   gap: 0.65rem;

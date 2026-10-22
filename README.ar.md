@@ -126,6 +126,23 @@ CORS_ORIGINS=http://localhost:8081,http://127.0.0.1:8081
 
 في الشاشة الأولى أدخل عنوان الـBridge وقيمة `AUTH_TOKEN` نفسها. على الهاتف استخدم عنواناً خاصاً قابلاً للوصول مثل عنوان Tailscale، وليس `127.0.0.1` الخاص بالجهاز المضيف.
 
+## التحميل
+
+| الملف | ملاحظات |
+| --- | --- |
+| [APK أندرويد](https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.2/opencode-mobile-1.0.0-beta.2.apk) | `1.0.0-beta.2`، موقّع للإصدار، arm64-v8a، أندرويد 7.0+ |
+| [حزم Bridge](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.2) | `.tar.gz` و`.zip` مع `SHA256SUMS` |
+| [حزم الويب](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.2) | تصدير Expo ثابت مع `SHA256SUMS` |
+| [المثبّتات](https://github.com/Aetherdz/opencode-mobile-dist) | مثبّت Bridge للينكس وماك وويندوز |
+
+تحقق من الـAPK قبل التثبيت:
+
+```bash
+sha256sum -c opencode-mobile-1.0.0-beta.2.apk.sha256
+```
+
+النسخة التجريبية غير موجودة على Google Play. بناء iPhone يحتاج macOS/EAS وهو غير من إنتاج CI.
+
 ## الوصول عن بعد
 
 الافتراضي الآمن هو loopback مع Tailscale:
@@ -279,10 +296,11 @@ npx expo export --platform web
 - مثبّتات الطرفية: <https://github.com/Aetherdz/opencode-mobile-dist>
 - الموقع: <https://aetherdz.github.io/opencode-mobile/>
 - حزم Bridge والويب لإصدار beta مع checksums في GitHub Releases.
+- APK أندرويد موقّع للإصدار: <https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.2>
 
 المتبقي:
 
-- APK أندرويد موقّع للإصدار واختبار الأجهزة.
+- اختبار الجهاز على أجهزة أندرويد حقيقية.
 - أيقونة محايدة وموقف نهائي من العلامة التجارية.
 - تبديل model وagent عبر الـBridge.
 - TestFlight على iOS وقرار desktop wrapper.
