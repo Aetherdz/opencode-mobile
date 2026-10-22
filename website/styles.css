@@ -118,57 +118,20 @@ button {
 }
 
 .brand-mark {
-  position: relative;
-  display: inline-grid;
+  display: block;
   width: 2.55rem;
   height: 2.55rem;
-  place-items: center;
   border: 1px solid rgba(10, 10, 10, 0.15);
   border-radius: 50%;
-  background: var(--ink);
-  color: var(--paper);
-  font-family: var(--sans);
-  font-size: 0.92rem;
-  font-weight: 650;
-  letter-spacing: -0.1em;
   grid-row: 1 / span 2;
   transition: transform 180ms ease, box-shadow 180ms ease;
 }
 
-.brand-mark span,
-.brand-mark b { display: block; font-weight: inherit; }
-.brand-mark span { transform: translateX(0.06em); }
-.brand-mark b { margin-left: -0.08em; }
-.brand-mark i {
-  position: absolute;
-  z-index: 1;
-  left: 50%;
-  width: 0.66em;
-  height: 0.66em;
-  border: 1.5px solid currentColor;
-  border-radius: 50%;
-  background: var(--ink);
-  transform: translateX(-50%) scale(0.45);
-  transition: transform 220ms ease;
-}
-.brand:hover .brand-mark i { transform: translateX(-50%) scale(0.72); }
+.brand-mark img { display: block; width: 100%; height: 100%; object-fit: contain; }
+
 .brand:hover .brand-mark { transform: translateY(-1px); box-shadow: 0 5px 13px rgba(10, 10, 10, 0.16); }
-.brand-mark > span,
-.brand-mark > b { position: relative; z-index: 2; }
 
 .brand-name { align-self: end; line-height: 1.15; }
-.brand-mark { overflow: hidden; }
-.brand-mark > span { transform: translate(-0.12em, 0.03em); }
-.brand-mark > b { margin: -0.18em 0 0 0.38em; }
-.brand-mark i {
-  top: 50%;
-  left: 50%;
-  width: 0.66em;
-  height: 0.66em;
-  transform: translate(-50%, -50%) scale(0.45);
-}
-.brand:hover .brand-mark i { transform: translate(-50%, -50%) scale(0.72); }
-
 .footer-brand-copy { min-width: 0; }
 .footer-brand-copy strong { line-height: 1.3; }
 .footer-brand-copy p { max-width: 20rem; line-height: 1.55; }
@@ -1669,6 +1632,59 @@ main {
   margin-top: 1.6rem;
 }
 
+.hero-release {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  max-width: 37rem;
+  margin-top: 1.7rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.58);
+  box-shadow: 0 12px 32px rgba(10, 10, 10, 0.045);
+}
+
+.hero-release-copy { display: grid; min-width: 0; gap: 0.12rem; }
+.hero-release-kicker {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+.hero-release-copy strong { font-size: 0.86rem; line-height: 1.4; }
+.hero-release-copy strong span {
+  margin-left: 0.25rem;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.67rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.hero-release-copy small { color: var(--muted); font-size: 0.67rem; line-height: 1.45; }
+.hero-release-button {
+  display: inline-flex;
+  min-height: 2.75rem;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--ink);
+  border-radius: 0.5rem;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 180ms ease, transform 180ms ease;
+}
+.hero-release-button:hover { transform: translateY(-1px); background: var(--ink-soft); }
+.hero-release-button b { font-size: 1rem; font-weight: 500; }
+.hero-release-button:focus-visible { outline: 2px solid var(--green); outline-offset: 3px; }
+
 @media (prefers-reduced-motion: no-preference) {
   .hero-copy,
   .hero-art {
@@ -1709,6 +1725,7 @@ main {
 
   .hero-copy { max-width: 42rem; margin-inline: auto; }
   .hero .display { max-width: 10ch; }
+  .hero-release { max-width: 42rem; }
 
   .feature-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1812,6 +1829,8 @@ main {
 
   .hero .eyebrow { font-size: 0.62rem; letter-spacing: 0.06em; }
   .hero .display { font-size: clamp(3.25rem, 16vw, 5.2rem); }
+  .hero-release { align-items: stretch; flex-direction: column; }
+  .hero-release-button { justify-content: space-between; }
 
   .hero-art {
     min-height: 30rem;
@@ -1932,7 +1951,7 @@ main {
     max-width: none;
   }
 
-  .brand-mark { flex: 0 0 2.25rem; width: 2.25rem; height: 2.25rem; font-size: 0.8rem; }
+  .brand-mark { flex: 0 0 2.25rem; width: 2.25rem; height: 2.25rem; }
   .brand-name { max-width: 8.3rem; overflow: hidden; font-size: 0.62rem; letter-spacing: 0.04em; text-overflow: ellipsis; }
   .header-tools { flex: 0 0 auto; margin-left: auto; gap: 0.05rem; }
   .nav-github { width: 2.4rem; }
@@ -2252,6 +2271,8 @@ html[dir="rtl"] .footer-legal { direction: rtl; text-align: right; }
 html[dir="rtl"] .site-header { direction: rtl; }
 html[dir="rtl"] .brand { direction: ltr; }
 html[dir="rtl"] .footer-brand { direction: rtl; }
+html[dir="rtl"] .hero-release { direction: rtl; }
+html[dir="rtl"] .hero-release-copy strong span { margin-right: 0.25rem; margin-left: 0; }
 
 html[lang="en"],
 html[lang="fr"],
@@ -2335,7 +2356,7 @@ html[dir="rtl"] code {
     padding: 0 0.55rem;
     gap: 0.35rem;
   }
-  .brand-mark { width: 2.3rem; height: 2.3rem; font-size: 0.82rem; }
+  .brand-mark { width: 2.3rem; height: 2.3rem; }
   .brand { grid-template-columns: 2.3rem minmax(0, 1fr); grid-template-rows: auto; column-gap: 0.45rem; }
   .brand-name { align-self: center; min-width: 0; font-size: clamp(0.58rem, 2.8vw, 0.68rem); letter-spacing: 0.025em; }
   .brand-build { display: none; }
@@ -2350,6 +2371,9 @@ html[dir="rtl"] code {
 
   .hero .display { font-size: clamp(3rem, 15vw, 4rem); }
   .hero .eyebrow { max-width: 100%; flex-wrap: wrap; }
+  .hero-release { padding: 0.8rem; }
+  .hero-release-copy strong { font-size: 0.8rem; }
+  .hero-release-copy small { font-size: 0.62rem; }
 
   .cmd-tabs label {
     min-height: 3rem;

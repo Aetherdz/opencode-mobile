@@ -47,7 +47,7 @@
 
 <header class="site-header">
       <a class="brand" href="./" aria-label="Accueil OpenCode Mobile">
-        <span class="brand-mark" aria-hidden="true"><span>O</span><i aria-hidden="true"></i><b>C</b></span>
+        <img class="brand-mark" src="../assets/brand-mark.svg" width="40" height="40" alt="" aria-hidden="true" />
         <span class="brand-name">OpenCode Mobile</span>
         <span class="brand-build" aria-hidden="true">FIELD CLIENT <i>·</i> 01</span>
       </a>
@@ -89,7 +89,7 @@
           aria-expanded="false"
           aria-controls="site-nav"
           aria-label="Ouvrir le menu"
-          aria-haspopup="true">
+        >
           <span class="menu-toggle-bars" aria-hidden="true"><i></i><i></i></span>
         </button>
       </div>
@@ -109,9 +109,19 @@
             un lien temporaire vers le téléphone au besoin. Sans compte ni relais,
             et sans télémétrie dans l’application.
           </p>
+          <div class="hero-release">
+            <div class="hero-release-copy">
+              <span class="hero-release-kicker">Android · Bêta publique</span>
+              <strong>OpenCode Mobile <span>1.0.0-beta.3</span></strong>
+              <small>Android 7+ · arm64 · APK de version</small>
+            </div>
+            <a class="hero-release-button" href="https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.3/opencode-mobile-1.0.0-beta.3.apk" aria-label="Télécharger OpenCode Mobile Android bêta 1.0.0-beta.3">
+              <span>Télécharger APK</span><b aria-hidden="true">↓</b>
+            </a>
+          </div>
           <div class="actions">
             <a class="button button-primary" href="#install">Installer la passerelle</a>
-            <a class="button button-quiet" href="#download">Télécharger l’application</a>
+            <a class="button button-quiet" href="https://github.com/Aetherdz/opencode-mobile/releases" rel="noreferrer">Toutes les versions</a>
           </div>
           <dl class="hero-facts">
             <div>
@@ -398,7 +408,7 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
 
     <footer class="site-footer">
       <div class="footer-brand">
-        <span class="brand-mark" aria-hidden="true"><span>O</span><i aria-hidden="true"></i><b>C</b></span>
+        <img class="brand-mark" src="../assets/brand-mark.svg" width="40" height="40" alt="" aria-hidden="true" />
         <div class="footer-brand-copy">
           <strong>OpenCode Mobile</strong>
           <p>Gardez l’agent près de vous, et les limites claires.</p>

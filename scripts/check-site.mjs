@@ -42,6 +42,11 @@ for (const file of htmlFiles) {
     if (opens !== closes) errors.push(`${path.relative(root, file)}: unbalanced footer div markup (${opens} open, ${closes} close)`);
     if (!footer.includes("footer-legal")) errors.push(`${path.relative(root, file)}: footer legal notice is missing`);
   }
+  for (const match of html.matchAll(/<img\b[^>]*src="([^"]+)"[^>]*class="brand-mark"[^>]*>/g)) {
+    const src = match[1];
+    const resolved = src.startsWith("https://") ? null : path.resolve(path.dirname(file), src);
+    if (resolved && !fs.existsSync(resolved)) errors.push(`${path.relative(root, file)}: missing brand asset ${src}`);
+  }
   const refs = [...html.matchAll(/\s(?:href|src)="([^"]+)"/g)].map((match) => match[1]);
   for (const raw of refs) {
     if (/^(?:[a-z]+:|\/\/|#)/i.test(raw)) {
@@ -92,6 +97,10 @@ for (const relative of homePages) {
   for (const selector of ['class="eyebrow"', "<h1", 'class="lede"', 'class="actions"']) {
     if (!hero.includes(selector)) errors.push(`${relative}: homepage hero is missing ${selector}`);
   }
+  if (relative === "index.html" && !hero.includes('class="hero-release"')) errors.push(`${relative}: Android release download panel is missing`);
+  if (hero.includes('aria-haspopup="true"')) errors.push(`${relative}: non-popup hero content declares aria-haspopup`);
+  if (!html.includes('rel="icon"') || !html.includes("assets/favicon.svg")) errors.push(`${relative}: favicon link is missing`);
+  if (relative !== "index.html" && !hero.includes('class="hero-release"')) errors.push(`${relative}: localized Android release panel is missing`);
 }
 
 if (errors.length > 0) {
