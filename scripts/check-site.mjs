@@ -97,6 +97,13 @@ for (const relative of homePages) {
   for (const selector of ['class="eyebrow"', "<h1", 'class="lede"', 'class="actions"']) {
     if (!hero.includes(selector)) errors.push(`${relative}: homepage hero is missing ${selector}`);
   }
+  const command = html.match(/<pre id="cmd-bridge"><code>([\s\S]*?)<\/code><\/pre>/)?.[1] ?? "";
+  const copyTarget = html.includes('data-copy-target="cmd-bridge"');
+  if (!command || command.includes("term-comment") || command.includes("\n")) {
+    errors.push(`${relative}: install panel must show only the single copyable setup command`);
+  }
+  if (!copyTarget) errors.push(`${relative}: install command copy button is missing`);
+  if (!html.includes("opencode-mobile</code>")) errors.push(`${relative}: follow-up pairing command note is missing`);
   if (relative === "index.html" && !hero.includes('class="hero-release"')) errors.push(`${relative}: Android release download panel is missing`);
   if (hero.includes('aria-haspopup="true"')) errors.push(`${relative}: non-popup hero content declares aria-haspopup`);
   if (!html.includes('rel="icon"') || !html.includes("assets/favicon.svg")) errors.push(`${relative}: favicon link is missing`);

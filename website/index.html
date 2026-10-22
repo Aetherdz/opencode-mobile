@@ -47,9 +47,8 @@
 
 <header class="site-header">
       <a class="brand" href="" aria-label="OpenCode Mobile home">
-        <img class="brand-mark" src="assets/brand-mark.svg" width="40" height="40" alt="" aria-hidden="true" />
+        <img class="brand-mark" src="assets/brand-mark.svg?v=mobile-mark-2" width="40" height="40" alt="" aria-hidden="true" />
         <span class="brand-name">OpenCode Mobile</span>
-        <span class="brand-build" aria-hidden="true">FIELD CLIENT <i>·</i> 01</span>
       </a>
       <nav class="site-nav" id="site-nav" aria-label="Primary">
         <a href="" aria-current="page">Install</a>
@@ -266,12 +265,9 @@
                   <span class="copy-label" data-copy-label aria-live="polite">Copy</span>
                 </button>
               </div>
-              <pre id="cmd-bridge"><code><span class="term-comment"># One command to set up</span>
-curl -fsSL https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>main/<wbr>install.sh | bash -s -- setup
-<span class="term-comment"># Later: start and show the temporary public link</span>
-opencode-mobile</code></pre>
+              <pre id="cmd-bridge"><code>curl -fsSL https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>main/<wbr>install.sh | bash -s -- setup</code></pre>
             </div>
-
+            <p class="cmd-note">After setup, run <code>opencode-mobile</code> whenever you want to start the temporary link.</p>
             <div class="cmd-panel" id="panel-win">
               <div class="cmd-bar">
                 <span class="cmd-prompt" aria-hidden="true">&gt;</span>
@@ -288,8 +284,7 @@ opencode-mobile</code></pre>
                   <span class="copy-label" data-copy-label aria-live="polite">Copy</span>
                 </button>
               </div>
-              <pre id="cmd-bridge-win"><code><span class="term-comment"># installer pinned to a commit, verified before it runs</span>
-$h = "3a493282e252468ed96012cd0019f5252314bfb5c7b810be34476602616a14aa"
+              <pre id="cmd-bridge-win"><code>$h = "3a493282e252468ed96012cd0019f5252314bfb5c7b810be34476602616a14aa"
 irm https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>7c4ec38b7de7d87e88d7f215721a11bc338e128f/<wbr>install.ps1 -OutFile install.ps1
 if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksum mismatch" }
 .\install.ps1 -Command install -WorkDir "$env:USERPROFILE\projects"</code></pre>
@@ -408,7 +403,7 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
 
     <footer class="site-footer">
       <div class="footer-brand">
-        <img class="brand-mark" src="assets/brand-mark.svg" width="40" height="40" alt="" aria-hidden="true" />
+        <img class="brand-mark" src="assets/brand-mark.svg?v=mobile-mark-2" width="40" height="40" alt="" aria-hidden="true" />
         <div class="footer-brand-copy">
           <strong>OpenCode Mobile</strong>
           <p>Keep the agent close. Keep the boundary clear.</p>

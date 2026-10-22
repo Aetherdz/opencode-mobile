@@ -79,7 +79,10 @@
 
     let resetTimer = 0;
     copyButton.addEventListener("click", async () => {
-      const text = copySource.textContent.trim();
+      const text = copySource.textContent
+        .replace(/\/\*([\s\S]*?)\*\/|<!--[\s\S]*?-->/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
       let copied = false;
       try {
         await navigator.clipboard.writeText(text);

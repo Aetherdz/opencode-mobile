@@ -102,16 +102,13 @@ button {
 }
 
 .brand {
-  position: relative;
-  display: inline-grid;
-  grid-template-columns: 2.5rem auto;
-  grid-template-rows: auto auto;
+  display: inline-flex;
   align-items: center;
-  column-gap: 0.75rem;
+  gap: 0.65rem;
   color: var(--ink);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  font-size: 0.9rem;
+  font-weight: 720;
+  letter-spacing: -0.025em;
   text-decoration: none;
   text-transform: uppercase;
   flex: 0 0 auto;
@@ -119,11 +116,11 @@ button {
 
 .brand-mark {
   display: block;
-  width: 2.55rem;
-  height: 2.55rem;
-  border: 1px solid rgba(10, 10, 10, 0.15);
-  border-radius: 50%;
-  grid-row: 1 / span 2;
+  flex: 0 0 2.5rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.68rem;
+  object-fit: contain;
   transition: transform 180ms ease, box-shadow 180ms ease;
 }
 
@@ -131,7 +128,7 @@ button {
 
 .brand:hover .brand-mark { transform: translateY(-1px); box-shadow: 0 5px 13px rgba(10, 10, 10, 0.16); }
 
-.brand-name { align-self: end; line-height: 1.15; }
+.brand-name { line-height: 1; white-space: nowrap; }
 .footer-brand-copy { min-width: 0; }
 .footer-brand-copy strong { line-height: 1.3; }
 .footer-brand-copy p { max-width: 20rem; line-height: 1.55; }
@@ -147,6 +144,29 @@ button {
 }
 
 .brand-build i { color: var(--green); font-style: normal; }
+
+.cmd-note {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid var(--line);
+  border-top: 0;
+  color: var(--muted);
+  font-size: 0.76rem;
+  line-height: 1.55;
+}
+
+.cmd-note code {
+  padding: 0.12rem 0.35rem;
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--mono);
+  font-size: 0.9em;
+}
 
 @media (max-width: 980px) {
   .site-header { min-height: 4.75rem; }
@@ -1776,15 +1796,14 @@ main {
   }
 
   .brand {
-    grid-template-columns: 2.5rem minmax(0, 1fr);
-    grid-template-rows: auto;
-    column-gap: 0.65rem;
+    display: inline-flex;
+    gap: 0.55rem;
     min-width: 0;
     max-width: 100%;
   }
 
-  .brand-mark { width: 2.5rem; height: 2.5rem; }
-  .brand-name { align-self: center; white-space: nowrap; }
+  .brand-mark { flex-basis: 2.4rem; width: 2.4rem; height: 2.4rem; }
+  .brand-name { white-space: nowrap; }
   .brand-build { display: none; }
 
   .menu-toggle {
@@ -1954,8 +1973,9 @@ main {
     max-width: none;
   }
 
-  .brand-mark { flex: 0 0 2.25rem; width: 2.25rem; height: 2.25rem; }
-  .brand-name { max-width: 8.3rem; overflow: hidden; font-size: 0.62rem; letter-spacing: 0.04em; text-overflow: ellipsis; }
+  .brand { gap: 0.4rem; }
+  .brand-mark { flex: 0 0 2.15rem; width: 2.15rem; height: 2.15rem; }
+  .brand-name { max-width: none; overflow: visible; font-size: 0.66rem; letter-spacing: -0.02em; }
   .header-tools { flex: 0 0 auto; margin-left: auto; gap: 0.05rem; }
   .nav-github { width: 2.4rem; }
   .lang-switch summary { min-height: 2.4rem; padding-inline: 0.5rem; }
@@ -2359,9 +2379,9 @@ html[dir="rtl"] code {
     padding: 0 0.55rem;
     gap: 0.35rem;
   }
-  .brand-mark { width: 2.3rem; height: 2.3rem; }
-  .brand { grid-template-columns: 2.3rem minmax(0, 1fr); grid-template-rows: auto; column-gap: 0.45rem; }
-  .brand-name { align-self: center; min-width: 0; font-size: clamp(0.58rem, 2.8vw, 0.68rem); letter-spacing: 0.025em; }
+  .brand-mark { flex-basis: 2.15rem; width: 2.15rem; height: 2.15rem; }
+  .brand { gap: 0.4rem; }
+  .brand-name { min-width: 0; font-size: clamp(0.58rem, 2.8vw, 0.68rem); letter-spacing: -0.02em; }
   .brand-build { display: none; }
   .header-tools { gap: 0.05rem; }
   .nav-github { width: 2.25rem; }
