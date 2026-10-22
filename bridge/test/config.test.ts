@@ -7,6 +7,7 @@ import {
   isInsideWorkdir,
   loadConfig,
   parseAllowedTypes,
+  parseCorsOrigins,
 } from "../src/config.js";
 
 const roots: string[] = [];
@@ -42,6 +43,26 @@ describe("parseAllowedTypes", () => {
     const parsed = parseAllowedTypes(" , , ");
     expect(parsed.mimes.size).toBe(0);
     expect(parsed.extensions.size).toBe(0);
+  });
+});
+
+describe("parseCorsOrigins", () => {
+  it("normalizes and deduplicates exact origins", () => {
+    expect(
+      parseCorsOrigins(" http://localhost:8081/, https://example.com , http://localhost:8081 "),
+    ).toEqual(["http://localhost:8081", "https://example.com"]);
+  });
+
+  it("returns an empty list when CORS is disabled", () => {
+    expect(parseCorsOrigins("")).toEqual([]);
+    expect(parseCorsOrigins(" , ")).toEqual([]);
+  });
+
+  it("rejects wildcards, paths, credentials, and non-http schemes", () => {
+    expect(() => parseCorsOrigins("*")).toThrow(/invalid origin/);
+    expect(() => parseCorsOrigins("https://example.com/app")).toThrow(/without paths/);
+    expect(() => parseCorsOrigins("https://user:pass@example.com")).toThrow(/credentials/);
+    expect(() => parseCorsOrigins("file:///tmp")).toThrow(/http or https/);
   });
 });
 
@@ -126,6 +147,7 @@ describe("loadConfig defaults", () => {
       "ALLOWED_WORKDIRS",
       "DATA_DIR",
       "ALLOWED_UPLOAD_TYPES",
+      "CORS_ORIGINS",
     ] as const;
     const saved = new Map<string, string | undefined>();
     for (const key of keys) saved.set(key, process.env[key]);
@@ -136,9 +158,11 @@ describe("loadConfig defaults", () => {
     process.env.ALLOWED_WORKDIRS = workdir;
     process.env.DATA_DIR = path.join(root, "data");
     delete process.env.ALLOWED_UPLOAD_TYPES;
+    delete process.env.CORS_ORIGINS;
 
     try {
       const config = loadConfig();
+      expect(config.corsOrigins).toEqual([]);
       expect(config.allowedTypes.mimes.has("image/png")).toBe(true);
       expect(config.allowedTypes.mimes.has("image/svg+xml")).toBe(false);
       expect(config.allowedTypes.extensions.has(".ts")).toBe(true);

@@ -6,6 +6,7 @@ import { pinoOptions } from "./log.js";
 import type { Config } from "./config.js";
 import { OpenCodeAdapter } from "./adapters/OpenCodeAdapter.js";
 import { AuthGuard, bearerFromRequest, registerAuth } from "./auth.js";
+import { registerCors } from "./cors.js";
 import { FileRegistry } from "./uploads.js";
 import { RuntimeState } from "./state.js";
 import { SourceResolver } from "./sources.js";
@@ -62,6 +63,8 @@ export async function buildServer(config: Config): Promise<BuiltServer> {
     config.maxFilesPerMessage,
     push,
   );
+
+  registerCors(app, config.corsOrigins);
 
   const authenticate = registerAuth(app, guard);
 

@@ -1,0 +1,36 @@
+[Unit]
+Description=OpenCode Mobile bridge
+Documentation=https://github.com/zaikabdou1/opencode-mobile
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=opencode-mobile
+Group=opencode-mobile
+WorkingDirectory=/opt/opencode-mobile/bridge
+EnvironmentFile=/etc/opencode-mobile/bridge.env
+Environment=NODE_ENV=production
+ExecStart=/usr/bin/node /opt/opencode-mobile/bridge/dist/index.js
+Restart=on-failure
+RestartSec=3
+UMask=0077
+
+# Hardening. ProtectSystem=full keeps /home writable because the bridge must
+# create uploads inside ALLOWED_WORKDIRS. Put DATA_DIR under /var/lib and grant
+# it explicitly below.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectControlGroups=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+ProtectClock=true
+ProtectHostname=true
+RestrictSUIDSGID=true
+LockPersonality=true
+LimitNOFILE=4096
+ReadWritePaths=-/var/lib/opencode-mobile
+
+[Install]
+WantedBy=multi-user.target

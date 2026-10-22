@@ -35,8 +35,17 @@
       "usesCleartextTraffic": true
     },
     "web": {
-      "output": "server",
-      "favicon": "./assets/images/favicon.png"
+      "output": "single",
+      "favicon": "./assets/images/favicon.png",
+      "name": "OpenCode Mobile",
+      "shortName": "OC Mobile",
+      "description": "An unofficial mobile and web client for your local OpenCode service.",
+      "themeColor": "#000000",
+      "backgroundColor": "#000000",
+      "display": "standalone",
+      "orientation": "portrait",
+      "startUrl": "/",
+      "scope": "/"
     },
     "plugins": [
       "expo-router",

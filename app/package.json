@@ -56,7 +56,7 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "typecheck": "tsc --noEmit",
-    "web:export": "expo export --platform web"
+    "web:export": "expo export --platform web && node ../scripts/patch-web-export.mjs"
   },
   "private": true,
   "description": "Unofficial Expo client for OpenCode Mobile.",

@@ -75,4 +75,4 @@ jobs:
         run: npm run lint
 
       - name: Export web
-        run: npx expo export --platform web
+        run: npm run web:export

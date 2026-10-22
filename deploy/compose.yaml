@@ -1,0 +1,37 @@
+name: opencode-mobile
+
+services:
+  bridge:
+    build:
+      context: ../bridge
+    image: opencode-mobile-bridge:local
+    restart: unless-stopped
+    init: true
+    # Linux only: the bridge must reach OpenCode on 127.0.0.1. On Docker
+    # Desktop for macOS or Windows, run the bridge natively instead.
+    network_mode: host
+    env_file:
+      - .env
+    environment:
+      HOST: 127.0.0.1
+      PORT: "8787"
+      DATA_DIR: /app/data
+      ALLOWED_WORKDIRS: ${OPENCODE_WORKDIR:?Set OPENCODE_WORKDIR in deploy/.env}
+    volumes:
+      - bridge-data:/app/data
+      # Mount the workdir at the same absolute path that OpenCode uses on the
+      # host. The bridge sends these paths to OpenCode, so a different path
+      # inside the container would not work.
+      - "${OPENCODE_WORKDIR:?Set OPENCODE_WORKDIR in deploy/.env}:${OPENCODE_WORKDIR:?Set OPENCODE_WORKDIR in deploy/.env}"
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  bridge-data:

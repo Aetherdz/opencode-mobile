@@ -165,14 +165,18 @@ allowed. Check ownership and permissions.
 
 ## Web build cannot call the bridge
 
-The bridge does not add CORS headers. A browser page on a different origin
-cannot read the response, and requests that need a preflight are blocked before
-they are sent. Options:
+The bridge only adds CORS headers for exact origins listed in `CORS_ORIGINS`.
+Find the origin in the browser address bar (for example
+`http://localhost:8081`), add it to `bridge/.env`, and restart the bridge:
 
-1. Serve the web export and the bridge behind the same origin with a reverse
-   proxy.
-2. Add an explicit CORS allowlist to the bridge in a future change.
-3. Use the native app while the web story is finished.
+```dotenv
+CORS_ORIGINS=http://localhost:8081
+```
+
+The value is a comma-separated list. Wildcards, paths, and credentials are
+rejected. A preflight request is answered before authentication, but a real
+request still needs the bearer token. For production, serve the app and bridge
+behind one origin with a reverse proxy.
 
 Do not start Chrome with security disabled. That weakens every site in the
 browser, not just this one.

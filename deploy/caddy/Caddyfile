@@ -1,0 +1,29 @@
+# Same-origin deployment: static web client plus the bridge under /bridge.
+# Replace the host name and paths, then run: caddy validate --config Caddyfile
+mobile.example.com {
+	encode zstd gzip
+
+	handle /bridge/* {
+		uri strip_prefix /bridge
+		reverse_proxy 127.0.0.1:8787
+	}
+
+	handle {
+		root * /srv/opencode-mobile-web
+		try_files {path} /index.html
+		file_server
+	}
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "no-referrer"
+		X-Frame-Options "DENY"
+		-Server
+	}
+
+	log {
+		output file /var/log/caddy/opencode-mobile.log
+		format json
+	}
+}

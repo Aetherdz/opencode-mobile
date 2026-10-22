@@ -29,7 +29,7 @@ or execute things that OpenCode is allowed to touch.
 | Network attacker on the same Wi-Fi or tailnet | Can reach the bridge if the host is exposed. Cannot authenticate without the token. |
 | Attacker with the token | Full bridge API access, including prompts, uploads, approvals, and session interruption. |
 | Malicious file uploader | Can submit files to an allowed workdir. Constrained by type, size, name, and path checks. |
-| Malicious web page | Can attempt cross-origin requests. The bridge does not add CORS headers, so a browser blocks reads unless a proxy is used. |
+| Malicious web page | Can attempt cross-origin requests. The bridge only adds CORS headers for exact entries in `CORS_ORIGINS`; every other origin is blocked by the browser. Actual requests still require the token. |
 | Local unprivileged user on the host | Can read files if the OS permissions allow it. The bridge does not add OS-level isolation. |
 
 ### Trust boundaries
@@ -61,9 +61,16 @@ or execute things that OpenCode is allowed to touch.
 - `OPENCODE_URL` must resolve to `127.0.0.1`, `::1`, or `localhost`.
 - The recommended remote path is Tailscale: `tailscale serve --bg
   http://127.0.0.1:8787`.
-- The bridge does not add CORS headers. A browser-based build needs a
-  same-origin proxy or a future explicit CORS option. Do not solve this by
-  disabling browser security.
+- Browser access is opt-in. `CORS_ORIGINS` is a comma-separated list of exact
+  `http://host:port` or `https://host:port` origins; wildcards, credentials,
+  and paths are rejected. With no value, no CORS headers are sent and the web
+  client is unusable across origins.
+- Preflight (`OPTIONS`) requests are answered before authentication. They
+  return no data and only advertise the allowlisted origin. Real requests still
+  require the bearer token; CORS is a browser read control, not authorization.
+- For a public web deployment, prefer serving the app and bridge behind one
+  origin with a reverse proxy. Avoid putting the token in a page that loads
+  third-party scripts.
 - `trustProxy` is off. Do not put the bridge behind a proxy that rewrites
   client IPs unless you understand the effect on bans and rate limits.
 
@@ -145,12 +152,12 @@ themselves, but they matter when choosing an exposure model.
    history logs.
 5. **OpenCode sessions are not fully scoped by workdir.** The bridge can list
    sessions that OpenCode already knows about.
-6. **No CORS support.** The web build is a UI preview unless served same-origin
-   or behind a proxy.
-7. **No CSRF concern in the classic sense, but CORS is not authentication.**
-   A browser page cannot read bridge responses without CORS, and preflighted
-   requests are blocked. Do not treat that as authorization; the token is the
-   only gate. Treat it as a secret.
+6. **Browser CORS is opt-in and exact.** Only origins listed in `CORS_ORIGINS`
+   can read responses. A same-origin proxy is still the safer public deployment
+   because it keeps the token on one origin.
+7. **CORS is not authentication.** An allowlisted page still needs the bearer
+   token, and a page with the token can act until the token is rotated. Do not
+   treat an origin allowlist as a user boundary; the token is the only gate.
 8. **Push is third-party.** Expo receives the push token and notification
    payload. Payloads contain IDs and generic text, not message bodies.
 9. **No automated dependency or container scanning in this repository yet.**

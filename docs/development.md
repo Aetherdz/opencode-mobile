@@ -138,11 +138,23 @@ This starts the Expo web dev server. A production export is:
 npm run web:export
 ```
 
-The export uses Expo's `server` output. The bridge does not currently add CORS
-headers, so a browser served from a different origin cannot read bridge
-responses. For a working web deployment, serve the app and the bridge behind
-the same origin with a reverse proxy, or add an explicit CORS allowlist in a
-future change. Do not disable browser security as a workaround.
+The export uses Expo's `server` output. For browser access from a different
+origin, add that exact origin to the bridge configuration:
+
+```dotenv
+# bridge/.env
+CORS_ORIGINS=http://localhost:8081,http://127.0.0.1:8081
+```
+
+`CORS_ORIGINS` accepts exact `http://host:port` or `https://host:port` values.
+Wildcards, credentials, and paths are rejected, and an empty value disables
+CORS. Preflight requests are answered before authentication, but every real
+request still needs the bearer token.
+
+For production, prefer serving the exported app and the bridge behind one
+origin with a reverse proxy. That avoids exposing the token to third-party
+scripts and keeps the browser storage model simple. Do not disable browser
+security as a workaround.
 
 ## Android
 
@@ -257,38 +269,18 @@ Use PowerShell for token generation if `openssl` is missing:
 
 ## Server deployment
 
-The bridge is a long-running Node process. A minimal systemd unit:
+Production recipes are in [deploy/README.md](../deploy/README.md):
 
-```ini
-[Unit]
-Description=OpenCode Mobile Bridge
-After=network-online.target
+- Native Node on Linux, macOS, or Windows.
+- Docker Compose on Linux with host networking.
+- A hardened systemd unit.
+- Caddy for same-origin web and bridge access.
+- Tailscale for private remote access.
 
-[Service]
-Type=simple
-User=opencode
-WorkingDirectory=/opt/opencode-mobile/bridge
-EnvironmentFile=/opt/opencode-mobile/bridge/.env
-ExecStart=/usr/bin/node dist/index.js
-Restart=on-failure
-RestartSec=5
-NoNewPrivileges=true
-PrivateTmp=true
-ProtectSystem=strict
-ProtectHome=read-only
-ReadWritePaths=/opt/opencode-mobile/bridge/data /home/opencode/projects
-
-[Install]
-WantedBy=multi-user.target
-```
-
-Adjust `User`, paths, and `ReadWritePaths` to match your host. `ProtectHome` and
-`ReadWritePaths` must allow the workdirs and `DATA_DIR`; do not copy the unit
-blindly.
-
-A Docker image is not included yet. If you add one, keep the OpenCode service
-on the host or in a sidecar, mount only the allowed workdirs, and do not bake
-`.env` or `data/` into the image.
+The Docker path is Linux-only because the bridge must reach OpenCode on
+`127.0.0.1` and the workdir paths sent to OpenCode must match the host. On
+Docker Desktop for macOS or Windows, run the bridge natively. Do not bake
+`.env` or `data/` into an image, and mount only the allowed workdirs.
 
 ## Code style
 

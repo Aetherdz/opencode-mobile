@@ -69,6 +69,7 @@ const EnvSchema = z.object({
   RATE_LIMIT_PER_MINUTE: z.coerce.number().int().positive().default(180),
   LOG_LEVEL: z.string().default("info"),
   PUSH_ENABLED: z.enum(["0", "1"]).default("1"),
+  CORS_ORIGINS: z.string().default(""),
 });
 
 export type Config = ReturnType<typeof loadConfig>;
@@ -95,6 +96,34 @@ export function parseAllowedTypes(value: string): { mimes: Set<string>; extensio
     else mimes.add(normalized);
   }
   return { mimes, extensions };
+}
+
+/**
+ * Parse the browser origins allowed to call the bridge. Entries must be exact
+ * HTTP(S) origins: no wildcards, credentials, paths, queries, or fragments.
+ * An empty value disables CORS entirely.
+ */
+export function parseCorsOrigins(value: string): string[] {
+  const origins = new Set<string>();
+  for (const entry of splitList(value)) {
+    let parsed: URL;
+    try {
+      parsed = new URL(entry);
+    } catch {
+      throw new Error(`CORS_ORIGINS contains an invalid origin: ${entry}`);
+    }
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+      throw new Error(`CORS_ORIGINS must use http or https: ${entry}`);
+    }
+    if (parsed.username || parsed.password) {
+      throw new Error(`CORS_ORIGINS cannot contain credentials: ${entry}`);
+    }
+    if (parsed.pathname !== "/" || parsed.search || parsed.hash) {
+      throw new Error(`CORS_ORIGINS must contain origins without paths: ${entry}`);
+    }
+    origins.add(parsed.origin);
+  }
+  return [...origins];
 }
 
 export function discoverService(): { url: string; password: string } {
@@ -155,6 +184,7 @@ export function loadConfig(): {
   rateLimitPerMinute: number;
   logLevel: string;
   pushEnabled: boolean;
+  corsOrigins: string[];
 } {
   const parsed = EnvSchema.safeParse(process.env);
   if (!parsed.success) {
@@ -196,6 +226,7 @@ export function loadConfig(): {
     rateLimitPerMinute: env.RATE_LIMIT_PER_MINUTE,
     logLevel: env.LOG_LEVEL,
     pushEnabled: env.PUSH_ENABLED === "1",
+    corsOrigins: parseCorsOrigins(env.CORS_ORIGINS),
   };
 }
 
