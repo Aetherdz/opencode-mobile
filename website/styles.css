@@ -349,6 +349,11 @@ main {
 
 .hero-copy { padding-top: clamp(0rem, 2.5vw, 2rem); }
 
+.hero > .hero-art { grid-column: 1; grid-row: 1; }
+.hero > .hero-copy { grid-column: 2; grid-row: 1; }
+.hero > .hero-copy .lede { margin-top: 0; }
+.hero > .hero-copy .actions { margin-top: 1rem; }
+
 .eyebrow {
   margin: 0 0 1.4rem;
   color: var(--muted);
@@ -483,9 +488,6 @@ main {
   min-height: 38rem;
   place-items: center;
 }
-
-.hero > .hero-art { grid-column: 1; grid-row: 1; }
-.hero > .hero-copy { grid-column: 2; grid-row: 1; }
 
 .orbit {
   position: absolute;
@@ -1755,6 +1757,7 @@ main {
   }
 
   .hero-copy { grid-column: 1; grid-row: 2; max-width: 42rem; margin-inline: auto; padding-top: 0; }
+  .hero > .hero-copy .lede { margin-top: 1.4rem; }
   .hero .display { max-width: 10ch; }
   .hero-release { max-width: 42rem; }
 

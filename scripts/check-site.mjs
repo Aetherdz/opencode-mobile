@@ -108,21 +108,27 @@ for (const relative of homePages) {
   if (!(artIndex >= 0 && artIndex < copyIndex && copyIndex < introIndex && introIndex < releaseIndex)) {
     errors.push(`${relative}: homepage hero order must be phone art, intro copy, then Android release card`);
   }
-  for (const id of ["install", "download", "next"]) {
+  for (const id of ["install", "download", "next", "requirements"]) {
     if ((html.match(new RegExp(`id="${id}"`, "g")) ?? []).length !== 1) {
       errors.push(`${relative}: expected exactly one #${id} section`);
     }
   }
   const sectionOrder = ["install", "requirements", "next", "download"].map((id) => html.indexOf(`id="${id}"`));
   if (sectionOrder.some((index) => index < 0) || !sectionOrder.every((index, i) => i === 0 || sectionOrder[i - 1] < index)) {
-    errors.push(`${relative}: install, prerequisites, remaining sections, and download sections are out of order`);
+    errors.push(`${relative}: after the hero, install commands must precede prerequisites, other content, and download links`);
   }
   const installIndex = html.indexOf('id="install"');
   const nextIndex = html.indexOf('id="next"');
   const downloadIndex = html.indexOf('id="download"');
+  const requirementsIndex = html.indexOf('id="requirements"');
   const footerIndex = html.indexOf('<footer class="site-footer">');
-  if (!(installIndex >= 0 && installIndex < nextIndex && nextIndex < downloadIndex && downloadIndex < footerIndex)) {
-    errors.push(`${relative}: download section must follow the remaining sections and precede the footer`);
+  if (!(installIndex >= 0 && installIndex < requirementsIndex && requirementsIndex < nextIndex && nextIndex < downloadIndex && downloadIndex < footerIndex)) {
+    errors.push(`${relative}: sections must be ordered install, prerequisites, remaining content, download, footer`);
+  }
+  const apkHero = hero.indexOf('class="hero-release"');
+  const commandSection = html.indexOf('id="install"');
+  if (!(apkHero >= 0 && apkHero < commandSection)) {
+    errors.push(`${relative}: APK download card must appear before the install command section`);
   }
   if ((html.match(/class="hero-facts"/g) ?? []).length !== 1 || html.indexOf('class="hero-facts"') < footerIndex) {
     errors.push(`${relative}: transport, license, and telemetry facts must appear once in the footer`);
