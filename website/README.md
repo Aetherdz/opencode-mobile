@@ -67,7 +67,9 @@ paths, so it works from a subdirectory as well as a domain root.
 ## Maintenance
 
 - Update the repository and release links if the project moves.
-- Keep the version, APK file name, and SHA-256 in `index.html` in sync with the
+- Keep the version, APK URL, and platform notes synchronized across all
+  localized homepages (`index.html`, `ar/index.html`, `fr/index.html`, and
+  `es/index.html`) and keep the SHA-256 in the download section in sync with the
   latest release.
 - Set an absolute `og:image` URL if a custom domain replaces GitHub Pages.
 - Add a canonical URL if a custom domain is chosen.

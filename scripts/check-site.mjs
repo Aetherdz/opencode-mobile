@@ -101,6 +101,7 @@ for (const relative of homePages) {
   if (hero.includes('aria-haspopup="true"')) errors.push(`${relative}: non-popup hero content declares aria-haspopup`);
   if (!html.includes('rel="icon"') || !html.includes("assets/favicon.svg")) errors.push(`${relative}: favicon link is missing`);
   if (relative !== "index.html" && !hero.includes('class="hero-release"')) errors.push(`${relative}: localized Android release panel is missing`);
+  if (relative === "index.html" && !hero.includes("Install the bridge")) errors.push(`${relative}: primary setup command is not promoted in the hero`);
 }
 
 if (errors.length > 0) {
