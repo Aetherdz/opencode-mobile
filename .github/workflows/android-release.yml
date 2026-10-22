@@ -62,35 +62,7 @@ jobs:
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: |
           set -euo pipefail
-          if [ -z "$ANDROID_KEYSTORE_PASSWORD" ] || [ -z "$ANDROID_KEY_ALIAS" ] || [ -z "$ANDROID_KEY_PASSWORD" ]; then
-            echo "::error::Release signing secrets are incomplete."
-            exit 1
-          fi
-          node <<'NODE'
-          const fs = require('node:fs');
-          const path = 'app/android/app/build.gradle';
-          let gradle = fs.readFileSync(path, 'utf8');
-          if (!gradle.includes('signingConfigs {')) {
-            throw new Error('signingConfigs block not found');
-          }
-          const releaseSigning = `
-        release {
-            storeFile file(System.getenv("ANDROID_KEYSTORE_PATH"))
-            storePassword System.getenv("ANDROID_KEYSTORE_PASSWORD")
-            keyAlias System.getenv("ANDROID_KEY_ALIAS")
-            keyPassword System.getenv("ANDROID_KEY_PASSWORD")
-        }
-    `;
-          gradle = gradle.replace('signingConfigs {', `signingConfigs {${releaseSigning}`);
-          if (!gradle.includes('signingConfig signingConfigs.debug')) {
-            throw new Error('default release signing config not found');
-          }
-          gradle = gradle.replace(
-            'signingConfig signingConfigs.debug',
-            'signingConfig signingConfigs.release',
-          );
-          fs.writeFileSync(path, gradle);
-          NODE
+          node scripts/configure-android-signing.cjs
           keytool -list -keystore "$ANDROID_KEYSTORE_PATH" -storepass "$ANDROID_KEYSTORE_PASSWORD" -alias "$ANDROID_KEY_ALIAS" >/dev/null
 
       - name: Build release APK
