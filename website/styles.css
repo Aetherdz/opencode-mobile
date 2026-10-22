@@ -152,6 +152,54 @@ button {
   gap: 0.45rem;
 }
 
+.nav-github {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.45rem;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.55);
+  text-decoration: none !important;
+  transition: border-color 160ms ease, background 160ms ease;
+}
+
+.nav-github:hover {
+  border-color: var(--ink);
+  background: var(--paper-strong);
+}
+
+.nav-github-icon {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  color: var(--ink);
+}
+
+.nav-github-mark {
+  display: block;
+}
+
+.nav-github-count {
+  position: absolute;
+  top: -0.6rem;
+  right: -0.85rem;
+  min-width: 1.15rem;
+  padding: 0 0.28rem;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  font-family: var(--mono);
+  font-size: 0.55rem;
+  letter-spacing: 0;
+  line-height: 1.3;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.nav-github-count:empty {
+  display: none;
+}
+
 .star-icon {
   color: var(--ink);
   font-size: 0.9rem;
