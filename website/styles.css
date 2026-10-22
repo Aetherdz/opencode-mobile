@@ -180,6 +180,31 @@
 .theme-toggle[aria-pressed="true"] svg .sun { display: none; }
 .theme-toggle:not([aria-pressed="true"]) svg .moon { display: none; }
 
+/* ---------------------------------------------------------------- docs/mobile
+     Professional responsive improvements for remaining pages. */
+
+@media (max-width: 980px) {
+  .docs { grid-template-columns: 1fr; gap: 2rem; }
+  .docs-sidebar { position: static; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; border-bottom: 1px solid var(--line); padding-bottom: 1.5rem; }
+  .docs-sidebar nav { display: contents; }
+  .docs-sidebar .sidebar-title { grid-column: span 2; }
+  .docs-sidebar .sidebar-list { grid-column: 1 / -1; }
+}
+
+@media (max-width: 640px) {
+  .docs { width: calc(100% - 4vw); padding: 2rem 0 3rem; }
+  .docs-sidebar { grid-template-columns: 1fr; }
+  .docs-article h1 { font-size: clamp(1.9rem, 9vw, 2.8rem); }
+  .docs-article h2 { font-size: clamp(1.3rem, 5vw, 1.8rem); }
+  .feature-grid, .platform-grid { grid-template-columns: 1fr; }
+  .feature, .platform { min-height: auto; }
+  .security-diagram { padding: 0.8rem; }
+  .docs-table { display: block; overflow-x: auto; white-space: nowrap; }
+  .faq-list summary { font-size: 0.92rem; }
+  .terminal pre { padding: 0.8rem; font-size: 0.7rem; line-height: 1.55; }
+  .download-inner { grid-template-columns: 1fr; gap: 1.5rem; }
+}
+
 [data-theme="dark"] .phone {
   border-color: var(--border-strong);
   background: #1a1a1a;
