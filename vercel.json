@@ -1,0 +1,7 @@
+{
+  "framework": null,
+  "installCommand": "npm --prefix app ci",
+  "buildCommand": "npm --prefix app run web:export",
+  "outputDirectory": "app/dist",
+  "rewrites": [{ "source": "/(.*)", "destination": "/" }]
+}
