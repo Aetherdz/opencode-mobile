@@ -103,6 +103,7 @@ for (const relative of homePages) {
   }
   const artIndex = hero.indexOf('class="hero-art"');
   const copyIndex = hero.indexOf('class="hero-copy"');
+  const switcherIndex = hero.indexOf('class="cmd-switcher"');
   const actionsIndex = hero.indexOf('class="actions"');
   const ledeIndex = hero.indexOf('class="lede"');
   const releaseIndex = hero.indexOf('class="hero-release"');
@@ -111,6 +112,9 @@ for (const relative of homePages) {
   const commandEndIndex = hero.indexOf('</div>', hero.indexOf('id="panel-win"', commandIndex));
   if (!(artIndex >= 0 && copyIndex > artIndex && ledeIndex > copyIndex && releaseIndex > ledeIndex && actionsIndex > releaseEndIndex && commandIndex > actionsIndex)) {
     errors.push(`${relative}: hero must place APK, install/release actions, then the setup command`);
+  }
+  if (switcherIndex >= 0 && (switcherIndex < actionsIndex || !hero.slice(0, hero.indexOf('</section>')).includes('class="hero-art"'))) {
+    errors.push(`${relative}: command switcher must follow the actions and preserve the desktop phone artwork`);
   }
   const commandText = hero.slice(commandIndex, commandEndIndex);
   if (!commandText.includes('curl -fsSL') || !commandText.includes('opencode-mobile-dist/') || !commandText.includes('install.sh | bash -s -- setup')) {
