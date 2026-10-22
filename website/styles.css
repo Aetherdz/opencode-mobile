@@ -1800,7 +1800,7 @@ main {
 
   .hero-copy { grid-column: 1; grid-row: 2; max-width: 42rem; margin-inline: auto; padding-top: 0; }
   .hero > .hero-copy .lede { margin-top: 1rem; }
-  .hero .display { max-width: 12ch; font-size: clamp(4rem, 13.7vw, 6.1rem); }
+  .hero .display { max-width: 12ch; font-size: clamp(3.7rem, 13vw, 5.3rem); }
   .hero-release { max-width: 42rem; }
   .hero-command { max-width: 42rem; }
 
@@ -2465,8 +2465,8 @@ html[dir="rtl"] code {
   .lang-switch summary { min-height: 2.35rem; padding-inline: 0.45rem; }
   .menu-toggle { width: 2.35rem; height: 2.35rem; }
 
-  .hero .display { max-width: 100%; font-size: clamp(3.9rem, 13.4vw, 5.2rem); }
-  .hero .lede { max-width: 100%; font-size: clamp(1.2rem, 5.2vw, 1.55rem); line-height: 1.5; }
+  .hero .display { max-width: 100%; font-size: clamp(3rem, 11.8vw, 4.1rem); }
+  .hero .lede { max-width: 100%; font-size: clamp(1.15rem, 4.9vw, 1.45rem); line-height: 1.5; }
   .hero .eyebrow { max-width: 100%; flex-wrap: wrap; }
   .hero-release { padding: 0.8rem; }
   .hero-release-copy strong { font-size: 0.8rem; }
