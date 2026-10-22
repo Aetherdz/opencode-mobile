@@ -111,8 +111,8 @@ for (const relative of homePages) {
   const commandEndIndex = hero.indexOf('</div>', commandIndex);
   const firstCloseAfterActions = hero.indexOf('</div>', actionsIndex);
   const secondCloseAfterActions = hero.indexOf('</div>', firstCloseAfterActions + 6);
-  if (!(artIndex >= 0 && copyIndex > artIndex && ledeIndex > copyIndex && releaseIndex > ledeIndex && commandIndex > releaseEndIndex && actionsIndex > commandEndIndex && firstCloseAfterActions > actionsIndex && secondCloseAfterActions > firstCloseAfterActions)) {
-    errors.push(`${relative}: hero must place the APK card, setup command, then action links after the intro`);
+  if (!(artIndex >= 0 && copyIndex > artIndex && ledeIndex > copyIndex && releaseIndex > ledeIndex && actionsIndex > releaseEndIndex && commandIndex > firstCloseAfterActions && secondCloseAfterActions > firstCloseAfterActions)) {
+    errors.push(`${relative}: hero must place APK, install/release actions, then the setup command`);
   }
   const commandText = hero.slice(commandIndex, commandEndIndex);
   if (!commandText.includes('curl -fsSL https://raw.githubusercontent.com/Aetherdz/opencode-mobile-dist/main/install.sh | bash -s -- setup')) {
