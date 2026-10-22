@@ -268,7 +268,7 @@ npx expo export --platform web
 
 الخطة التفصيلية ومعايير القبول والقرارات المفتوحة في [ROADMAP.md](ROADMAP.md).
 
-أُنجز في المستودع:
+أُنجز محلياً:
 
 - CORS اختياري، وتصدير ويب كـSPA/PWA، وتوثيق الاستضافة الثابتة.
 - وصفات نشر Docker وsystemd وCaddy.

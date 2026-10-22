@@ -274,7 +274,7 @@ More detail is in [docs/troubleshooting.md](docs/troubleshooting.md).
 The detailed plan, acceptance criteria, and open decisions are in
 [ROADMAP.md](ROADMAP.md).
 
-Done in the source tree:
+Prepared locally:
 
 - Opt-in CORS, a web SPA/PWA export, and static-host documentation.
 - Docker, systemd, and Caddy deployment recipes.
