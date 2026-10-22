@@ -67,6 +67,7 @@ class BridgeSocket {
   }
 
   reconnect(): void {
+    if (!this.baseUrl || !this.token) return;
     this.closedByUser = false;
     this.attempt = 0;
     this.clearTimers();
@@ -87,6 +88,9 @@ class BridgeSocket {
     }
     this.subscriptions.clear();
     this.lastEventIds.clear();
+    // Do not retain a credential after the user disconnects.
+    this.baseUrl = '';
+    this.token = '';
     useConnection.setState({ state: 'idle', latency: null, lastError: null });
   }
 

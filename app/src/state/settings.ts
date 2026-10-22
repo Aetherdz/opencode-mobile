@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { getStored, setStored } from '@/lib/storage';
 
 export type ThemeMode = 'dark' | 'light' | 'system';
-export type Locale = 'ar' | 'en';
+export type Locale = 'ar' | 'en' | 'fr';
 
 export interface SettingsState {
   hydrated: boolean;
@@ -19,9 +19,20 @@ export interface SettingsState {
 
 const SETTINGS_KEY = 'opencode.settings.v1';
 
+const LOCALES: readonly Locale[] = ['ar', 'en', 'fr'];
+
+function normalizeLocale(value: unknown): Locale {
+  return value === 'ar' || value === 'fr' ? value : 'en';
+}
+
 function detectLocale(): Locale {
-  // The 1.1.3 interface is English-first. The Arabic strings remain in the
-  // i18n table for a later opt-in language setting.
+  try {
+    const tag = Intl.DateTimeFormat().resolvedOptions().locale.toLowerCase();
+    if (tag.startsWith('ar')) return 'ar';
+    if (tag.startsWith('fr')) return 'fr';
+  } catch {
+    // Fall back to English when Intl is unavailable.
+  }
   return 'en';
 }
 
@@ -32,6 +43,8 @@ interface PersistedSettings {
   notifications?: boolean;
 }
 
+let persistChain: Promise<void> = Promise.resolve();
+
 function persist(state: SettingsState): void {
   const payload: PersistedSettings = {
     themeMode: state.themeMode,
@@ -39,7 +52,10 @@ function persist(state: SettingsState): void {
     haptics: state.haptics,
     notifications: state.notifications,
   };
-  void setStored(SETTINGS_KEY, JSON.stringify(payload));
+  // Serialize writes so rapid toggles cannot complete out of order.
+  persistChain = persistChain
+    .then(() => setStored(SETTINGS_KEY, JSON.stringify(payload)))
+    .catch(() => undefined);
 }
 
 export const useSettings = create<SettingsState>((set, get) => ({
@@ -58,7 +74,7 @@ export const useSettings = create<SettingsState>((set, get) => ({
             parsed.themeMode === 'light' || parsed.themeMode === 'system'
               ? parsed.themeMode
               : 'dark',
-          locale: 'en',
+          locale: normalizeLocale(parsed.locale),
           haptics: parsed.haptics !== false,
           notifications: parsed.notifications === true,
           hydrated: true,
@@ -75,7 +91,8 @@ export const useSettings = create<SettingsState>((set, get) => ({
     persist(get());
   },
   setLocale: (locale) => {
-    set({ locale });
+    const next = LOCALES.includes(locale) ? locale : 'en';
+    set({ locale: next });
     persist(get());
   },
   setHaptics: (haptics) => {

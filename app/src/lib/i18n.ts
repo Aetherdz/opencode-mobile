@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { frStrings } from '@/lib/i18n.fr';
 import { useSettings, type Locale } from '@/state/settings';
 
 type Entry = { en: string; ar: string };
@@ -315,6 +316,7 @@ const strings: Record<string, Entry> = {
   'settings.language': { en: 'Language', ar: 'اللغة' },
   'settings.arabic': { en: 'Arabic', ar: 'العربية' },
   'settings.english': { en: 'English', ar: 'الإنجليزية' },
+  'settings.french': { en: 'French', ar: 'الفرنسية' },
   'settings.haptics': { en: 'Haptics', ar: 'الاهتزاز' },
   'settings.hapticsBody': {
     en: 'Subtle feedback for send, approve, and completion.',
@@ -369,6 +371,10 @@ const strings: Record<string, Entry> = {
   'settings.rtlRestart': {
     en: 'Reopen the app to apply the Arabic layout direction.',
     ar: 'أعد فتح التطبيق لتطبيق اتجاه الواجهة العربية.',
+  },
+  'settings.ltrRestart': {
+    en: 'Reopen the app to apply the left-to-right layout direction.',
+    ar: 'أعد فتح التطبيق لتطبيق اتجاه الواجهة من اليسار إلى اليمين.',
   },
   'settings.securityNote': {
     en: 'Chat only. Commands run on your machine through OpenCode and require approval when configured.',
@@ -429,8 +435,14 @@ export function translate(
   key: string,
   vars?: Record<string, string | number>,
 ): string {
+  const loc: Locale = locale === 'ar' || locale === 'fr' ? locale : 'en';
   const entry = strings[key];
-  let value = entry ? entry[locale] : key;
+  let value = entry
+    ? loc === 'fr'
+      ? (frStrings[key] ?? entry.en)
+      : entry[loc]
+    : (frStrings[key] ?? key);
+  if (!value) value = entry?.en ?? key;
   if (vars) {
     for (const [name, replacement] of Object.entries(vars)) {
       value = value.replaceAll(`{${name}}`, String(replacement));

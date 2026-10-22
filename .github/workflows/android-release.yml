@@ -1,0 +1,135 @@
+name: Android release APK
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-release
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build release-signed APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Gradle cache
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Install dependencies
+        run: npm --prefix app ci --no-audit --no-fund
+
+      - name: Generate native project
+        working-directory: app
+        run: npx expo prebuild --platform android --no-install
+
+      - name: Decode release keystore
+        env:
+          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          set -euo pipefail
+          if [ -z "$ANDROID_KEYSTORE_BASE64" ]; then
+            echo "::error::ANDROID_KEYSTORE_BASE64 is not configured."
+            exit 1
+          fi
+          printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.keystore"
+          test -s "$RUNNER_TEMP/release.keystore"
+
+      - name: Configure release signing
+        env:
+          ANDROID_KEYSTORE_PATH: ${{ runner.temp }}/release.keystore
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          set -euo pipefail
+          if [ -z "$ANDROID_KEYSTORE_PASSWORD" ] || [ -z "$ANDROID_KEY_ALIAS" ] || [ -z "$ANDROID_KEY_PASSWORD" ]; then
+            echo "::error::Release signing secrets are incomplete."
+            exit 1
+          fi
+          node <<'NODE'
+          const fs = require('node:fs');
+          const path = 'app/android/app/build.gradle';
+          let gradle = fs.readFileSync(path, 'utf8');
+          if (!gradle.includes('signingConfigs {')) {
+            throw new Error('signingConfigs block not found');
+          }
+          const releaseSigning = `
+        release {
+            storeFile file(System.getenv("ANDROID_KEYSTORE_PATH"))
+            storePassword System.getenv("ANDROID_KEYSTORE_PASSWORD")
+            keyAlias System.getenv("ANDROID_KEY_ALIAS")
+            keyPassword System.getenv("ANDROID_KEY_PASSWORD")
+        }
+    `;
+          gradle = gradle.replace('signingConfigs {', `signingConfigs {${releaseSigning}`);
+          if (!gradle.includes('signingConfig signingConfigs.debug')) {
+            throw new Error('default release signing config not found');
+          }
+          gradle = gradle.replace(
+            'signingConfig signingConfigs.debug',
+            'signingConfig signingConfigs.release',
+          );
+          fs.writeFileSync(path, gradle);
+          NODE
+          keytool -list -keystore "$ANDROID_KEYSTORE_PATH" -storepass "$ANDROID_KEYSTORE_PASSWORD" -alias "$ANDROID_KEY_ALIAS" >/dev/null
+
+      - name: Build release APK
+        working-directory: app/android
+        run: ./gradlew assembleRelease --no-daemon -PreactNativeArchitectures=arm64-v8a
+
+      - name: Verify and name APK
+        id: artifact
+        run: |
+          set -euo pipefail
+          APK="app/android/app/build/outputs/apk/release/app-release.apk"
+          test -s "$APK"
+          BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
+          "$BUILD_TOOLS/apksigner" verify --verbose --print-certs "$APK"
+          "$BUILD_TOOLS/aapt" dump badging "$APK" | grep -E "^(package|sdkVersion|targetSdkVersion):"
+          VERSION="$(node -p "require('./app/app.json').expo.version")"
+          SHORT_SHA="${GITHUB_SHA::7}"
+          NAME="opencode-mobile-${VERSION}-${SHORT_SHA}.apk"
+          cp "$APK" "$NAME"
+          echo "name=$NAME" >> "$GITHUB_OUTPUT"
+          sha256sum "$NAME" | tee "$NAME.sha256"
+
+      - name: Upload release APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.artifact.outputs.name }}
+          path: |
+            ${{ steps.artifact.outputs.name }}
+            ${{ steps.artifact.outputs.name }}.sha256
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Summary
+        run: |
+          {
+            echo "### Release-signed APK"
+            echo
+            echo "Artifact: \`${{ steps.artifact.outputs.name }}\`"
+            echo
+            echo "Signed with the project release key stored in repository secrets."
+            echo "Verify the certificate and checksum before publishing the asset."
+          } >> "$GITHUB_STEP_SUMMARY"

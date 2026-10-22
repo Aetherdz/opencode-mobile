@@ -14,13 +14,14 @@ import { bridgeSocket } from '@/api/ws';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { useDialog } from '@/components/ui/DialogProvider';
+import { Rtl } from '@/components/ui/Rtl';
 import { Screen } from '@/components/ui/Screen';
 import { ScreenHeader } from '@/components/ui/ScreenHeader';
 import { hapticError, hapticSelection, hapticSuccess } from '@/lib/haptics';
-import { useI18n } from '@/lib/i18n';
+import { translate, useI18n } from '@/lib/i18n';
 import { registerForPushNotifications } from '@/lib/notifications';
 import { useAuth } from '@/state/auth';
-import { useSettings, type ThemeMode } from '@/state/settings';
+import { useSettings, type Locale, type ThemeMode } from '@/state/settings';
 import { useTheme } from '@/theme/ThemeProvider';
 
 function Section({ title }: { title: string }) {
@@ -101,9 +102,11 @@ export default function SettingsScreen() {
   const { t } = useI18n();
   const { showDialog } = useDialog();
   const themeMode = useSettings((state) => state.themeMode);
+  const locale = useSettings((state) => state.locale);
   const haptics = useSettings((state) => state.haptics);
   const notifications = useSettings((state) => state.notifications);
   const setThemeMode = useSettings((state) => state.setThemeMode);
+  const setLocale = useSettings((state) => state.setLocale);
   const setHaptics = useSettings((state) => state.setHaptics);
   const setNotifications = useSettings((state) => state.setNotifications);
   const baseUrl = useAuth((state) => state.baseUrl);
@@ -119,12 +122,22 @@ export default function SettingsScreen() {
   const toggleNotifications = async (enabled: boolean) => {
     if (pushBusy) return;
     if (!enabled) {
+      setPushBusy(true);
       setNotifications(false);
-      if (pushToken) {
-        void unregisterPushToken(pushToken).catch(() => undefined);
-        setPushToken(null);
+      try {
+        let token = pushToken;
+        if (!token) {
+          const registration = await registerForPushNotifications();
+          token = registration.ok ? registration.token : null;
+        }
+        if (token) {
+          await unregisterPushToken(token).catch(() => undefined);
+          setPushToken(null);
+        }
+        hapticSelection();
+      } finally {
+        setPushBusy(false);
       }
-      hapticSelection();
       return;
     }
     setPushBusy(true);
@@ -185,7 +198,8 @@ export default function SettingsScreen() {
 
   return (
     <Screen>
-      <ScreenHeader title={t('settings.title')} onBack={() => router.back()} />
+      <Rtl style={{ flex: 1 }}>
+        <ScreenHeader title={t('settings.title')} onBack={() => router.back()} />
       <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingBottom: 48 }}>
         <Section title={t('settings.appearance')} />
         <View style={{ paddingHorizontal: theme.spacing.lg, paddingBottom: theme.spacing.md }}>
@@ -236,6 +250,69 @@ export default function SettingsScreen() {
             })}
           </View>
         </View>
+
+        <Row
+          label={t('settings.language')}
+          last
+          right={
+            <View
+              style={[
+                styles.localeGroup,
+                {
+                  borderColor: theme.colors.line,
+                  backgroundColor: theme.colors.surface1,
+                },
+              ]}
+            >
+              {(['en', 'ar', 'fr'] as Locale[]).map((code) => {
+                const selected = locale === code;
+                return (
+                  <Pressable
+                    key={code}
+                    onPress={() => {
+                      hapticSelection();
+                      const nextRtl = code === 'ar';
+                      setLocale(code);
+                      if (Platform.OS !== 'web' && nextRtl !== (locale === 'ar')) {
+                        showDialog({
+                          title: translate(code, 'settings.language'),
+                          message: translate(
+                            code,
+                            nextRtl ? 'settings.rtlRestart' : 'settings.ltrRestart',
+                          ),
+                        });
+                      }
+                    }}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected }}
+                    style={({ pressed }) => [
+                      styles.localeButton,
+                      {
+                        backgroundColor: selected
+                          ? theme.colors.surface3
+                          : pressed
+                            ? theme.colors.surface2
+                            : 'transparent',
+                      },
+                    ]}
+                  >
+                    <AppText
+                      variant="meta"
+                      weight={selected ? '500' : '400'}
+                      color={selected ? 'text' : 'text3'}
+                    >
+                      {code === 'en'
+                        ? t('settings.english')
+                        : code === 'ar'
+                          ? t('settings.arabic')
+                          : t('settings.french')}
+                    </AppText>
+                  </Pressable>
+                );
+              })}
+            </View>
+          }
+        />
 
         <Section title={t('settings.behavior')} />
         <Row
@@ -290,7 +367,8 @@ export default function SettingsScreen() {
             {t('settings.securityNote')}
           </AppText>
         </View>
-      </ScrollView>
+        </ScrollView>
+      </Rtl>
     </Screen>
   );
 }
@@ -300,5 +378,17 @@ const styles = StyleSheet.create({
     minHeight: 60,
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  localeGroup: {
+    flexDirection: 'row',
+    borderWidth: 1,
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  localeButton: {
+    minHeight: 36,
+    paddingHorizontal: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
