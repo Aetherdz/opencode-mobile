@@ -147,15 +147,15 @@ CORS_ORIGINS=http://localhost:8081,http://127.0.0.1:8081
 
 | الملف | ملاحظات |
 | --- | --- |
-| [APK أندرويد](https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.2/opencode-mobile-1.0.0-beta.2.apk) | `1.0.0-beta.2`، موقّع للإصدار، arm64-v8a، أندرويد 7.0+ |
-| [حزم Bridge](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.2) | `.tar.gz` و`.zip` مع `SHA256SUMS` |
-| [حزم الويب](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.2) | تصدير Expo ثابت مع `SHA256SUMS` |
+| [APK أندرويد](https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.3/opencode-mobile-1.0.0-beta.3.apk) | `1.0.0-beta.3`، موقّع للإصدار، arm64-v8a، أندرويد 7.0+ |
+| [حزم Bridge](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.3) | `.tar.gz` و`.zip` مع `SHA256SUMS` |
+| [حزم الويب](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.3) | تصدير Expo ثابت مع `SHA256SUMS` |
 | [المثبّتات](https://github.com/Aetherdz/opencode-mobile-dist) | مثبّت Bridge للينكس وماك وويندوز |
 
 تحقق من الـAPK قبل التثبيت:
 
 ```bash
-sha256sum -c opencode-mobile-1.0.0-beta.2.apk.sha256
+sha256sum -c SHA256SUMS
 ```
 
 النسخة التجريبية غير موجودة على Google Play. بناء iPhone يحتاج macOS/EAS وهو غير من إنتاج CI.
@@ -313,7 +313,7 @@ npx expo export --platform web
 - مثبّتات الطرفية: <https://github.com/Aetherdz/opencode-mobile-dist>
 - الموقع: <https://aetherdz.github.io/opencode-mobile/>
 - حزم Bridge والويب لإصدار beta مع checksums في GitHub Releases.
-- APK أندرويد موقّع للإصدار: <https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.2>
+- APK أندرويد موقّع للإصدار: <https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.3>
 
 المتبقي:
 

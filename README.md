@@ -159,15 +159,15 @@ use a reachable private address such as a Tailscale address, not
 
 | Artifact | Notes |
 | --- | --- |
-| [Android APK](https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.2/opencode-mobile-1.0.0-beta.2.apk) | `1.0.0-beta.2`, release-signed, arm64-v8a, Android 7.0+ |
-| [Bridge bundles](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.2) | `.tar.gz` and `.zip`, with `SHA256SUMS` |
-| [Web bundles](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.2) | Static Expo export, with `SHA256SUMS` |
+| [Android APK](https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.3/opencode-mobile-1.0.0-beta.3.apk) | `1.0.0-beta.3`, release-signed, arm64-v8a, Android 7.0+ |
+| [Bridge bundles](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.3) | `.tar.gz` and `.zip`, with `SHA256SUMS` |
+| [Web bundles](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.3) | Static Expo export, with `SHA256SUMS` |
 | [Installers](https://github.com/Aetherdz/opencode-mobile-dist) | Linux, macOS, and Windows bridge installer |
 
 Verify the APK before installing:
 
 ```bash
-sha256sum -c opencode-mobile-1.0.0-beta.2.apk.sha256
+sha256sum -c SHA256SUMS
 ```
 
 The beta is not on Google Play. iPhone builds require macOS/EAS and are not
