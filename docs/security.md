@@ -172,14 +172,25 @@ themselves, but they matter when choosing an exposure model.
 
 ## Dependency audit status
 
-As of 2026-10-21:
+As of 2026-10-22:
 
 - `bridge`: `npm audit --omit=dev` reports 0 vulnerabilities.
-- `app`: `npm audit --omit=dev` reports 28 advisories, 19 high, in the
-  Expo CLI / Metro / `node-forge` / `uuid` dependency chains. The reported
-  issues are build-time or CLI paths, not app runtime code. npm's proposed fix
-  is a breaking downgrade to Expo 44, which is not compatible with this app.
-  The advisories are tracked upstream and must be re-checked before a release.
+- `app`: `npm audit --omit=dev` reports 22 advisories, 19 high and 3 moderate,
+  in the Expo CLI / Metro / `node-forge` / `uuid` dependency chains. The
+  reported issues are build-time or CLI paths, not app runtime code:
+  `braces` (GHSA-vfj7-8cjw-p6xm, no patched release exists, reached through
+  `micromatch` in the Metro file watcher), `uuid` (GHSA-w5hq-g745-h8pq, through
+  `xcode` during iOS project generation), and `node-forge`
+  (GHSA-86w9-cpqp-85rv, through `@expo/code-signing-certificates` for iOS
+  credential handling). None of these run inside the Android runtime or inside
+  the bridge, and the CI release path does not use the iOS signing helpers.
+  npm's proposed fix is a breaking downgrade to Expo 44, which is not
+  compatible with this app. The advisories are tracked upstream and must be
+  re-checked before a release.
+
+CI runs `npm audit --omit=dev --audit-level=critical` for both packages, so a
+critical advisory blocks a build while the unfixable Expo toolchain advisories
+stay visible in the log.
 
 Do not run `npm audit fix --force` on the app. It will replace the Expo SDK with
 an old, incompatible version. Review each advisory and upgrade through a tested
