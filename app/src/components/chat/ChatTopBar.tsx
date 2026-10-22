@@ -67,7 +67,7 @@ export function ChatTopBar({
 
 const styles = StyleSheet.create({
   root: {
-    height: layout.topBar,
+    minHeight: layout.topBar + 8,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: layout.padX,

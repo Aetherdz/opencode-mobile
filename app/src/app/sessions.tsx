@@ -436,8 +436,9 @@ const styles = StyleSheet.create({
     paddingTop: 12,
   },
   topBar: {
-    minHeight: 48,
+    minHeight: 56,
     paddingHorizontal: layout.padX,
+    paddingTop: 6,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
