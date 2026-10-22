@@ -1040,8 +1040,25 @@ main {
 
 .docs-article > header {
   margin-bottom: clamp(2rem, 4vw, 3rem);
-  padding-bottom: 1.6rem;
-  border-bottom: 1px solid var(--line);
+}
+
+.docs-article .text-link {
+  color: var(--ink);
+}
+
+.docs-article .security-diagram,
+.docs-article .diagram-node {
+  border-color: var(--line);
+}
+
+.docs-article .diagram-label,
+.docs-article .diagram-node small,
+.docs-article .diagram-line span {
+  color: var(--muted);
+}
+
+.docs-article .diagram-line {
+  border-left-color: var(--line);
 }
 
 .docs-article h1 {

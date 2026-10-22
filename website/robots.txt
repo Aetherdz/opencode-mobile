@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://aetherdz.github.io/opencode-mobile/sitemap.xml
