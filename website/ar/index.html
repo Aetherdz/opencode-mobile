@@ -218,7 +218,7 @@
               <span class="step-number">02</span>
               <div>
                 <h3>أنشئ رابط الهاتف عند الحاجة</h3>
-                <p>شغّل <code>opencode-mobile up</code> واختر Tailscale الخاص أو نفقًا عامًا مؤقتًا بعد الموافقة.</p>
+                <p>شغّل <code>opencode-mobile up</code> لإنشاء رابط عام مؤقت بعد التحذير والموافقة.</p>
               </div>
             </li>
             <li>
@@ -255,8 +255,8 @@
                 </button>
               </div>
               <pre id="cmd-bridge"><code><span class="term-comment"># نزّل المثبّت وراجعه ثم أعد الإعداد مرة واحدة (Linux/macOS)</span>
-curl -fsSLO https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>main/<wbr>install.sh &amp;&amp; less install.sh &amp;&amp; bash install.sh setup --workdir "$HOME/projects"
-<span class="term-comment"># لاحقًا: اختر Tailscale الخاص أو رابطًا عامًا مؤقتًا بموافقة صريحة</span>
+curl -fsSLO https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>main/<wbr>install.sh &amp;&amp; less install.sh &amp;&amp; mkdir -p "$HOME/.local/share/opencode-mobile-installer" &amp;&amp; cp install.sh "$HOME/.local/share/opencode-mobile-installer/install.sh" &amp;&amp; chmod 700 "$HOME/.local/share/opencode-mobile-installer/install.sh" &amp;&amp; bash "$HOME/.local/share/opencode-mobile-installer/install.sh" setup --workdir "$HOME/projects"
+<span class="term-comment"># لاحقًا: رابط عام مؤقت بعد التحذير والموافقة</span>
 opencode-mobile up</code></pre>
             </div>
 
@@ -304,8 +304,8 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
           </article>
           <article class="docs-card">
             <span>الهاتف</span>
-            <h3>عنوان خاص</h3>
-            <p>loopback للجهاز نفسه، وTailscale أو نفق لأي شيء آخر.</p>
+            <h3>رابط عام مؤقت</h3>
+            <p>استخدم النفق العام المؤقت من <code>opencode-mobile up</code> للوصول من الهاتف.</p>
           </article>
           <article class="docs-card">
             <span>الرمز</span>

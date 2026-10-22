@@ -219,7 +219,7 @@
               <span class="step-number">02</span>
               <div>
                 <h3>Crea un enlace cuando lo necesites</h3>
-                <p>Ejecuta <code>opencode-mobile up</code> y elige Tailscale privado o túnel público temporal con confirmación.</p>
+                <p>Ejecuta <code>opencode-mobile up</code> para crear un enlace público temporal tras el aviso y la confirmación.</p>
               </div>
             </li>
             <li>
@@ -256,8 +256,8 @@
                 </button>
               </div>
               <pre id="cmd-bridge"><code><span class="term-comment"># Linux/macOS: descarga, revisa y configura una sola vez</span>
-curl -fsSLO https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>main/<wbr>install.sh &amp;&amp; less install.sh &amp;&amp; bash install.sh setup --workdir "$HOME/projects"
-<span class="term-comment"># Después: Tailscale privado o enlace público temporal con confirmación</span>
+curl -fsSLO https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>main/<wbr>install.sh &amp;&amp; less install.sh &amp;&amp; mkdir -p "$HOME/.local/share/opencode-mobile-installer" &amp;&amp; cp install.sh "$HOME/.local/share/opencode-mobile-installer/install.sh" &amp;&amp; chmod 700 "$HOME/.local/share/opencode-mobile-installer/install.sh" &amp;&amp; bash "$HOME/.local/share/opencode-mobile-installer/install.sh" setup --workdir "$HOME/projects"
+<span class="term-comment"># Después: enlace público temporal tras aviso y confirmación</span>
 opencode-mobile up</code></pre>
             </div>
 
@@ -305,8 +305,8 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
           </article>
           <article class="docs-card">
             <span>Teléfono</span>
-            <h3>Una dirección privada</h3>
-            <p>Loopback si es el mismo equipo; Tailscale o un túnel para cualquier otro caso.</p>
+            <h3>Enlace público temporal</h3>
+            <p>Usa el túnel público temporal de <code>opencode-mobile up</code> para el móvil.</p>
           </article>
           <article class="docs-card">
             <span>Token</span>

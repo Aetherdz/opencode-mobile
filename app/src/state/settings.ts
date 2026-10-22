@@ -26,13 +26,8 @@ function normalizeLocale(value: unknown): Locale {
 }
 
 function detectLocale(): Locale {
-  try {
-    const tag = Intl.DateTimeFormat().resolvedOptions().locale.toLowerCase();
-    if (tag.startsWith('ar')) return 'ar';
-    if (tag.startsWith('fr')) return 'fr';
-  } catch {
-    // Fall back to English when Intl is unavailable.
-  }
+  // Keep first launch predictable for downloaded builds. Users can still
+  // change to Arabic or French in Settings; persisted choices take priority.
   return 'en';
 }
 

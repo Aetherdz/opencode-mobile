@@ -75,13 +75,13 @@ flowchart LR
 راجع [مثبّت التوزيعة](https://github.com/Aetherdz/opencode-mobile-dist) قبل تشغيله؛ أمر الموقع يجلب نسخة `main` ولذلك يثق بذلك الفرع:
 
 ```bash
-bash install.sh setup --workdir "$HOME/projects"
+mkdir -p "$HOME/.local/share/opencode-mobile-installer" && cp install.sh "$HOME/.local/share/opencode-mobile-installer/install.sh" && chmod 700 "$HOME/.local/share/opencode-mobile-installer/install.sh" && bash "$HOME/.local/share/opencode-mobile-installer/install.sh" setup --workdir "$HOME/projects"
 opencode-mobile up
 ```
 
 يفترض المثال وجود المثبّت الذي راجعته في المجلد الحالي؛ استنسخ مستودع `opencode-mobile-dist` أولًا أو نزّل `install.sh` وافحصه.
 
-يتحقق `setup` من إصدار الجسر عبر `SHA256SUMS`، ويطلب مجلد مشاريع محددًا، ويحافظ على الرمز والإعدادات الموجودة، ويبقي الجسر على `127.0.0.1`. يبدأ `up` OpenCode والجسر ويفحص الصحة، ثم يعرض Tailscale Serve الخاص أو نفق Cloudflare عامًا مؤقتًا بعد موافقة صريحة. من يملك الرابط والرمز يستطيع التحكم بالوكيل؛ الرابط العام يتغير ولا يُحفظ. تتوفر أوامر `down` و`status` و`doctor` و`apk`. ملف APK الحالي لمعمارية arm64-v8a فقط؛ يتحقق `apk` من الملف ويعرض الرابط والبصمة ولا يثبته عبر adb دون موافقة تفاعلية. راجع README المثبّت للتوافق والقيود.
+يتحقق `setup` من إصدار الجسر عبر `SHA256SUMS`، ويستخدم مجلد مشاريع محددًا، ويحافظ على الرمز والإعدادات الموجودة، ويبقي الجسر على `127.0.0.1`. يبدأ `up` OpenCode والجسر ويفحص الصحة، ثم ينشئ نفق Cloudflare عامًا مؤقتًا بعد موافقة صريحة في كل مرة. يُنزّل `cloudflared` الرسمي ويتحقق من SHA-256 ويضعه في مجلد المستخدم دون sudo على الأنظمة المدعومة. من يملك الرابط والرمز يستطيع التحكم بالوكيل؛ الرابط يتغير ولا يُحفظ. تتوفر أوامر `down` و`status` و`doctor` و`apk`. ملف APK الحالي لمعمارية arm64-v8a فقط. يبدأ التطبيق بالإنجليزية، ويمكن اختيار العربية أو الفرنسية من الإعدادات.
 
 ### 1. تشغيل OpenCode
 

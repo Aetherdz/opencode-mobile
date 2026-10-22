@@ -219,7 +219,7 @@
               <span class="step-number">02</span>
               <div>
                 <h3>Start a phone link when needed</h3>
-                <p>Use <code>opencode-mobile up</code>; choose private Tailscale or a public temporary link with confirmation.</p>
+                <p>Use <code>opencode-mobile up</code> to create a public temporary link after a clear warning and confirmation.</p>
               </div>
             </li>
             <li>
@@ -256,8 +256,8 @@
                 </button>
               </div>
               <pre id="cmd-bridge"><code><span class="term-comment"># Download, review, then set up once</span>
-curl -fsSLO https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>main/<wbr>install.sh &amp;&amp; less install.sh &amp;&amp; bash install.sh setup --workdir "$HOME/projects"
-<span class="term-comment"># Later: private Tailscale or explicitly approved temporary public link</span>
+curl -fsSLO https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>main/<wbr>install.sh &amp;&amp; less install.sh &amp;&amp; mkdir -p "$HOME/.local/share/opencode-mobile-installer" &amp;&amp; cp install.sh "$HOME/.local/share/opencode-mobile-installer/install.sh" &amp;&amp; chmod 700 "$HOME/.local/share/opencode-mobile-installer/install.sh" &amp;&amp; bash "$HOME/.local/share/opencode-mobile-installer/install.sh" setup --workdir "$HOME/projects"
+<span class="term-comment"># Later: public temporary link (the command warns and asks before exposing it)</span>
 opencode-mobile up</code></pre>
             </div>
 
@@ -306,7 +306,7 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
           <article class="docs-card">
             <span>Phone</span>
             <h3>Private by default</h3>
-            <p>Tailscale Serve is private. A public temporary tunnel requires a warning and confirmation each run.</p>
+            <p>Cloudflare Quick Tunnel is public and temporary; each run requires confirmation. The bridge itself stays on loopback.</p>
           </article>
           <article class="docs-card">
             <span>Token</span>

@@ -84,7 +84,7 @@ built-in Telegram bot, and a native desktop wrapper. The app does receive a
 For an automated install, see the [distribution installer](https://github.com/Aetherdz/opencode-mobile-dist). Review the script before running it; the website bootstrap fetches `main` and therefore trusts that branch:
 
 ```bash
-bash install.sh setup --workdir "$HOME/projects"
+mkdir -p "$HOME/.local/share/opencode-mobile-installer" && cp install.sh "$HOME/.local/share/opencode-mobile-installer/install.sh" && chmod 700 "$HOME/.local/share/opencode-mobile-installer/install.sh" && bash "$HOME/.local/share/opencode-mobile-installer/install.sh" setup --workdir "$HOME/projects"
 opencode-mobile up
 ```
 
@@ -93,13 +93,15 @@ clone `opencode-mobile-dist` first or download `install.sh` and inspect it.
 
 `setup` verifies the bridge release against `SHA256SUMS`, prompts for a
 project directory, preserves an existing token/config, and keeps the bridge on
-`127.0.0.1`. `up` checks OpenCode and bridge health, then offers private
-Tailscale Serve or an explicitly confirmed public temporary Cloudflare tunnel.
-Both URL and token can control the agent; the public URL changes each run and
-is not saved. `down`, `status`, `doctor`, and `apk` are available. The current
+`127.0.0.1`. `up` checks OpenCode and bridge health, then creates a public
+temporary Cloudflare tunnel after explicit confirmation each time. It installs
+the verified `cloudflared` user binary without sudo on supported systems. The
+URL changes each run and is not saved. `down`, `status`, `doctor`, and `apk` are available. The current
 APK is arm64-v8a only; `apk` verifies and displays its URL/checksum and does not
 install with adb without interactive approval. See the installer README for
 supported host architectures and setup limitations.
+
+The app starts in English. Arabic and French remain selectable in Settings.
 
 ### 1. Start OpenCode
 
