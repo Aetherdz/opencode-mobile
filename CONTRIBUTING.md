@@ -16,7 +16,7 @@ surface. Keep changes focused and explain the user-visible effect.
 ## Development setup
 
 ```bash
-git clone https://github.com/OWNER/opencode-mobile.git
+git clone https://github.com/Aetherdz/opencode-mobile.git
 cd opencode-mobile
 npm run install:app
 npm run install:bridge

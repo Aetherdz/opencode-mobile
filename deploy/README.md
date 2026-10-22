@@ -16,7 +16,7 @@ This is the most portable option and the only one recommended for Docker
 Desktop on macOS or Windows.
 
 ```bash
-git clone https://github.com/zaikabdou1/opencode-mobile.git
+git clone https://github.com/Aetherdz/opencode-mobile.git
 cd opencode-mobile
 
 # Build the bridge

@@ -1,11 +1,11 @@
 blank_issues_enabled: false
 contact_links:
   - name: Security vulnerability
-    url: https://github.com/OWNER/opencode-mobile/security/advisories/new
+    url: https://github.com/Aetherdz/opencode-mobile/security/advisories/new
     about: Report security issues privately. Do not open a public issue.
   - name: Setup and troubleshooting
-    url: https://github.com/OWNER/opencode-mobile/blob/main/docs/troubleshooting.md
+    url: https://github.com/Aetherdz/opencode-mobile/blob/main/docs/troubleshooting.md
     about: Check the troubleshooting guide before opening a bug report.
   - name: Questions and ideas
-    url: https://github.com/OWNER/opencode-mobile/discussions
+    url: https://github.com/Aetherdz/opencode-mobile/discussions
     about: Ask a question or discuss a proposal if Discussions are enabled.

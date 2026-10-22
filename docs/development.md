@@ -20,7 +20,7 @@ lockfile.
 ## Clone and install
 
 ```bash
-git clone https://github.com/OWNER/opencode-mobile.git
+git clone https://github.com/Aetherdz/opencode-mobile.git
 cd opencode-mobile
 npm run install:bridge
 npm run install:app

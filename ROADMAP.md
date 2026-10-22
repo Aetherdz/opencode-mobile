@@ -139,7 +139,7 @@ Acceptance: each capability has a design note, tests, and a rollback path.
 | --- | --- | --- |
 | License | MIT | Done |
 | Version | `1.0.0-beta.1`, Android `versionCode 6` | Provisional |
-| Package ID | `com.zaikabdou1.opencodemobile` | Needs final identity |
+| Package ID | `com.aetherdz.opencodemobile` | Set for beta |
 | App icon | Official OpenCode logo | Trademark risk; replace before stable |
 | Repository layout | Source repo plus separate distribution repo | Done |
 | Web access | Explicit origin allowlist, no wildcard | In progress |

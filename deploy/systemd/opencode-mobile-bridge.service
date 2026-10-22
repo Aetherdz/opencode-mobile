@@ -1,6 +1,6 @@
 [Unit]
 Description=OpenCode Mobile bridge
-Documentation=https://github.com/zaikabdou1/opencode-mobile
+Documentation=https://github.com/Aetherdz/opencode-mobile
 After=network-online.target
 Wants=network-online.target
 

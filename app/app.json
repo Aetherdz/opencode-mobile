@@ -11,7 +11,7 @@
     "ios": {
       "icon": "./assets/images/icon.png",
       "supportsTablet": true,
-      "bundleIdentifier": "com.zaikabdou1.opencodemobile",
+      "bundleIdentifier": "com.aetherdz.opencodemobile",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "Allow OpenCode Mobile to attach photos to your messages.",
         "NSCameraUsageDescription": "Allow OpenCode Mobile to take a photo to attach to a message.",
@@ -30,7 +30,7 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.zaikabdou1.opencodemobile",
+      "package": "com.aetherdz.opencodemobile",
       "versionCode": 6,
       "usesCleartextTraffic": true
     },
