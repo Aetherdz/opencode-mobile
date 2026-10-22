@@ -30,6 +30,11 @@ export interface UploadAsset {
   size?: number;
 }
 
+export interface UploadRequest {
+  promise: Promise<MessageFile>;
+  abort: () => void;
+}
+
 function baseUrl(): string {
   return useAuth.getState().baseUrl;
 }
@@ -263,11 +268,11 @@ export async function sendMessage(
  * multipart bodies in JavaScript and rejects `{ uri, name, type }` file parts;
  * the native XHR path supports them and reports real upload progress.
  */
-export async function uploadFile(
+export function uploadFile(
   sessionId: string,
   asset: UploadAsset,
   onProgress?: (fraction: number) => void,
-): Promise<MessageFile> {
+): UploadRequest {
   const base = baseUrl();
   const token = useAuth.getState().token;
   if (!base || !token) {
@@ -276,16 +281,20 @@ export async function uploadFile(
 
   const form = new FormData();
   if (Platform.OS === 'web') {
-    let response: Response;
-    try {
-      response = await fetch(asset.uri);
-    } catch {
-      throw new ApiError(0, 'file_read', 'Could not read the selected file.');
-    }
-    if (!response.ok) {
-      throw new ApiError(0, 'file_read', 'Could not read the selected file.');
-    }
-    form.append('files', await response.blob(), asset.name);
+    const promise = (async () => {
+      let response: Response;
+      try {
+        response = await fetch(asset.uri);
+      } catch {
+        throw new ApiError(0, 'file_read', 'Could not read the selected file.');
+      }
+      if (!response.ok) {
+        throw new ApiError(0, 'file_read', 'Could not read the selected file.');
+      }
+      form.append('files', await response.blob(), asset.name);
+      return sendUploadRequest(sessionId, asset, token, form, onProgress);
+    })().then((request) => request.promise);
+    return { promise, abort: () => undefined };
   } else {
     form.append('files', {
       uri: asset.uri,
@@ -294,8 +303,18 @@ export async function uploadFile(
     } as unknown as Blob);
   }
 
-  return new Promise<MessageFile>((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
+  return sendUploadRequest(sessionId, asset, token, form, onProgress);
+}
+
+function sendUploadRequest(
+  sessionId: string,
+  asset: UploadAsset,
+  token: string,
+  form: FormData,
+  onProgress?: (fraction: number) => void,
+): UploadRequest {
+  const xhr = new XMLHttpRequest();
+  const promise = new Promise<MessageFile>((resolve, reject) => {
     xhr.open(
       'POST',
       absoluteUrl(`/sessions/${encodeURIComponent(sessionId)}/uploads`),
@@ -355,6 +374,7 @@ export async function uploadFile(
     onProgress?.(0);
     xhr.send(form);
   });
+  return { promise, abort: () => xhr.abort() };
 }
 
 export async function getDiff(id: string): Promise<DiffFile[]> {

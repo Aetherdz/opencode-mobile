@@ -79,11 +79,19 @@ export function useAttachments(sessionId: string | undefined, limits: Attachment
   const activeUploads = useRef(0);
   const mounted = useRef(true);
   const removedIds = useRef(new Set<string>());
+  const uploads = useRef(new Map<string, { abort: () => void }>());
 
   useEffect(() => {
     mounted.current = true;
+    const active = uploads.current;
+    const removed = removedIds.current;
     return () => {
       mounted.current = false;
+      for (const [id, request] of active) {
+        removed.add(id);
+        request.abort();
+      }
+      active.clear();
     };
   }, []);
 
@@ -104,7 +112,7 @@ export function useAttachments(sessionId: string | undefined, limits: Attachment
         ),
       );
       try {
-        const file = await uploadFile(sessionId, pending.asset, (fraction) => {
+        const request = uploadFile(sessionId, pending.asset, (fraction) => {
           if (!mounted.current || removedIds.current.has(pending.id)) return;
           setItems((current) =>
             current.map((item) =>
@@ -114,6 +122,8 @@ export function useAttachments(sessionId: string | undefined, limits: Attachment
             ),
           );
         });
+        uploads.current.set(pending.id, { abort: request.abort });
+        const file = await request.promise;
         if (!mounted.current || removedIds.current.has(pending.id)) return;
         setItems((current) =>
           current.map((item) =>
@@ -134,6 +144,7 @@ export function useAttachments(sessionId: string | undefined, limits: Attachment
         );
         setError(message);
       } finally {
+        uploads.current.delete(pending.id);
         activeUploads.current = Math.max(0, activeUploads.current - 1);
         if (activeUploads.current === 0 && mounted.current) setUploading(false);
       }
@@ -282,6 +293,8 @@ export function useAttachments(sessionId: string | undefined, limits: Attachment
 
   const remove = useCallback((id: string) => {
     removedIds.current.add(id);
+    uploads.current.get(id)?.abort();
+    uploads.current.delete(id);
     setItems((current) => current.filter((item) => item.id !== id));
   }, []);
 
@@ -291,6 +304,11 @@ export function useAttachments(sessionId: string | undefined, limits: Attachment
   }, [items, upload]);
 
   const clear = useCallback(() => {
+    for (const [id, request] of uploads.current) {
+      removedIds.current.add(id);
+      request.abort();
+    }
+    uploads.current.clear();
     setItems([]);
     setError(null);
   }, []);

@@ -6,6 +6,22 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and the project uses [Semantic Versioning](https://semver.org/). This is a
 pre-1.0 beta; minor versions may change the bridge protocol.
 
+## [1.0.0-beta.3] - 2026-10-22
+
+### Changed
+
+- Refined the connection screen hierarchy and spacing while retaining the
+  existing light/dark palette and connection workflow.
+- URL entry now accepts a bare host and normalizes it to HTTP before validation.
+- Attachment uploads are aborted when a pending item is removed, cleared, or
+  the chat screen unmounts, preventing unnecessary background transfers.
+- Improved the mobile website footer grouping and alignment.
+
+### Fixed
+
+- Prevented late upload progress/success/error updates from affecting removed
+  attachments or a screen that has already unmounted.
+
 ## [1.0.0-beta.2] - 2026-10-22
 
 Security-focused beta. The bridge protocol changes: the WebSocket no longer
