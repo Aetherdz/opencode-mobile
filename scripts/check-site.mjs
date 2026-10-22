@@ -103,7 +103,8 @@ for (const relative of homePages) {
     errors.push(`${relative}: install panel must show only the single copyable setup command`);
   }
   if (!copyTarget) errors.push(`${relative}: install command copy button is missing`);
-  if (!html.includes("opencode-mobile</code>")) errors.push(`${relative}: follow-up pairing command note is missing`);
+  const setupNote = html.slice(html.indexOf('class="cmd-note"'), html.indexOf('</p>', html.indexOf('class="cmd-note"')));
+  if (!setupNote.includes("opencode-mobile")) errors.push(`${relative}: follow-up pairing command note is missing`);
   if (relative === "index.html" && !hero.includes('class="hero-release"')) errors.push(`${relative}: Android release download panel is missing`);
   if (hero.includes('aria-haspopup="true"')) errors.push(`${relative}: non-popup hero content declares aria-haspopup`);
   if (!html.includes('rel="icon"') || !html.includes("assets/favicon.svg")) errors.push(`${relative}: favicon link is missing`);
