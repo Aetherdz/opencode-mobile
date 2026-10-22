@@ -2472,7 +2472,7 @@ html[dir="rtl"] code {
   .lang-switch summary { min-height: 2.35rem; padding-inline: 0.45rem; }
   .menu-toggle { width: 2.35rem; height: 2.35rem; }
 
-  .hero .display { max-width: 100%; font-size: clamp(2.25rem, 7.2vw, 2.9rem); line-height: 0.92; }
+  .hero .display { max-width: 100%; font-size: 2.5rem; line-height: 0.92; }
   .hero .lede { max-width: 100%; font-size: clamp(1.05rem, 4.4vw, 1.25rem); line-height: 1.55; }
   .hero .eyebrow { max-width: 100%; flex-wrap: wrap; }
   .hero-release { padding: 0.8rem; }
