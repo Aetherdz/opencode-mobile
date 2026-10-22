@@ -14,6 +14,9 @@ python3 -m http.server 8080
 Open `http://127.0.0.1:8080`. The page works without JavaScript; JavaScript only
 handles the mobile menu and the copy button.
 
+From the repository root, `npm run check:site` verifies every local link,
+asset, and fragment target in the HTML.
+
 ## Structure
 
 | File | Purpose |

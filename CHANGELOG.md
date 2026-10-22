@@ -31,8 +31,8 @@ entry describes the public repository state, not a stable release.
   handling, and tests for allowed and denied origins.
 - Web SPA/PWA export with a manifest, install icons, and static-host fallbacks.
 - Docker, Compose, systemd, and Caddy deployment recipes.
-- Static project website with a monochrome landing page and GitHub Pages
-  workflow.
+- Static project website with a monochrome landing page, a local link/fragment
+  checker, and a GitHub Pages workflow.
 - `eas.json`, a bridge/web release workflow with checksums, an installable
   debug APK workflow, and `docs/release.md`.
 - Bridge tests for config, CORS, auth, uploads, WebSocket routing, mapping, and

@@ -102,7 +102,7 @@ points to verified downloads.
 - [x] Add accessible navigation, focus states, reduced-motion support, and an
       Arabic README entry point.
 - [ ] Deploy to GitHub Pages or Cloudflare Pages.
-- [ ] Add a link checker; analytics decision: no analytics.
+- [x] Add a local link/fragment checker; analytics decision: no analytics.
 
 Acceptance: the site works without JavaScript for core content, has no external
 trackers, and every download link resolves to a release artifact with checksums.

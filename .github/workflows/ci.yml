@@ -14,6 +14,17 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  site:
+    name: Website
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Check local links
+        run: node scripts/check-site.mjs
+
   bridge:
     name: Bridge
     runs-on: ubuntu-latest
