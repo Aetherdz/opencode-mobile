@@ -31,7 +31,7 @@ OpenCode يعمل على جهازك، لكنك لا تكون أمامه دائم
 - ملخصات أدوات، عرض diff، وتلوين كود أحادي اللون.
 - الوضع الداكن والفاتح، واجهة عربية وإنجليزية، ونصوص مختلطة وRTL.
 - إشعارات Expo اختيارية عند انتهاء المهمة أو وجود سؤال أو طلب موافقة.
-- نسخة ويب عبر Expo Web لمعاينة الواجهة. الـBridge لا يضيف CORS headers، لذلك تحتاج الوصول إلى API من origin مختلف إلى same-origin proxy.
+- نسخة ويب عبر Expo Web مع قائمة origins مسموحة في الـBridge عبر `CORS_ORIGINS`. الوصول من origin مختلف معطّل افتراضياً.
 
 غير منفّذ حالياً: تبديل model أو agent، اختيار model لكل جلسة، بوت Telegram مدمج، ونسخة desktop أصلية. التطبيق يعرض مصدر `telegram` إذا استُخدم عميل OpenCode آخر.
 
@@ -109,7 +109,13 @@ npx expo start
 npm run web
 ```
 
-نسخة الويب لمعاينة الواجهة. الـBridge لا يضيف CORS headers، لذلك المتصفح على origin مختلف لا يستطيع قراءة ردود الـBridge. ضع التطبيق والـBridge خلف same origin عبر reverse proxy، أو استخدم التطبيق الأصلي.
+نسخة الويب تعمل، لكن الـBridge لا يقبل طلبات المتصفح إلا من origins محددة صراحة. أضف origin الخاص بـExpo Web إلى `bridge/.env` قبل تشغيل الـBridge:
+
+```dotenv
+CORS_ORIGINS=http://localhost:8081,http://127.0.0.1:8081
+```
+
+`CORS_ORIGINS` يقبل قيم `http://host:port` أو `https://host:port` فقط، ويرفض wildcards والcredentials والمسارات. القيمة الفارغة تعطّل CORS. وجود origin مسموح لا يغني عن الـbearer token؛ وللنشر العام يُفضّل وضع التطبيق والـBridge خلف same origin عبر reverse proxy.
 
 عند نشر APK موقّع سيُرفق في GitHub Release. النسخ المحلية الحالية للتثبيت اليدوي وليست نسخ Play Store.
 
@@ -165,6 +171,7 @@ Cloudflare Tunnel ممكن لتجربة قصيرة، لكنه يضع الـBridg
 | `OPENCODE_URL` | يُكتشف تلقائياً | عنوان OpenCode صريح. يجب أن يكون loopback. |
 | `OPENCODE_PASSWORD` | يُكتشف تلقائياً | كلمة مرور OpenCode عند استخدام عنوان صريح. |
 | `ALLOWED_WORKDIRS` | مجلد المنزل | جذور مسموح بها للجلسات والمرفقات. اضبطها بدقة. |
+| `CORS_ORIGINS` | فارغ | origins المتصفح المسموح بها، بصيغة دقيقة. الفراغ يعطّل CORS، ويرفض wildcards والمسارات. |
 | `MAX_UPLOAD_MB` | `25` | حد الملف الواحد. |
 | `MAX_UPLOAD_TOTAL_MB` | `100` | حد إجمالي الطلب. |
 | `MAX_FILES_PER_MESSAGE` | `10` | عدد المرفقات. |
@@ -183,9 +190,12 @@ opencode-mobile/
   app/                 عميل Expo Router
   bridge/              Bridge Fastify
   shared/              أنواع REST وWebSocket المشتركة
-  docs/                architecture وsecurity وdevelopment وAPI
-  scripts/             أدوات اختيارية لـAndroid SDK وAPK
-  .github/             CI وقوالب Issues
+  docs/                architecture وsecurity وdevelopment وweb وAPI
+  deploy/              Docker وsystemd وCaddy ودليل التشغيل
+  website/             الموقع العام الثابت
+  scripts/             تعديل web export وأدوات Android SDK وAPK
+  .github/             CI وPages وقوالب Issues
+  ROADMAP.md           المراحل والقرارات المفتوحة
   README.md            README بالإنجليزية
   README.ar.md         هذا الملف
   LICENSE              MIT
@@ -220,7 +230,7 @@ npx expo prebuild --platform android
 
 ثم استخدم Android Studio، أو على Linux شغّل `scripts/bootstrap-android-sdk.sh` و`scripts/build-apk.sh`. السكربتات اختيارية وتفترض وجود `app/android`.
 
-راجع [docs/development.md](docs/development.md) لملاحظات Linux وmacOS وWindows وWSL2 وEAS والسيرفرات.
+راجع [docs/development.md](docs/development.md) لملاحظات Linux وmacOS وWindows وWSL2 وEAS والسيرفرات، و[docs/release.md](docs/release.md) للإصدارات وتوقيع APK والحزم وchecksums.
 
 ## الاختبار
 
@@ -256,12 +266,20 @@ npx expo export --platform web
 
 ## خارطة الطريق
 
-- اختبار الجهاز على Android وiOS، بما في ذلك keyboard وfont scale وRTL والوضع الداكن والفاتح.
-- توقيع الإصدار وworkflow موثّق لإصدار APK.
+الخطة التفصيلية ومعايير القبول والقرارات المفتوحة في [ROADMAP.md](ROADMAP.md).
+
+أُنجز في المستودع:
+
+- CORS اختياري، وتصدير ويب كـSPA/PWA، وتوثيق الاستضافة الثابتة.
+- وصفات نشر Docker وsystemd وCaddy.
+- موقع ثابت، ومستودع توزيع منفصل بمثبّتات.
+
+المتبقي:
+
+- هوية التطبيق النهائية، وأيقونة محايدة، واسم صاحب الترخيص.
+- أتمتة إصدار APK موقّع واختبار الأجهزة.
 - تبديل model وagent عبر الـBridge.
-- Docker image وsystemd example للـBridge.
-- موقع ثابت للمشروع ومثبّت طرفي لمستودع التوزيع.
-- Desktop wrapper فقط إذا لم يكفِ بناء الويب.
+- TestFlight على iOS وقرار desktop wrapper.
 
 ## الترخيص
 

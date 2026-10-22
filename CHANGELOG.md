@@ -27,10 +27,26 @@ entry describes the public repository state, not a stable release.
 - Dark/light monochrome themes, Arabic/English UI, RTL layout, and mixed
   direction text.
 - Optional Expo push notifications.
-- Bridge tests for config, auth, uploads, WebSocket routing, mapping, and state.
+- Opt-in browser CORS with an exact `CORS_ORIGINS` allowlist, safe preflight
+  handling, and tests for allowed and denied origins.
+- Web SPA/PWA export with a manifest, install icons, and static-host fallbacks.
+- Docker, Compose, systemd, and Caddy deployment recipes.
+- Static project website with a monochrome landing page and GitHub Pages
+  workflow.
+- `eas.json`, a bridge/web release workflow with checksums, an installable
+  debug APK workflow, and `docs/release.md`.
+- Bridge tests for config, CORS, auth, uploads, WebSocket routing, mapping, and
+  state.
 - CI for both projects, Dependabot, issue templates, and a security policy.
 - English and Arabic documentation, architecture notes, security model,
-  development guide, and troubleshooting guide.
+  development guide, release guide, and troubleshooting guide.
+
+### Changed
+
+- The app icon, adaptive icon, and splash mark now use a smaller centered
+  lockup on the black field, closer to a wordmark-style launch screen.
+- The web build is a single-page export with PWA metadata instead of a
+  multi-page static export.
 
 ### Security
 
@@ -50,7 +66,8 @@ entry describes the public repository state, not a stable release.
 - No end-to-end encryption.
 - No model or agent switching.
 - No built-in Telegram bot; Telegram is an optional separate OpenCode client.
-- No CORS support; the web build needs a same-origin proxy to call the bridge.
+- Browser CORS is opt-in and must be configured with exact origins; a
+  same-origin proxy is still preferred for public web deployments.
 - Device QA on Android and iOS is still pending.
 - The repository does not produce a release-signed APK yet.
 - Push notifications require an EAS project and a physical device.

@@ -1,0 +1,459 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>OpenCode Mobile — your agent, in your pocket</title>
+    <meta
+      name="description"
+      content="An unofficial, self-hosted mobile and web client for the OpenCode coding agent. Chat, review diffs, approve tools, and keep the agent on your own hardware."
+    />
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="OpenCode Mobile" />
+    <meta
+      property="og:description"
+      content="Your agent. Your machine. Your pocket. An unofficial, self-hosted client for OpenCode."
+    />
+    <meta property="og:image" content="assets/og.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <a class="brand" href="./" aria-label="OpenCode Mobile home">
+        <span class="brand-mark" aria-hidden="true">OC</span>
+        <span class="brand-name">OpenCode Mobile</span>
+      </a>
+      <button
+        class="menu-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="site-nav"
+      >
+        Menu
+      </button>
+      <nav class="site-nav" id="site-nav" aria-label="Primary">
+        <a href="#features">Features</a>
+        <a href="#security">Security</a>
+        <a href="#platforms">Platforms</a>
+        <a href="#install">Install</a>
+        <a class="nav-cta" href="#download">Download</a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero">
+        <div class="hero-copy reveal">
+          <p class="eyebrow">Unofficial client · Public beta</p>
+          <h1 class="display">
+            Your agent.<br />
+            Your machine.<br />
+            <em>Your pocket.</em>
+          </h1>
+          <p class="lede">
+            OpenCode Mobile is a focused client for the OpenCode coding agent.
+            Keep the model, the files, and the session on hardware you control.
+            Chat, review diffs, and approve tools from a phone, tablet, or
+            browser.
+          </p>
+          <div class="actions">
+            <a class="button button-primary" href="#download">Get the beta</a>
+            <a
+              class="button button-quiet"
+              href="https://github.com/zaikabdou1/opencode-mobile"
+              rel="noreferrer"
+              >View source</a
+            >
+          </div>
+          <dl class="hero-facts">
+            <div>
+              <dt>Transport</dt>
+              <dd>Loopback + Tailscale</dd>
+            </div>
+            <div>
+              <dt>License</dt>
+              <dd>MIT</dd>
+            </div>
+            <div>
+              <dt>Telemetry</dt>
+              <dd>None</dd>
+            </div>
+          </dl>
+        </div>
+
+        <div class="hero-art reveal" aria-hidden="true">
+          <div class="orbit orbit-one"></div>
+          <div class="orbit orbit-two"></div>
+          <div class="phone">
+            <div class="phone-bar">
+              <span>9:41</span>
+              <span class="phone-notch"></span>
+              <span>Local</span>
+            </div>
+            <div class="phone-screen">
+              <div class="phone-head">
+                <span class="phone-kicker">Session 04</span>
+                <span class="phone-status">Working</span>
+              </div>
+              <div class="bubble bubble-user">
+                Tighten the upload validation and show me the diff.
+              </div>
+              <div class="bubble bubble-agent">
+                I’ll reject SVG by default, verify the magic bytes, and keep the
+                filename inside the workdir.
+              </div>
+              <div class="tool-card">
+                <div class="tool-top">
+                  <span>edit</span>
+                  <span class="tool-state">approval</span>
+                </div>
+                <code>src/uploads.ts</code>
+                <div class="diff-lines">
+                  <span class="diff-del">- allowSvg: true</span>
+                  <span class="diff-add">+ allowSvg: false</span>
+                </div>
+                <div class="tool-actions">
+                  <span class="tool-deny">Deny</span>
+                  <span class="tool-allow">Allow</span>
+                </div>
+              </div>
+              <div class="bubble bubble-agent bubble-short">
+                Diff is ready. Two files changed.
+              </div>
+            </div>
+            <div class="phone-input">
+              <span>Ask the agent…</span>
+              <span class="phone-send">↑</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="ticker" aria-hidden="true">
+        <span>Sessions</span><span>Streaming</span><span>Approvals</span
+        ><span>Diffs</span><span>Attachments</span><span>Push</span
+        ><span>Arabic + English</span><span>Dark + light</span>
+      </div>
+
+      <section class="section" id="features">
+        <div class="section-head reveal">
+          <p class="eyebrow">01 / The loop</p>
+          <h2 class="display">The parts you actually use.</h2>
+          <p>
+            Not a dashboard. A small, fast surface for the work between a prompt
+            and a merged change.
+          </p>
+        </div>
+        <div class="feature-grid">
+          <article class="feature reveal">
+            <span class="feature-index">01</span>
+            <h3>Every session, in reach</h3>
+            <p>
+              Search, group, rename, create, and delete sessions. Waiting
+              sessions are visible before you open them.
+            </p>
+          </article>
+          <article class="feature reveal">
+            <span class="feature-index">02</span>
+            <h3>Streaming that reconnects</h3>
+            <p>
+              Follow a turn as it happens, page through older messages, and
+              return to the latest message without losing the thread.
+            </p>
+          </article>
+          <article class="feature reveal">
+            <span class="feature-index">03</span>
+            <h3>Approvals with context</h3>
+            <p>
+              Review the tool, the target, and the diff before you allow it.
+              Destructive actions ask twice.
+            </p>
+          </article>
+          <article class="feature reveal">
+            <span class="feature-index">04</span>
+            <h3>Files, not screenshots</h3>
+            <p>
+              Attach images, camera captures, and documents. Validation happens
+              at the bridge, not only in the UI.
+            </p>
+          </article>
+          <article class="feature reveal">
+            <span class="feature-index">05</span>
+            <h3>Quiet notifications</h3>
+            <p>
+              Optional push for finished turns, questions, and approvals.
+              Payloads carry IDs and generic text, not message bodies.
+            </p>
+          </article>
+          <article class="feature reveal">
+            <span class="feature-index">06</span>
+            <h3>Bilingual by default</h3>
+            <p>
+              Arabic and English, RTL layout, mixed-direction text, and a
+              monochrome theme that gets out of the way.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section section-dark" id="security">
+        <div class="section-head reveal">
+          <p class="eyebrow">02 / The boundary</p>
+          <h2 class="display">The network edge is the point.</h2>
+          <p>
+            The app talks to a local bridge. The bridge talks to OpenCode on
+            loopback. Nothing is relayed through a hosted account.
+          </p>
+        </div>
+        <div class="security-grid">
+          <div class="security-copy reveal">
+            <p class="security-lead">
+              One token. One owner. A deliberately small blast radius.
+            </p>
+            <ul class="check-list">
+              <li>Bearer token with constant-time comparison and failed-auth bans.</li>
+              <li>Workdir allowlist for sessions, uploads, and downloads.</li>
+              <li>Upload type, extension, magic-byte, size, and filename checks.</li>
+              <li>Loopback-only OpenCode URL; Tailscale or a reverse proxy for remote access.</li>
+              <li>No telemetry, no hosted relay, no account system.</li>
+              <li>Opt-in CORS with exact origins. Wildcards are rejected.</li>
+            </ul>
+            <a class="text-link" href="https://github.com/zaikabdou1/opencode-mobile/blob/main/docs/security.md" rel="noreferrer"
+              >Read the threat model</a
+            >
+          </div>
+          <div class="security-diagram reveal" aria-label="Network flow diagram">
+            <div class="diagram-node">
+              <span class="diagram-label">Device</span>
+              <strong>Mobile / Web</strong>
+              <small>Your token</small>
+            </div>
+            <div class="diagram-line"><span>private network</span></div>
+            <div class="diagram-node">
+              <span class="diagram-label">Host</span>
+              <strong>Bridge</strong>
+              <small>127.0.0.1:8787</small>
+            </div>
+            <div class="diagram-line"><span>loopback</span></div>
+            <div class="diagram-node">
+              <span class="diagram-label">Agent</span>
+              <strong>OpenCode</strong>
+              <small>Your machine</small>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="platforms">
+        <div class="section-head reveal">
+          <p class="eyebrow">03 / The surface</p>
+          <h2 class="display">One client. Several rooms.</h2>
+          <p>
+            Native where it matters, web where it is convenient, and a bridge
+            that runs on the machine that already has your code.
+          </p>
+        </div>
+        <div class="platform-grid">
+          <article class="platform reveal">
+            <span class="platform-tag">Android</span>
+            <h3>Sideload the beta</h3>
+            <p>API 24 or newer. A debug APK is available from CI; a release-signed APK is attached when signing is configured.</p>
+            <span class="platform-meta">arm64 · Expo SDK 58</span>
+          </article>
+          <article class="platform reveal">
+            <span class="platform-tag">iOS</span>
+            <h3>Build with EAS</h3>
+            <p>Expo Router and native modules. Build on macOS or EAS.</p>
+            <span class="platform-meta">TestFlight later</span>
+          </article>
+          <article class="platform reveal">
+            <span class="platform-tag">Web</span>
+            <h3>Install the PWA</h3>
+            <p>Static export, same-origin proxy, no offline cache of sessions.</p>
+            <span class="platform-meta">Chromium · Firefox · Safari</span>
+          </article>
+          <article class="platform reveal">
+            <span class="platform-tag">Host</span>
+            <h3>Run the bridge</h3>
+            <p>Node on Linux, macOS, or Windows. Docker and systemd recipes.</p>
+            <span class="platform-meta">Node 20+</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="section section-install" id="install">
+        <div class="section-head reveal">
+          <p class="eyebrow">04 / The install</p>
+          <h2 class="display">Three steps. No account.</h2>
+          <p>
+            Build the bridge, start OpenCode, and point the app at your private
+            address. The installer writes the token; it never prints it.
+          </p>
+        </div>
+        <div class="install-grid">
+          <ol class="steps reveal">
+            <li>
+              <span class="step-number">01</span>
+              <div>
+                <h3>Install the bridge</h3>
+                <p>Download, verify the checksum, and create a private config.</p>
+              </div>
+            </li>
+            <li>
+              <span class="step-number">02</span>
+              <div>
+                <h3>Start the agent</h3>
+                <p>Keep OpenCode on loopback. Use Tailscale for the phone.</p>
+              </div>
+            </li>
+            <li>
+              <span class="step-number">03</span>
+              <div>
+                <h3>Connect once</h3>
+                <p>Enter the bridge URL and token. The token stays on the device.</p>
+              </div>
+            </li>
+          </ol>
+          <div class="terminal reveal">
+            <div class="terminal-bar">
+              <span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span>install.sh</span>
+              <button class="copy-button" type="button" data-copy-target="install-command">
+                Copy
+              </button>
+            </div>
+            <pre id="install-command"><code><span class="term-comment"># Linux / macOS</span>
+curl -fsSLO https://raw.githubusercontent.com/zaikabdou1/opencode-mobile-dist/main/install.sh
+bash install.sh install --workdir "$HOME/projects"
+
+<span class="term-ok">OK</span>  checksum verified
+<span class="term-ok">OK</span>  bridge installed
+<span class="term-ok">OK</span>  config written (mode 600)
+<span class="term-warn">WARN</span> start OpenCode before connecting
+
+<span class="term-comment"># Windows PowerShell</span>
+.\install.ps1 -Command install -WorkDir "$env:USERPROFILE\projects"</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-download" id="download">
+        <div class="download-inner reveal">
+          <div>
+            <p class="eyebrow">05 / The build</p>
+            <h2 class="display">Take the beta for a walk.</h2>
+            <p>
+              The first public beta is a sideload build. Read the limitations,
+              keep the bridge private, and expect sharp edges.
+            </p>
+            <p class="download-note">
+              Release links activate when the first tag is published. Until
+              then, build from source.
+            </p>
+          </div>
+          <div class="download-actions">
+            <a
+              class="button button-primary"
+              href="https://github.com/zaikabdou1/opencode-mobile/releases/latest"
+              rel="noreferrer"
+              >Android APK</a
+            >
+            <a
+              class="button button-outline"
+              href="https://github.com/zaikabdou1/opencode-mobile/releases/latest"
+              rel="noreferrer"
+              >Web bundle</a
+            >
+            <a
+              class="button button-outline"
+              href="https://github.com/zaikabdou1/opencode-mobile-dist"
+              rel="noreferrer"
+              >Installers</a
+            >
+            <a
+              class="text-link"
+              href="https://github.com/zaikabdou1/opencode-mobile/releases/latest"
+              rel="noreferrer"
+              >SHA256SUMS and release notes</a
+            >
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="faq">
+        <div class="section-head reveal">
+          <p class="eyebrow">06 / The fine print</p>
+          <h2 class="display">Questions worth asking.</h2>
+        </div>
+        <div class="faq-list">
+          <details class="reveal">
+            <summary>Is this an official OpenCode app?</summary>
+            <p>
+              No. It is an independent client. The OpenCode name and logo belong
+              to the upstream project. This project is not endorsed by the
+              OpenCode team.
+            </p>
+          </details>
+          <details class="reveal">
+            <summary>Does my code leave my machine?</summary>
+            <p>
+              The bridge talks to OpenCode on loopback. Your device talks to the
+              bridge over your private network. There is no hosted relay and no
+              telemetry. If you configure a third-party push service, it
+              receives a token and a generic notification payload.
+            </p>
+          </details>
+          <details class="reveal">
+            <summary>Do I need Tailscale?</summary>
+            <p>
+              Only for remote access. On the same machine, loopback is enough.
+              For a phone on another network, Tailscale or an HTTPS reverse
+              proxy is the supported path.
+            </p>
+          </details>
+          <details class="reveal">
+            <summary>Is there a Play Store or App Store build?</summary>
+            <p>
+              Not yet. Android is a sideloaded beta. iOS is built with EAS and
+              has no TestFlight track in this repository.
+            </p>
+          </details>
+          <details class="reveal">
+            <summary>Why is model switching missing?</summary>
+            <p>
+              The first beta focuses on a reliable session loop. Model and agent
+              switching will land only when the upstream API exposes stable
+              endpoints; the roadmap tracks it as a post-beta item.
+            </p>
+          </details>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-brand">
+        <span class="brand-mark" aria-hidden="true">OC</span>
+        <div>
+          <strong>OpenCode Mobile</strong>
+          <p>Unofficial client for a local agent.</p>
+        </div>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/zaikabdou1/opencode-mobile">Source</a>
+        <a href="https://github.com/zaikabdou1/opencode-mobile-dist">Installers</a>
+        <a href="https://github.com/zaikabdou1/opencode-mobile/blob/main/docs/security.md">Security</a>
+        <a href="https://github.com/zaikabdou1/opencode-mobile/blob/main/README.ar.md" lang="ar" dir="rtl">العربية</a>
+      </div>
+      <p class="footer-legal">
+        MIT licensed. Not affiliated with or endorsed by the OpenCode team.
+        <span id="year">2026</span>.
+      </p>
+    </footer>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>

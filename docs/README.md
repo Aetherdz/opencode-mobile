@@ -7,6 +7,8 @@ Start with the project [README](../README.md). These files go deeper:
 | [Architecture](architecture.md) | Components, data flow, REST/WebSocket protocol, storage, and boundaries. |
 | [Security](security.md) | Threat model, token scope, upload controls, deployment checklist, and known gaps. |
 | [Development](development.md) | Local setup, checks, web export, Android/iOS builds, and server notes. |
+| [Web deployment](web.md) | SPA export, static hosting, CORS, PWA behavior, and security headers. |
+| [Release](release.md) | Versioning, bridge/web bundles, APK signing, checksums, and publishing. |
 | [Troubleshooting](troubleshooting.md) | Symptoms, causes, and fixes for the bridge and app. |
 | [OpenCode API notes](opencode-api-notes.md) | Endpoints and events verified against OpenCode 2.0.24. |
 | [Design](design.md) | Monochrome design system, typography, layout, and accessibility. |

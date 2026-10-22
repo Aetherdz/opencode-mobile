@@ -1,0 +1,129 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag, for example v1.0.0-beta.1"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  bundles:
+    name: Build bridge and web bundles
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolve version
+        id: version
+        env:
+          TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+        run: |
+          set -euo pipefail
+          case "$TAG" in
+            v*) VERSION="${TAG#v}" ;;
+            *) echo "Tag must start with v: $TAG" >&2; exit 1 ;;
+          esac
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: |
+            bridge/package-lock.json
+            app/package-lock.json
+
+      - name: Build the bridge
+        run: |
+          set -euo pipefail
+          npm --prefix bridge ci --no-audit --no-fund
+          npm --prefix bridge run build
+          npm --prefix bridge prune --omit=dev
+
+      - name: Build the web app
+        run: |
+          set -euo pipefail
+          npm --prefix app ci --no-audit --no-fund
+          npm --prefix app run web:export
+
+      - name: Package assets
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          mkdir -p dist release/bridge
+          cp bridge/package.json bridge/package-lock.json bridge/.env.example release/bridge/
+          cp -a bridge/dist bridge/node_modules release/bridge/
+          tar -czf "dist/opencode-mobile-bridge-${VERSION}.tar.gz" -C release/bridge .
+          (cd release/bridge && zip -qr "../../dist/opencode-mobile-bridge-${VERSION}.zip" .)
+          tar -czf "dist/opencode-mobile-web-${VERSION}.tar.gz" -C app/dist .
+          (cd app/dist && zip -qr "../../dist/opencode-mobile-web-${VERSION}.zip" .)
+          (cd dist && sha256sum opencode-mobile-* > SHA256SUMS)
+          ls -lh dist
+
+      - name: Upload bundles
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-bundles
+          path: dist/*
+          if-no-files-found: error
+
+  publish:
+    name: Publish GitHub release
+    needs: bundles
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download bundles
+        uses: actions/download-artifact@v4
+        with:
+          name: release-bundles
+          path: dist
+
+      - name: Resolve tag
+        id: version
+        env:
+          TAG: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref_name }}
+        run: echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Create or update release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.version.outputs.tag }}
+        run: |
+          set -euo pipefail
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" dist/* --clobber
+          else
+            gh release create "$TAG" dist/* \
+              --title "OpenCode Mobile $TAG" \
+              --generate-notes \
+              --verify-tag
+          fi
+
+      - name: Summary
+        run: |
+          {
+            echo "### Release assets"
+            echo
+            echo "The bridge and web bundles are attached with SHA-256 checksums."
+            echo
+            echo "The Android APK is built separately. A debug APK is an artifact"
+            echo "from the Android debug workflow, not a production-signed release."
+            echo "Attach the signed APK as \`opencode-mobile-<version>.apk\` and"
+            echo "regenerate \`SHA256SUMS\` before announcing the release."
+          } >> "$GITHUB_STEP_SUMMARY"

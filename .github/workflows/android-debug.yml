@@ -1,0 +1,79 @@
+name: Android debug APK
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: android-debug
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build installable debug APK
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Gradle cache
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Install dependencies
+        run: npm --prefix app ci --no-audit --no-fund
+
+      - name: Generate native project
+        working-directory: app
+        run: npx expo prebuild --platform android --no-install
+
+      - name: Build debug APK
+        working-directory: app/android
+        run: ./gradlew assembleDebug --no-daemon -PreactNativeArchitectures=arm64-v8a
+
+      - name: Name artifact
+        id: artifact
+        run: |
+          set -euo pipefail
+          VERSION="$(node -p "require('./app/app.json').expo.version")"
+          SHORT_SHA="${GITHUB_SHA::7}"
+          NAME="opencode-mobile-debug-${VERSION}-${SHORT_SHA}.apk"
+          cp app/android/app/build/outputs/apk/debug/app-debug.apk "$NAME"
+          echo "name=$NAME" >> "$GITHUB_OUTPUT"
+          sha256sum "$NAME"
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.artifact.outputs.name }}
+          path: ${{ steps.artifact.outputs.name }}
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Summary
+        run: |
+          {
+            echo "### Debug APK"
+            echo
+            echo "Artifact: \`${{ steps.artifact.outputs.name }}\`"
+            echo
+            echo "This APK is signed with the Android debug key. It is for"
+            echo "local testing only and cannot be used as a production update"
+            echo "path. Build a release keystore or an EAS preview APK for"
+            echo "distribution."
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -32,7 +32,7 @@ It does not run a second agent and it does not expose a terminal on the phone. T
 - Tool activity summaries, diff view, and monochrome code highlighting.
 - Dark and light themes, Arabic and English UI, mixed-direction text, and RTL layout.
 - Optional Expo push notifications for finished turns, questions, and approvals.
-- Expo Web build for UI preview. The bridge does not add CORS headers, so API access from a different origin needs a same-origin proxy.
+- Expo Web build with an opt-in bridge origin allowlist (`CORS_ORIGINS`). Cross-origin access stays disabled by default.
 
 Not implemented yet: model or agent switching, per-session model selection, a built-in Telegram bot, and a native desktop wrapper. The app does receive a `telegram` source label when another OpenCode client is used.
 
@@ -59,7 +59,7 @@ See [docs/architecture.md](docs/architecture.md) for the component and event flo
 | Expo | SDK 58 / React Native 0.88. |
 | Android | API 24 or newer. Prebuilt APKs are arm64 only. |
 | iOS | Build with Expo/EAS on macOS. This repository does not produce an iOS binary in CI. |
-| Web | Current Chromium, Firefox, or Safari. Web uses `sessionStorage` for the token. The bridge needs a same-origin proxy for API access. |
+| Web | Current Chromium, Firefox, or Safari. Web uses `sessionStorage` for the token. Add the app origin to `CORS_ORIGINS`; prefer a same-origin proxy for public deployments. |
 | Network | Loopback on the host, plus Tailscale or another private tunnel for the phone. |
 
 Pin the versions in `app/package-lock.json` and `bridge/package-lock.json`. Do not assume that a newer OpenCode release keeps the same HTTP or event shape.
@@ -110,9 +110,17 @@ For a browser preview:
 npm run web
 ```
 
-The web build is a UI preview. The bridge does not add CORS headers, so a
-browser on a different origin cannot read bridge responses. Put the app and
-bridge behind the same origin with a reverse proxy, or use the native app.
+The web build is a first-class client, but the bridge only accepts browser
+requests from origins you list explicitly. Add the Expo web origin to
+`bridge/.env` before starting the bridge:
+
+```dotenv
+CORS_ORIGINS=http://localhost:8081,http://127.0.0.1:8081
+```
+
+CORS controls browser reads; it is not authentication. The bearer token is still
+required, and a production deployment should serve the app and bridge behind the
+same origin so the token is not exposed to unrelated pages.
 
 When a signed APK is published, it will be attached to a GitHub Release. The current local builds are for sideloading and are not Play Store releases.
 
@@ -168,6 +176,7 @@ Rotate `AUTH_TOKEN` if it was ever shared, logged, or captured in a screenshot. 
 | `OPENCODE_URL` | discovered | Optional explicit OpenCode URL. Must be loopback. |
 | `OPENCODE_PASSWORD` | discovered | Password for an explicit OpenCode URL. |
 | `ALLOWED_WORKDIRS` | home directory | Comma-separated roots allowed for sessions and uploads. Set this narrowly. |
+| `CORS_ORIGINS` | empty | Exact browser origins allowed to call the bridge. Empty disables CORS. Wildcards and paths are rejected. |
 | `MAX_UPLOAD_MB` | `25` | Per-file limit. |
 | `MAX_UPLOAD_TOTAL_MB` | `100` | Per-request total upload limit. |
 | `MAX_FILES_PER_MESSAGE` | `10` | Attachment count limit. |
@@ -186,9 +195,12 @@ opencode-mobile/
   app/                 Expo Router client
   bridge/              Fastify bridge
   shared/              Shared REST and WebSocket types
-  docs/                Architecture, security, development, API notes
-  scripts/             Optional Android SDK and APK helpers
-  .github/             CI, issue templates, and contribution automation
+  docs/                Architecture, security, development, web, API notes
+  deploy/              Docker, systemd, Caddy, and operations guide
+  website/             Static landing page
+  scripts/             Web export patch and Android SDK/APK helpers
+  .github/             CI, Pages, issue templates, and automation
+  ROADMAP.md           Milestones and open decisions
   README.md            English README
   README.ar.md         Arabic README
   LICENSE              MIT
@@ -223,7 +235,7 @@ npx expo prebuild --platform android
 
 Then use Android Studio, or on Linux run `scripts/bootstrap-android-sdk.sh` and `scripts/build-apk.sh`. The helper scripts are optional and assume a generated `app/android` directory.
 
-See [docs/development.md](docs/development.md) for Linux, macOS, Windows, WSL2, EAS, and server notes.
+See [docs/development.md](docs/development.md) for Linux, macOS, Windows, WSL2, EAS, and server notes. See [docs/release.md](docs/release.md) for versioning, signed APKs, bundles, and checksums.
 
 ## Testing
 
@@ -259,12 +271,21 @@ More detail is in [docs/troubleshooting.md](docs/troubleshooting.md).
 
 ## Roadmap
 
-- Device QA on Android and iOS, including keyboard, font scale, RTL, and dark/light themes.
-- Release signing and a documented APK release workflow.
+The detailed plan, acceptance criteria, and open decisions are in
+[ROADMAP.md](ROADMAP.md).
+
+Done in the source tree:
+
+- Opt-in CORS, a web SPA/PWA export, and static-host documentation.
+- Docker, systemd, and Caddy deployment recipes.
+- A static website and a separate distribution installer repository.
+
+Still open:
+
+- Final app identity, a neutral icon, and a license holder name.
+- Signed APK release automation and device QA.
 - Model and agent switching through the bridge.
-- A production Docker image and systemd example for the bridge.
-- A static project website and a terminal installer for the release repository.
-- A desktop wrapper only if the web build is not enough.
+- iOS TestFlight and a desktop wrapper decision.
 
 ## License
 

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="OpenCode Mobile">
+  <rect width="64" height="64" rx="12" fill="#0a0a0a"/>
+  <path d="M17 20l14 12-14 12" fill="none" stroke="#f3f3ef" stroke-width="5" stroke-linecap="square" stroke-linejoin="miter"/>
+  <rect x="36" y="40" width="12" height="4" fill="#f3f3ef"/>
+</svg>
