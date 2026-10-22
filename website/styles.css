@@ -168,13 +168,6 @@ button {
   font-size: 0.9em;
 }
 
-@media (min-width: 981px) and (max-width: 1250px) {
-  .hero { grid-template-columns: minmax(15rem, 0.8fr) minmax(0, 1.2fr); gap: clamp(1.5rem, 3.5vw, 3rem); }
-  .hero .display { font-size: clamp(3rem, 5.4vw, 4.2rem); }
-  .hero-art { min-height: 32rem; }
-  .phone { width: min(19rem, 100%); }
-}
-
 @media (max-width: 980px) {
   .site-header { min-height: 4.75rem; }
 }
@@ -1792,6 +1785,13 @@ main {
   }
 }
 
+@media (min-width: 900px) and (max-width: 1250px) {
+  .hero { grid-template-columns: minmax(15rem, 0.8fr) minmax(0, 1.2fr); gap: clamp(1.5rem, 3.5vw, 3rem); }
+  .hero .display { font-size: clamp(3rem, 5.4vw, 4.2rem); }
+  .hero-art { min-height: 32rem; }
+  .phone { width: min(19rem, 100%); }
+}
+
 @media (max-width: 980px) {
   .hero {
     grid-template-columns: 1fr;
@@ -1807,7 +1807,7 @@ main {
 
   .hero-copy { grid-column: 1; grid-row: 2; max-width: 42rem; margin-inline: auto; padding-top: 0; }
   .hero > .hero-copy .lede { margin-top: 1rem; }
-  .hero .display { max-width: 12ch; font-size: clamp(3.8rem, 10.5vw, 5.3rem); }
+  .hero .display { max-width: 12ch; font-size: clamp(2.3rem, 7.5vw, 4rem); }
   .hero-release { max-width: 42rem; }
   .hero-command { max-width: 42rem; }
 
@@ -1925,7 +1925,7 @@ main {
   .hero-copy .display { max-width: 100%; overflow-wrap: normal; }
 
   .hero .eyebrow { font-size: 0.62rem; letter-spacing: 0.06em; }
-  .hero-release { align-items: stretch; flex-direction: column; margin-top: 1.25rem; }
+  .hero-release { align-items: stretch; flex-direction: column; margin-top: 1rem; }
   .hero-release-copy strong { overflow-wrap: anywhere; }
   .hero-release-button { justify-content: space-between; }
   .hero-command { width: 100%; }
@@ -1933,17 +1933,19 @@ main {
   .hero-command-label { min-width: 0; overflow-wrap: anywhere; }
   .hero-command pre { margin: 0; overflow-x: auto; white-space: pre; }
   .hero-command pre code { min-width: max-content; overflow-wrap: normal; white-space: pre; }
-  .hero .actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; margin-top: 0.9rem; }
-  .hero .actions .button { width: 100%; min-width: 0; min-height: 2.7rem; padding-inline: 0.35rem; font-size: clamp(0.66rem, 2.9vw, 0.82rem); white-space: nowrap; }
+  .hero .actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; margin-top: 1rem; }
+  .hero .actions .button { width: 100%; min-width: 0; min-height: 2.9rem; padding-inline: 0.35rem; font-size: clamp(0.66rem, 2.9vw, 0.82rem); white-space: nowrap; }
   .hero .actions .button-primary { margin-top: 0; }
 
   .hero-art {
     min-height: clamp(19rem, 88vw, 25rem);
+    overflow: clip;
   }
 
   .phone {
-    width: min(16rem, 74vw);
-    transform: rotate(1deg);
+    width: clamp(220px, 62vw, 300px);
+    max-width: 76%;
+    transform: perspective(800px) rotateZ(-10deg) rotateY(-3deg);
   }
 
   .phone-screen {
@@ -2472,14 +2474,14 @@ html[dir="rtl"] code {
   .lang-switch summary { min-height: 2.35rem; padding-inline: 0.45rem; }
   .menu-toggle { width: 2.35rem; height: 2.35rem; }
 
-  .hero .display { max-width: 100%; font-size: 2.44rem; line-height: 0.92; }
-  .hero .lede { max-width: 100%; font-size: clamp(1.05rem, 4.4vw, 1.25rem); line-height: 1.55; }
+  .hero .display { max-width: 100%; font-size: clamp(2.3rem, 10.2vw, 2.6rem); line-height: 0.95; }
+  .hero .lede { max-width: 100%; font-size: clamp(1rem, 4.4vw, 1.15rem); line-height: 1.55; }
   .hero .eyebrow { max-width: 100%; flex-wrap: wrap; }
   .hero-release { padding: 0.8rem; }
   .hero-release-copy strong { font-size: 0.8rem; }
   .hero-release-copy small { font-size: 0.62rem; }
-  .hero-art { min-height: clamp(19rem, 88vw, 24rem); }
-  .phone { width: min(16rem, 72vw); }
+  .hero-art { min-height: clamp(19rem, 88vw, 24rem); overflow: clip; }
+  .phone { width: clamp(220px, 62vw, 300px); max-width: 76%; transform: perspective(800px) rotateZ(-10deg) rotateY(-3deg); }
   .phone-screen { min-height: 21rem; }
   .hero-command { padding: 0.65rem; }
   .hero-command pre { font-size: 0.58rem; }
