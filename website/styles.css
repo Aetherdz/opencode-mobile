@@ -170,7 +170,7 @@ button {
 
 @media (min-width: 981px) and (max-width: 1250px) {
   .hero { grid-template-columns: minmax(15rem, 0.8fr) minmax(0, 1.2fr); gap: clamp(1.5rem, 3.5vw, 3rem); }
-  .hero .display { font-size: clamp(3.5rem, 6vw, 5rem); }
+  .hero .display { font-size: clamp(3rem, 5.4vw, 4.2rem); }
   .hero-art { min-height: 32rem; }
   .phone { width: min(19rem, 100%); }
 }
@@ -1701,7 +1701,7 @@ main {
 
 .hero .display {
   max-width: 9ch;
-  font-size: clamp(3.8rem, 8.8vw, 7.8rem);
+  font-size: clamp(3.6rem, 7.5vw, 6.2rem);
   line-height: 0.9;
 }
 
@@ -1922,7 +1922,7 @@ main {
   .hero > .hero-art { grid-row: 1; }
   .hero > .hero-copy { grid-row: 2; }
   .hero-copy > * { min-width: 0; }
-  .hero-copy .display { max-width: 100%; overflow-wrap: anywhere; }
+  .hero-copy .display { max-width: 100%; overflow-wrap: normal; }
 
   .hero .eyebrow { font-size: 0.62rem; letter-spacing: 0.06em; }
   .hero-release { align-items: stretch; flex-direction: column; margin-top: 1.25rem; }
@@ -1938,11 +1938,11 @@ main {
   .hero .actions .button-primary { margin-top: 0; }
 
   .hero-art {
-    min-height: clamp(18rem, 86vw, 27rem);
+    min-height: clamp(19rem, 88vw, 25rem);
   }
 
   .phone {
-    width: min(15rem, 68vw);
+    width: min(16rem, 74vw);
     transform: rotate(1deg);
   }
 
@@ -2472,8 +2472,8 @@ html[dir="rtl"] code {
   .lang-switch summary { min-height: 2.35rem; padding-inline: 0.45rem; }
   .menu-toggle { width: 2.35rem; height: 2.35rem; }
 
-  .hero .display { max-width: 100%; font-size: clamp(4.5rem, 15vw, 5.8rem); }
-  .hero .lede { max-width: 100%; font-size: clamp(1.15rem, 4.9vw, 1.45rem); line-height: 1.5; }
+  .hero .display { max-width: 100%; font-size: clamp(2.5rem, 8.6vw, 3.7rem); line-height: 0.92; }
+  .hero .lede { max-width: 100%; font-size: clamp(1.05rem, 4.4vw, 1.25rem); line-height: 1.55; }
   .hero .eyebrow { max-width: 100%; flex-wrap: wrap; }
   .hero-release { padding: 0.8rem; }
   .hero-release-copy strong { font-size: 0.8rem; }
