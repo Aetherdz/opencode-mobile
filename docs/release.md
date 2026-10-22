@@ -11,8 +11,8 @@ The project uses a split distribution model:
 
 ## Versioning
 
-The public beta version is `1.0.0-beta.1`. A release tag is `v` plus that
-version, for example `v1.0.0-beta.1`.
+The public beta version is `1.0.0-beta.2`. A release tag is `v` plus that
+version, for example `v1.0.0-beta.2`.
 
 When you bump the version, update all of these together:
 
@@ -79,60 +79,73 @@ See [web.md](web.md) for hosting and CORS.
 
 ## Android APK
 
-The first public beta publishes the bridge and web bundles only. Build and
-attach a release-signed APK with the steps below before presenting an Android
-download as available.
+The beta ships a release-signed, arm64-v8a APK built by
+`.github/workflows/android-release.yml`. The workflow uses a project keystore
+stored only in GitHub Actions secrets and verifies the certificate and package
+metadata before uploading the artifact.
 
-### Option A: EAS preview APK (recommended for distribution)
+### Signing secrets
 
-EAS manages the signing key and gives you a stable upgrade path.
+Generate the keystore outside the repository, back it up, and add these
+repository secrets:
+
+| Secret | Value |
+| --- | --- |
+| `ANDROID_KEYSTORE_BASE64` | Base64 of the `.keystore` file |
+| `ANDROID_KEYSTORE_PASSWORD` | Keystore password |
+| `ANDROID_KEY_ALIAS` | Key alias, for example `opencode-mobile` |
+| `ANDROID_KEY_PASSWORD` | Key password |
+| `ANDROID_KEY_CERT_SHA256` | Optional. SHA-256 of the signing certificate, with or without colons. When set, the workflow rejects any APK whose signer does not match. |
+
+The workflow always rejects a debug-signed APK. Setting
+`ANDROID_KEY_CERT_SHA256` adds certificate pinning and is strongly recommended.
+Never commit the keystore, passwords, or `keystore.properties`.
+
+### Build and verify
+
+```bash
+gh workflow run android-release.yml --ref main
+gh run list --workflow android-release.yml --limit 1
+gh run watch <run-id>
+gh run download <run-id>
+```
+
+The artifact is named `opencode-mobile-<version>-<sha>.apk` and includes a
+`.sha256` file. Verify it before publishing:
+
+```bash
+apksigner verify --verbose --print-certs opencode-mobile-*.apk
+aapt dump badging opencode-mobile-*.apk | grep -E "^(package|sdkVersion|targetSdkVersion):"
+sha256sum -c opencode-mobile-*.apk.sha256
+```
+
+Rename the verified file to the stable asset name and attach it to the release:
+
+```bash
+cp opencode-mobile-1.0.0-beta.2-<sha>.apk opencode-mobile-1.0.0-beta.2.apk
+gh release upload v1.0.0-beta.2 opencode-mobile-1.0.0-beta.2.apk
+```
+
+Then regenerate `SHA256SUMS` over every release asset and upload it with
+`--clobber`.
+
+### EAS alternative
+
+EAS is still supported for iOS and for maintainers who prefer managed Android
+signing. It is not required for the beta APK.
 
 ```bash
 cd app
 npx eas-cli login
-npx eas-cli init          # once, writes extra.eas.projectId
 npx eas-cli build --platform android --profile preview
 ```
 
-The `preview` profile in `app/eas.json` produces an APK with internal
-distribution. Download it from the EAS build page and rename it:
+### Local build
 
-```text
-opencode-mobile-1.0.0-beta.1.apk
-```
-
-Do not commit the keystore or `credentials.json`. Keep the EAS account and the
-keystore under the project owner's control. Losing the keystore prevents
-in-place updates of an already installed release.
-
-### Option B: Local debug APK (testing only)
-
-The debug APK is installable and useful for device QA, but it is signed with
-the public Android debug key. It is not a production release and must not be
-presented as one.
-
-```bash
-npm --prefix app ci
-cd app
-npx expo prebuild --platform android --no-install
-cd android
-./gradlew assembleDebug -PreactNativeArchitectures=arm64-v8a
-```
-
-The artifact is `app/android/app/build/outputs/apk/debug/app-debug.apk`.
-The `Android debug APK` workflow builds this artifact on GitHub Actions for
-manual download.
-
-### Option C: Local release APK with your own keystore
-
-Use this only if you understand Android signing. Generate a keystore outside
-the repository, keep it backed up, and pass the properties through
-`~/.gradle/gradle.properties` or CI secrets. Never commit the keystore,
-passwords, or `keystore.properties`.
-
-The generated Expo template signs `release` with the debug key by default. That
-is acceptable for a local test build only. Replace the signing configuration
-before calling the result a signed release.
+The generated Expo template signs `release` with the debug key by default. Use
+`scripts/configure-android-signing.cjs` with the same four environment
+variables, then run `assembleRelease`. A debug APK is for QA only and must not
+be presented as a production release.
 
 ## GitHub release
 
@@ -144,22 +157,28 @@ The `Release` workflow runs on `v*` tags or manually with an existing tag. It:
 4. Writes `SHA256SUMS` over every asset.
 5. Creates or updates the GitHub Release.
 
-The workflow does **not** build or sign the APK. After the EAS build finishes:
+The release workflow does **not** build or sign the APK. Build it with the
+`android-release` workflow, then attach the verified file:
 
-1. Download the APK.
+1. Download the APK artifact from the Android workflow.
 2. Rename it to `opencode-mobile-<version>.apk`.
 3. Attach it to the release:
 
    ```bash
-   gh release upload v1.0.0-beta.1 opencode-mobile-1.0.0-beta.1.apk
+   gh release upload v1.0.0-beta.2 opencode-mobile-1.0.0-beta.2.apk --clobber
    ```
 
-4. Regenerate and upload the checksum file:
+4. Regenerate and upload the checksum file over every asset:
 
    ```bash
-   sha256sum opencode-mobile-* > SHA256SUMS
-   gh release upload v1.0.0-beta.1 SHA256SUMS --clobber
+   gh release download v1.0.0-beta.2 --dir release-assets
+   rm -f release-assets/SHA256SUMS release-assets/*-debug.apk
+   (cd release-assets && sha256sum * > SHA256SUMS)
+   gh release upload v1.0.0-beta.2 release-assets/SHA256SUMS --clobber
    ```
+
+Use a tag that points at the source commit used for the APK. If the tag is
+older than the APK source, publish a new tag instead of rewriting a public tag.
 
 The distribution installer expects these exact names:
 

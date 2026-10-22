@@ -66,14 +66,21 @@ export async function buildServer(config: Config): Promise<BuiltServer> {
 
   registerCors(app, config.corsOrigins);
 
-  const authenticate = registerAuth(app, guard);
+  const authenticate = registerAuth(app, guard, config.corsOrigins);
 
-  app.addHook("preHandler", async (request, reply) => {
-    if (request.routeOptions.url === "/health" || request.url === "/health") return;
+  // Authenticate before body parsing. The WebSocket route keeps its
+  // preValidation hook because it authenticates a short-lived, one-time
+  // ticket (browsers and React Native cannot attach headers to the upgrade).
+  app.addHook("onRequest", async (request, reply) => {
+    if (request.method === "OPTIONS") return;
+    if (request.routeOptions.url === "/health") return;
+    if (request.routeOptions.url === "/ws") return;
     await authenticate(request, reply);
   });
 
   registerRoutes(app, { config, adapter, state, files, sources, push });
+
+  app.post("/ws-ticket", async () => guard.issueWsTicket());
 
   app.get("/ws", { websocket: true, preValidation: authenticate }, (socket) => {
     hub.attach(socket);

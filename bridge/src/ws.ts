@@ -5,6 +5,7 @@ import type { BackendAdapter } from "./adapters/BackendAdapter.js";
 import type { LoggerLike } from "./log.js";
 import type { PushService } from "./push.js";
 import type { FileRegistry, StoredFile } from "./uploads.js";
+import { BRIDGE_VERSION, isInsideWorkdir } from "./config.js";
 import { RuntimeState } from "./state.js";
 import { mapMessage, mapPermission, mapQuestion, mapSession, toolActivity } from "./mapping.js";
 import { fromFileUri, toFileUri } from "./fileUri.js";
@@ -59,12 +60,14 @@ interface Buffered {
 
 const MAX_BUFFER_PER_SESSION = 500;
 const MAX_BUFFERED_SESSIONS = 200;
+const MAX_CLIENT_MESSAGES_PER_MINUTE = 300;
 
 export class WsHub {
   private readonly rooms = new Map<string, Set<WebSocket>>();
   private readonly buffers = new Map<string, Buffered[]>();
   private readonly clients = new Set<WebSocket>();
   private readonly socketSubs = new WeakMap<WebSocket, Set<string>>();
+  private readonly messageCounts = new WeakMap<WebSocket, { count: number; resetAt: number }>();
   private readonly abort = new AbortController();
   private readonly sessionCache = new Map<string, RawSession>();
   private readonly toolNames = new Map<string, string>();
@@ -107,7 +110,7 @@ export class WsHub {
     this.socketSubs.set(socket, new Set());
     this.send(socket, {
       type: "hello",
-      serverVersion: "0.1.0",
+      serverVersion: BRIDGE_VERSION,
       sessions: [...this.rooms.keys()],
     });
 
@@ -131,6 +134,21 @@ export class WsHub {
     });
   }
 
+  private async sessionAllowed(sessionId: string): Promise<boolean> {
+    const cached = this.sessionCache.get(sessionId);
+    if (cached?.location?.directory) {
+      return Boolean(isInsideWorkdir(this.workdirs, cached.location.directory));
+    }
+    try {
+      const session = await this.adapter.getSession(sessionId);
+      this.sessionCache.set(sessionId, session);
+      const directory = session.location?.directory;
+      return Boolean(directory && isInsideWorkdir(this.workdirs, directory));
+    } catch {
+      return false;
+    }
+  }
+
   private async onClientMessage(socket: WebSocket, raw: string): Promise<void> {
     if (raw.length > 1_000_000) {
       this.send(socket, { type: "error", code: "too_large", message: "Message too large." });
@@ -150,9 +168,36 @@ export class WsHub {
     }
     const event = parsed.data as ClientWsEvent;
 
+    // Keepalives are not application traffic. Counting them makes a healthy
+    // long-lived connection look like a flood after a reconnect burst.
+    if (event.type !== "ping") {
+      const now = Date.now();
+      const bucket = this.messageCounts.get(socket);
+      if (!bucket || now >= bucket.resetAt) {
+        this.messageCounts.set(socket, { count: 1, resetAt: now + 60_000 });
+      } else if (bucket.count >= MAX_CLIENT_MESSAGES_PER_MINUTE) {
+        this.send(socket, {
+          type: "error",
+          code: "rate_limited",
+          message: "Too many WebSocket messages. Try again later.",
+        });
+        return;
+      } else {
+        bucket.count += 1;
+      }
+    }
+
     try {
       switch (event.type) {
         case "subscribe": {
+          if (!(await this.sessionAllowed(event.sessionId))) {
+            this.send(socket, {
+              type: "error",
+              code: "outside_workdir",
+              message: "Session directory is outside ALLOWED_WORKDIRS.",
+            });
+            return;
+          }
           const subs = this.socketSubs.get(socket) ?? new Set<string>();
           if (!subs.has(event.sessionId)) {
             if (subs.size >= this.maxSubscriptionsPerSocket) {
@@ -189,6 +234,14 @@ export class WsHub {
           break;
         }
         case "message.send": {
+          if (!(await this.sessionAllowed(event.sessionId))) {
+            this.send(socket, {
+              type: "error",
+              code: "outside_workdir",
+              message: "Session directory is outside ALLOWED_WORKDIRS.",
+            });
+            return;
+          }
           const runtime = this.state.statusOf(event.sessionId);
           if (runtime.status === "running" && !event.delivery) {
             this.send(socket, {
@@ -238,6 +291,14 @@ export class WsHub {
           break;
         }
         case "approval.reply": {
+          if (!(await this.sessionAllowed(event.sessionId))) {
+            this.send(socket, {
+              type: "error",
+              code: "outside_workdir",
+              message: "Session directory is outside ALLOWED_WORKDIRS.",
+            });
+            return;
+          }
           await this.adapter.replyPermission(event.sessionId, event.requestId, event.decision);
           this.broadcast(event.sessionId, {
             type: "approval.resolved",
@@ -248,6 +309,14 @@ export class WsHub {
           break;
         }
         case "session.stop": {
+          if (!(await this.sessionAllowed(event.sessionId))) {
+            this.send(socket, {
+              type: "error",
+              code: "outside_workdir",
+              message: "Session directory is outside ALLOWED_WORKDIRS.",
+            });
+            return;
+          }
           await this.adapter.interrupt(event.sessionId);
           this.broadcast(event.sessionId, {
             type: "status",

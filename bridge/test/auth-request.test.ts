@@ -35,8 +35,8 @@ describe("bearerFromRequest", () => {
     expect(bearerFromRequest(request({ "x-auth-token": "  xyz789  " }))).toBe("xyz789");
   });
 
-  it("accepts a query token only on the WebSocket upgrade route", () => {
-    expect(bearerFromRequest(request({}, { token: "query-token" }, "/ws"))).toBe("query-token");
+  it("never accepts the bearer token in a query string", () => {
+    expect(bearerFromRequest(request({}, { token: "query-token" }, "/ws"))).toBeUndefined();
     expect(bearerFromRequest(request({}, { token: "query-token" }, "/protected"))).toBeUndefined();
     expect(bearerFromRequest(request({}, { token: "query-token" }))).toBeUndefined();
   });
@@ -82,6 +82,22 @@ describe("registerAuth", () => {
     expect(query.statusCode).toBe(401);
   });
 
+  it("authenticates before the JSON body is parsed", async () => {
+    const app = Fastify();
+    app.addHook("onRequest", registerAuth(app, new AuthGuard(TOKEN, 10, 60_000)));
+    app.post("/protected", async () => ({ ok: true }));
+    apps.push(app);
+
+    const unauthorized = await app.inject({
+      method: "POST",
+      url: "/protected",
+      headers: { "content-type": "application/json" },
+      payload: "not-json",
+    });
+    expect(unauthorized.statusCode).toBe(401);
+    expect(unauthorized.json()).toMatchObject({ error: "unauthorized" });
+  });
+
   it("bans repeated bad tokens but still accepts the real token", async () => {
     const app = buildApp(new AuthGuard(TOKEN, 2, 60_000));
 
@@ -106,5 +122,37 @@ describe("registerAuth", () => {
       headers: { authorization: `Bearer ${TOKEN}` },
     });
     expect(owner.statusCode).toBe(200);
+  });
+
+  it("accepts a WebSocket ticket once and rejects replay and wrong origins", async () => {
+    const guard = new AuthGuard(TOKEN, 10, 60_000);
+    const app = Fastify();
+    const auth = registerAuth(app, guard, ["https://app.example"]);
+    app.get("/ws", { preValidation: auth }, async () => ({ ok: true }));
+    apps.push(app);
+
+    const { ticket } = guard.issueWsTicket();
+    const first = await app.inject({
+      method: "GET",
+      url: `/ws?ticket=${encodeURIComponent(ticket)}`,
+      headers: { origin: "https://app.example" },
+    });
+    expect(first.statusCode).toBe(200);
+
+    const replay = await app.inject({
+      method: "GET",
+      url: `/ws?ticket=${encodeURIComponent(ticket)}`,
+      headers: { origin: "https://app.example" },
+    });
+    expect(replay.statusCode).toBe(401);
+
+    const badOriginTicket = guard.issueWsTicket().ticket;
+    const badOrigin = await app.inject({
+      method: "GET",
+      url: `/ws?ticket=${encodeURIComponent(badOriginTicket)}`,
+      headers: { origin: "https://evil.example" },
+    });
+    expect(badOrigin.statusCode).toBe(403);
+    expect(badOrigin.json()).toMatchObject({ error: "origin_not_allowed" });
   });
 });

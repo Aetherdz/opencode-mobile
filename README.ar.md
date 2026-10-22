@@ -2,10 +2,13 @@
 
 عميل غير رسمي للهاتف والويب لـ [OpenCode](https://github.com/anomalyco/opencode)، يعتمد على Bridge صغير ومحمي يعمل بجانب خدمة OpenCode الموجودة على جهازك.
 
+[![Stars](https://img.shields.io/github/stars/Aetherdz/opencode-mobile?style=flat-square&label=stars&color=000000)](https://github.com/Aetherdz/opencode-mobile/stargazers)
+[![Release](https://img.shields.io/github/v/release/Aetherdz/opencode-mobile?include_prereleases&style=flat-square&color=000000)](https://github.com/Aetherdz/opencode-mobile/releases)
 [![License: MIT](https://img.shields.io/badge/license-MIT-black.svg)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Android%20%7C%20iOS%20%7C%20Web-black)](docs/development.md)
 [![Node](https://img.shields.io/badge/node-%3E%3D22.13-black)](https://nodejs.org/)
-[![Status](https://img.shields.io/badge/status-beta-black)](CHANGELOG.md)
+
+[الموقع](https://aetherdz.github.io/opencode-mobile/) · [الإصدارات](https://github.com/Aetherdz/opencode-mobile/releases) · [التوثيق](docs/) · [English](README.md)
 
 [English](README.md) | **العربية**
 
@@ -13,7 +16,7 @@
 | --- | --- | --- | --- |
 | ![شاشة الاتصال](docs/images/connect.png) | ![شاشة الجلسات](docs/images/sessions.png) | ![شاشة المحادثة](docs/images/chat.png) | ![بطاقة السؤال](docs/images/question.png) |
 
-> الصور الحالية placeholders حتى يتم اختبار التطبيق على جهاز فعلي. استبدلها بصور تجريبية نظيفة لا تحتوي على tokens أو مسارات خاصة أو أسماء جلسات حقيقية.
+> الصور مأخوذة من نسخة الويب باستخدام بيانات تجريبية اصطناعية. لا تحتوي على tokens حقيقية أو مسارات خاصة أو أسماء جلسات شخصية.
 
 ## لماذا هذا المشروع
 
@@ -29,7 +32,7 @@ OpenCode يعمل على جهازك، لكنك لا تكون أمامه دائم
 - أسئلة الوكيل وطلبات الصلاحيات داخل الواجهة، مع تأكيد صريح للأدوات الخطرة.
 - إرفاق صور وكاميرا ومستندات، مع إعادة المحاولة والتنزيل الموثّق.
 - ملخصات أدوات، عرض diff، وتلوين كود أحادي اللون.
-- الوضع الداكن والفاتح، واجهة عربية وإنجليزية، ونصوص مختلطة وRTL.
+- الوضع الداكن والفاتح، واجهة بالإنجليزية والعربية والفرنسية، ونصوص مختلطة وRTL.
 - إشعارات Expo اختيارية عند انتهاء المهمة أو وجود سؤال أو طلب موافقة.
 - نسخة ويب عبر Expo Web مع قائمة origins مسموحة في الـBridge عبر `CORS_ORIGINS`. الوصول من origin مختلف معطّل افتراضياً.
 
@@ -56,7 +59,7 @@ flowchart LR
 | Node.js | `22.13` أو أحدث؛ يفضّل Node 24 LTS. |
 | npm | 10 أو أحدث. |
 | Expo | SDK 58 / React Native 0.88. |
-| Android | API 24 أو أحدث. ملفات APK للإصدار، عند نشرها، arm64 فقط. |
+| Android | API 24 أو أحدث. ملف APK الموقّع للإصدار مخصص لـarm64-v8a. |
 | iOS | ابنِ عبر Expo/EAS على macOS. المستودع لا ينتج iOS binary في CI. |
 | Web | Chromium أو Firefox أو Safari حديث. الويب يستخدم `sessionStorage` للتوكن. يحتاج الـBridge إلى same-origin proxy للوصول إلى API. |
 | الشبكة | loopback على الجهاز، مع Tailscale أو نفق خاص للهاتف. |
@@ -117,7 +120,7 @@ CORS_ORIGINS=http://localhost:8081,http://127.0.0.1:8081
 
 `CORS_ORIGINS` يقبل قيم `http://host:port` أو `https://host:port` فقط، ويرفض wildcards والcredentials والمسارات. القيمة الفارغة تعطّل CORS. وجود origin مسموح لا يغني عن الـbearer token؛ وللنشر العام يُفضّل وضع التطبيق والـBridge خلف same origin عبر reverse proxy.
 
-عند نشر APK موقّع سيُرفق في GitHub Release. النسخ المحلية الحالية للتثبيت اليدوي وليست نسخ Play Store.
+يُرفق APK موقّع بمفتاح المشروع على GitHub Release، مع ملف تحقق SHA-256. ثبّت الملف من صفحة الإصدارات وتأكد من البصمة قبل التثبيت. المشروع لا ينتج نسخة Play Store.
 
 ### 5. الاتصال
 
@@ -145,18 +148,20 @@ Cloudflare Tunnel ممكن لتجربة قصيرة، لكنه يضع الـBridg
 
 - توثيق bearer token لـREST وWebSocket.
 - مقارنة توكن بزمن ثابت، وحظر محاولات فاشلة، وrate limit.
+- التحقق من التوكن قبل تحليل body الطلب؛ `/health` هو المسار الوحيد غير الموثّق.
 - قوائم أنواع وامتدادات مسموحة للمرفقات، وحدود حجم، وتنقية أسماء، وتخزين داخل `ALLOWED_WORKDIRS`.
-- تنزيل موثّق مع `nosniff` وattachment disposition.
-- تنقيح السجلات من authorization وcookies وquery tokens.
+- تنزيل موثّق مع `nosniff` و`X-Frame-Options: DENY` وattachment disposition.
+- تنقيح السجلات من authorization وcookies وquery tokens والمسارات الخام.
 - تخزين التوكن في SecureStore على native، و`sessionStorage` في الويب.
+- توقيع APK بمفتاح المشروع والتحقق من الشهادة في CI.
 
 غير محمي:
 
 - يوجد توكن واحد مشترك، بلا تفويض لكل مستخدم.
 - لا يوجد end-to-end encryption بين التطبيق والـBridge.
 - نسخ native تسمح بـcleartext HTTP للاتصال المحلي وTailscale.
-- WebSocket يقبل query token على `/ws`، وقد يظهر في سجلات proxy أو tunnel.
-- جلسات OpenCode الموجودة خارج `ALLOWED_WORKDIRS` قد تبقى قابلة للقراءة.
+- WebSocket يستخدم تذكرة قصيرة لمرة واحدة عند الاتصال؛ لا تسجّل query strings.
+- قد تظهر بيانات جلسات OpenCode الواقعة خارج `ALLOWED_WORKDIRS` في القائمة، لكن المحتوى والرسائل والموافقات والـdiff والرفع وإيقاف/حذف الجلسة مرفوضة.
 - إشعارات push الاختيارية تمر عبر Expo، والـpayload يحتوي IDs ونصوصاً عامة لا نصوص الرسائل.
 
 دوّر `AUTH_TOKEN` إذا سبق مشاركته أو ظهوره في log أو لقطة شاشة. أبقِ الـBridge على شبكة خاصة. راجع [SECURITY.md](SECURITY.md) و[docs/security.md](docs/security.md).

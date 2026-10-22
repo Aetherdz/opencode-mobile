@@ -1,6 +1,6 @@
 {
   "name": "opencode-mobile",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.2",
   "private": true,
   "description": "Unofficial mobile and web client for OpenCode with a local bridge.",
   "license": "MIT",

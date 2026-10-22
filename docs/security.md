@@ -148,10 +148,13 @@ themselves, but they matter when choosing an exposure model.
    content in plaintext.
 3. **Cleartext HTTP is allowed in native builds.** A network attacker on the
    same untrusted network could observe traffic if TLS is not used.
-4. **WebSocket query token.** It can appear in proxy, tunnel, or browser
-   history logs.
-5. **OpenCode sessions are not fully scoped by workdir.** The bridge can list
-   sessions that OpenCode already knows about.
+4. **WebSocket ticket in the URL.** The upgrade uses a one-time, 30-second
+   ticket from `POST /ws-ticket`, not the bearer token. The ticket can still
+   appear in proxy or tunnel logs, but replaying it does not authenticate.
+5. **Session metadata is not fully scoped by workdir.** The bridge can list
+   sessions that OpenCode already knows about. Content reads, prompts,
+   approvals, diffs, uploads, and stop/delete actions are rejected when the
+   session directory is outside `ALLOWED_WORKDIRS`.
 6. **Browser CORS is opt-in and exact.** Only origins listed in `CORS_ORIGINS`
    can read responses. A same-origin proxy is still the safer public deployment
    because it keeps the token on one origin.
@@ -163,8 +166,9 @@ themselves, but they matter when choosing an exposure model.
 9. **No automated dependency or container scanning in this repository yet.**
    Dependabot and CI are configured, but they are not a complete supply-chain
    program.
-10. **Debug APKs are not release artifacts.** Do not distribute a debug-signed
-    APK as a production build.
+10. **Release and debug keys are separate.** The public beta APK is built by
+    `.github/workflows/android-release.yml` with the project keystore. Debug
+    APKs are for local QA and must not be distributed as production builds.
 
 ## Dependency audit status
 

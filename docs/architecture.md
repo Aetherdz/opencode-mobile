@@ -123,8 +123,10 @@ Errors use a stable shape: `{ "error": { "code": "...", "message": "..." } }`.
 
 ## WebSocket surface
 
-Connect to `/ws?token=<AUTH_TOKEN>`. The server sends a `hello` event with the
-bridge version and active session rooms. The app then sends `subscribe`.
+Request a one-time ticket with `POST /ws-ticket` (authenticated with the
+bearer token), then connect to `/ws?ticket=<TICKET>`. Tickets expire after 30
+seconds and are consumed on first use. The server sends a `hello` event with
+the bridge version and active session rooms. The app then sends `subscribe`.
 Messages are JSON with a `type` discriminator.
 
 Client events:

@@ -23,6 +23,11 @@ const additions = [
     '<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />',
   ],
   ["apple-mobile-web-app-title", '<meta name="apple-mobile-web-app-title" content="OC Mobile" />'],
+  [
+    "Content-Security-Policy",
+    '<meta http-equiv="Content-Security-Policy" content="default-src \'self\'; script-src \'self\'; style-src \'self\' \'unsafe-inline\'; img-src \'self\' data: blob:; font-src \'self\' data:; connect-src \'self\' http: https: ws: wss:; media-src \'self\' blob:; worker-src \'self\' blob:; object-src \'none\'; base-uri \'self\'; form-action \'none\'" />',
+  ],
+  ["name=\"referrer\"", '<meta name="referrer" content="no-referrer" />'],
 ];
 
 let changed = false;
@@ -48,4 +53,12 @@ if (changed) {
 // client-side routes work there without a custom server.
 const notFound = path.join(path.dirname(file), "404.html");
 fs.copyFileSync(file, notFound);
+let notFoundHtml = fs.readFileSync(notFound, "utf8");
+if (!notFoundHtml.includes('name="robots"')) {
+  notFoundHtml = notFoundHtml.replace(
+    "</head>",
+    '<meta name="robots" content="noindex" />\n</head>',
+  );
+  fs.writeFileSync(notFound, notFoundHtml);
+}
 console.log("patch-web-export: wrote app/dist/404.html for static hosts");

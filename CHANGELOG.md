@@ -6,12 +6,60 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and the project uses [Semantic Versioning](https://semver.org/). This is a
 pre-1.0 beta; minor versions may change the bridge protocol.
 
+## [1.0.0-beta.2] - 2026-10-22
+
+Security-focused beta. The bridge protocol changes: the WebSocket no longer
+accepts the bearer token in the query string, and clients must request a
+one-time ticket from `POST /ws-ticket` first.
+
+### Added
+
+- One-time, 30-second WebSocket tickets from `POST /ws-ticket`; tickets are
+  consumed on first use and are rejected on replay.
+- WebSocket `Origin` checks for browser clients. Native clients without an
+  `Origin` header keep working; browser origins must be same-origin or listed
+  in `CORS_ORIGINS`.
+- Per-socket WebSocket message rate limiting.
+- Per-session cumulative upload quota (`MAX_SESSION_UPLOAD_MB`, default 1024 MB).
+- Release workflow certificate checks: debug-signed APKs are rejected, optional
+  `ANDROID_KEY_CERT_SHA256` pinning, keystore permissions `0600`, and keystore
+  cleanup.
+
+### Changed
+
+- `ALLOWED_WORKDIRS` now gates session content reads, message sends, diffs,
+  files, questions, permission responses, stops, deletes, and WebSocket
+  subscribe/send/approval/stop actions, not only session creation and uploads.
+- The Android release workflow passes signing environment variables to Gradle
+  and configures the `release` build type without touching `debug`.
+- CI checkouts set `persist-credentials: false`.
+- Web export carries a stricter CSP, `Referrer-Policy: no-referrer`, and
+  `X-Robots-Tag: noindex`; the static host config and Caddy add matching
+  headers.
+- Web attachment previews force HTML/SVG and unknown types to `text/plain`,
+  keep raster images and PDFs previewable, use `noopener,noreferrer`, and
+  revoke object URLs.
+- Bridge responses to `/bridge/*` are marked `Cache-Control: no-store`.
+- The app refuses absolute file URLs so the bearer token is never attached to
+  a response-supplied external URL.
+- `AUTH_TOKEN` validation rejects the shipped example value and low-entropy
+  repeated tokens.
+- Documentation now describes the ticket flow and the workdir enforcement
+  boundaries.
+
+### Fixed
+
+- Release workflow no longer replaces the debug signing config while trying to
+  sign the release build.
+- Website footer links no longer leak the referrer.
+- Website GitHub star-count fetch has a timeout and fails quietly.
+
 ## [1.0.0-beta.1] - 2026-10-22
 
 First public beta. The app was previously developed as an internal build; this
-entry describes the public repository state, not a stable release. The Android
-APK is not part of this release until a release-signed build and device QA pass
-are available.
+entry describes the public repository state, not a stable release. A
+release-signed arm64 APK is attached to the public beta release. Device QA on a
+physical Android device and an iOS build are still pending.
 
 ### Added
 
@@ -26,8 +74,8 @@ are available.
 - Image, camera, and document attachments with validation, retry, and
   authenticated downloads.
 - Tool activity summaries and a diff viewer.
-- Dark/light monochrome themes, Arabic/English UI, RTL layout, and mixed
-  direction text.
+- Dark/light monochrome themes, English/Arabic/French UI, RTL layout, and
+  mixed direction text.
 - Optional Expo push notifications.
 - Opt-in browser CORS with an exact `CORS_ORIGINS` allowlist, safe preflight
   handling, and tests for allowed and denied origins.
@@ -35,10 +83,11 @@ are available.
 - Docker, Compose, systemd, and Caddy deployment recipes.
 - Static project website with a monochrome landing page, a local link/fragment
   checker, and a GitHub Pages workflow.
-- `eas.json`, a bridge/web release workflow with checksums, an installable
-  debug APK workflow, and `docs/release.md`.
-- Bridge tests for config, CORS, auth, uploads, WebSocket routing, mapping, and
-  state.
+- `eas.json`, a bridge/web release workflow with checksums, a release-signing
+  workflow, and `docs/release.md`.
+- A release-signed arm64 APK attached to the public beta release.
+- Bridge tests for config, CORS, auth, uploads, WebSocket routing, mapping,
+  state, and log redaction (84 tests).
 - CI for both projects, Dependabot, issue templates, and a security policy.
 - English and Arabic documentation, architecture notes, security model,
   development guide, release guide, and troubleshooting guide.
@@ -57,7 +106,11 @@ are available.
 - Per-IP rate limiting and request caps.
 - Workdir allowlist for sessions, uploads, and downloads.
 - Upload type, extension, magic-byte, size, and filename validation.
-- Log redaction for authorization headers, cookies, and query tokens.
+- Log redaction for authorization headers, cookies, query tokens, and raw paths.
+- Authentication before body parsing; `/health` is the only unauthenticated
+  route.
+- Release APK signing with a project keystore and certificate verification in
+  CI.
 - SecureStore on native, `sessionStorage` on web.
 - Cleartext HTTP is allowed for local/Tailscale use. This is documented as a
   deliberate tradeoff; use Tailscale HTTPS when the network is not trusted.
@@ -70,8 +123,7 @@ are available.
 - No built-in Telegram bot; Telegram is an optional separate OpenCode client.
 - Browser CORS is opt-in and must be configured with exact origins; a
   same-origin proxy is still preferred for public web deployments.
-- Device QA on Android and iOS is still pending.
-- The repository does not produce a release-signed APK yet.
+- Device QA on a physical Android device and an iOS build are still pending.
 - Push notifications require an EAS project and a physical device.
 - `npm audit` reports build-time advisories in the Expo CLI/Metro dependency
   chain. The bridge audit is clean. See the dependency audit status in

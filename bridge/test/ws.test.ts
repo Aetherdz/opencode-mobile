@@ -55,13 +55,13 @@ function fakeSocket(): FakeSocket {
   };
 }
 
-function fakeAdapter(): BackendAdapter {
+function fakeAdapter(workdir: string): BackendAdapter {
   const session: RawSession = {
     id: "ses_1",
     projectID: "proj_1",
     title: "Test session",
     time: { created: 1, updated: 2 },
-    location: { directory: "/tmp" },
+    location: { directory: workdir },
   };
 
   return {
@@ -100,7 +100,7 @@ async function makeFixture(): Promise<{
 
   const state = new RuntimeState();
   const hub = new WsHub(
-    fakeAdapter(),
+    fakeAdapter(root),
     state,
     new FileRegistry(path.join(root, "data")),
     logger,

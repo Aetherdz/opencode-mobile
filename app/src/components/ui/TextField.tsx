@@ -117,6 +117,7 @@ export const TextField = forwardRef<ComponentRef<typeof TextInput>, TextFieldPro
           style={[
             {
               flex: 1,
+              minWidth: 0,
               color: isNew ? theme.colors.textStrong : theme.colors.text,
               fontFamily: inputFont,
               fontSize: isNew ? (useMono ? 13 : 15) : 16,
@@ -159,6 +160,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     flexDirection: 'row',
     alignItems: 'center',
+    minWidth: 0,
   },
   leading: {
     marginEnd: 8,

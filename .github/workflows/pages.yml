@@ -27,6 +27,8 @@ jobs:
     steps:
       - name: Check out
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Configure Pages
         uses: actions/configure-pages@v5

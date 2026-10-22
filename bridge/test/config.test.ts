@@ -134,6 +134,36 @@ describe("assertLoopback", () => {
   });
 });
 
+describe("loadConfig auth token", () => {
+  it("rejects the shipped example and low-entropy tokens", () => {
+    const root = tempRoot("bridge-config-token-");
+    const workdir = path.join(root, "work");
+    fs.mkdirSync(workdir);
+    const keys = ["AUTH_TOKEN", "OPENCODE_URL", "OPENCODE_PASSWORD", "ALLOWED_WORKDIRS", "DATA_DIR"] as const;
+    const saved = new Map<string, string | undefined>();
+    for (const key of keys) saved.set(key, process.env[key]);
+
+    process.env.OPENCODE_URL = "http://127.0.0.1:4096";
+    process.env.OPENCODE_PASSWORD = "test-password";
+    process.env.ALLOWED_WORKDIRS = workdir;
+    process.env.DATA_DIR = path.join(root, "data");
+
+    try {
+      process.env.AUTH_TOKEN = "replace-with-at-least-32-random-characters";
+      expect(() => loadConfig()).toThrow(/example/);
+
+      process.env.AUTH_TOKEN = "a".repeat(64);
+      expect(() => loadConfig()).toThrow(/repetitive/);
+    } finally {
+      for (const key of keys) {
+        const value = saved.get(key);
+        if (value === undefined) delete process.env[key];
+        else process.env[key] = value;
+      }
+    }
+  });
+});
+
 describe("loadConfig defaults", () => {
   it("does not include SVG in the default upload allowlist", () => {
     const root = tempRoot("bridge-config-defaults-");
@@ -152,7 +182,7 @@ describe("loadConfig defaults", () => {
     const saved = new Map<string, string | undefined>();
     for (const key of keys) saved.set(key, process.env[key]);
 
-    process.env.AUTH_TOKEN = "a".repeat(32);
+    process.env.AUTH_TOKEN = "0123456789abcdef".repeat(4);
     process.env.OPENCODE_URL = "http://127.0.0.1:4096";
     process.env.OPENCODE_PASSWORD = "test-password";
     process.env.ALLOWED_WORKDIRS = workdir;

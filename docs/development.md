@@ -221,8 +221,10 @@ The helper scripts are optional. They assume:
 the bind-mount helper. The release APK is under the generated
 `app/android/app/build/outputs/apk/release/` tree.
 
-Current local APKs are debug-signed and must not be published as production
-artifacts.
+The Expo-generated project signs `release` with the debug key by default. Apply
+the project signing config with `scripts/configure-android-signing.cjs` before
+publishing, or use the `android-release` GitHub Actions workflow. A local APK
+built without that step is debug-signed and must not be published.
 
 ## iOS
 

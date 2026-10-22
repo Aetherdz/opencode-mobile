@@ -256,8 +256,8 @@ first.
 
 ## The APK installs but cannot connect
 
-- A debug APK uses a debug signing key and a development server; it is not a
-  release build.
+- The release APK is signed with the project key; a locally built debug APK is
+  not a substitute and may require uninstalling the release build first.
 - Confirm the phone can reach the bridge URL in a browser or with
   `curl` from another device on the same tailnet.
 - Check that the token was copied into the app, not just into `.env`.

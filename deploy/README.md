@@ -208,7 +208,8 @@ limit implications.
 - [ ] `CORS_ORIGINS` is empty or lists exact trusted origins.
 - [ ] The data directory is backed up and readable only by the service user.
 - [ ] The token is rotated after a device is lost.
-- [ ] Logs are checked for query tokens and redacted as expected.
+- [ ] Access logs are disabled or strip query strings; WebSocket upgrades use
+      short-lived tickets, not the bearer token.
 
 ## Troubleshooting
 

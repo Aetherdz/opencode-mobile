@@ -42,7 +42,9 @@ export function authHeader(): Record<string, string> {
 export function absoluteUrl(path: string): string {
   const base = baseUrl();
   if (!path) return '';
-  if (/^https?:\/\//i.test(path)) return path;
+  // Never attach the bearer token to a URL supplied by a response. Bridge
+  // files are always relative paths; an absolute URL is treated as invalid.
+  if (/^[a-z][a-z0-9+.-]*:/i.test(path)) return '';
   return `${base}${path.startsWith('/') ? '' : '/'}${path}`;
 }
 

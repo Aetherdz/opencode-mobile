@@ -3,6 +3,11 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://api.github.com; font-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'"
+    />
+    <meta name="referrer" content="no-referrer" />
     <title>OpenCode Mobile — your agent, in your pocket</title>
     <meta
       name="description"
@@ -41,6 +46,16 @@
         <a href="#security">Security</a>
         <a href="#platforms">Platforms</a>
         <a href="#install">Install</a>
+        <a
+          class="nav-star"
+          href="https://github.com/Aetherdz/opencode-mobile"
+          rel="noreferrer"
+          aria-label="Star OpenCode Mobile on GitHub"
+        >
+          <span class="star-icon" aria-hidden="true">★</span>
+          <span>Star</span>
+          <span class="star-count" data-github-stars aria-hidden="true"></span>
+        </a>
         <a class="nav-cta" href="#download">Download</a>
       </nav>
     </header>
@@ -80,7 +95,7 @@
             </div>
             <div>
               <dt>Telemetry</dt>
-              <dd>None</dd>
+              <dd>None in the app</dd>
             </div>
           </dl>
         </div>
@@ -219,7 +234,7 @@
               <li>Workdir allowlist for sessions, uploads, and downloads.</li>
               <li>Upload type, extension, magic-byte, size, and filename checks.</li>
               <li>Loopback-only OpenCode URL; Tailscale or a reverse proxy for remote access.</li>
-              <li>No telemetry, no hosted relay, no account system.</li>
+              <li>No telemetry, no hosted relay, no account system. The landing page reads the public GitHub star count.</li>
               <li>Opt-in CORS with exact origins. Wildcards are rejected.</li>
             </ul>
             <a class="text-link" href="https://github.com/Aetherdz/opencode-mobile/blob/main/docs/security.md" rel="noreferrer"
@@ -261,7 +276,7 @@
           <article class="platform reveal">
             <span class="platform-tag">Android</span>
             <h3>Sideload the beta</h3>
-            <p>API 24 or newer. A debug APK is available from CI; a release-signed APK is attached when signing is configured.</p>
+            <p>API 24 or newer. The beta APK is release-signed and built for arm64-v8a.</p>
             <span class="platform-meta">arm64 · Expo SDK 58</span>
           </article>
           <article class="platform reveal">
@@ -326,8 +341,9 @@
                 Copy
               </button>
             </div>
-            <pre id="install-command"><code><span class="term-comment"># Linux / macOS</span>
-curl -fsSLO https://raw.githubusercontent.com/Aetherdz/opencode-mobile-dist/main/install.sh
+            <pre id="install-command"><code><span class="term-comment"># Linux / macOS (installer pinned to a commit)</span>
+curl -fsSLO https://raw.githubusercontent.com/Aetherdz/opencode-mobile-dist/7c4ec38b7de7d87e88d7f215721a11bc338e128f/install.sh
+echo "d140292ee5f26172a5ff140c693bc38e65bf244c184f4f9e9af7c2a260b596cb  install.sh" | sha256sum -c -
 bash install.sh install --workdir "$HOME/projects"
 
 <span class="term-ok">OK</span>  checksum verified
@@ -335,7 +351,8 @@ bash install.sh install --workdir "$HOME/projects"
 <span class="term-ok">OK</span>  config written (mode 600)
 <span class="term-warn">WARN</span> start OpenCode before connecting
 
-<span class="term-comment"># Windows PowerShell</span>
+<span class="term-comment"># Windows PowerShell (installer pinned to a commit)</span>
+irm https://raw.githubusercontent.com/Aetherdz/opencode-mobile-dist/7c4ec38b7de7d87e88d7f215721a11bc338e128f/install.ps1 -OutFile install.ps1
 .\install.ps1 -Command install -WorkDir "$env:USERPROFILE\projects"</code></pre>
           </div>
         </div>
@@ -347,27 +364,27 @@ bash install.sh install --workdir "$HOME/projects"
             <p class="eyebrow">05 / The build</p>
             <h2 class="display">Take the beta for a walk.</h2>
             <p>
-              The first public beta ships as source plus bridge and web
-              bundles. Read the limitations, keep the bridge private, and
-              expect sharp edges.
+              The first public beta ships as source, a release-signed Android
+              build, and bridge and web bundles. Read the limitations, keep
+              the bridge private, and expect sharp edges.
             </p>
             <p class="download-note">
-              Android APK signing and device QA are still pending. Until then,
-              build from source or use the debug workflow for local testing.
+              Android 7.0+ on arm64. Verify the SHA-256 checksum before
+              installing. The APK is not distributed through Google Play.
             </p>
           </div>
           <div class="download-actions">
             <a
               class="button button-primary"
-              href="https://github.com/Aetherdz/opencode-mobile/releases"
+              href="https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.2/opencode-mobile-1.0.0-beta.2.apk"
               rel="noreferrer"
-              >Beta assets</a
+              >Download APK</a
             >
             <a
               class="button button-outline"
               href="https://github.com/Aetherdz/opencode-mobile/releases"
               rel="noreferrer"
-              >Bridge and web bundles</a
+              >Beta assets</a
             >
             <a
               class="button button-outline"
@@ -404,8 +421,9 @@ bash install.sh install --workdir "$HOME/projects"
             <p>
               The bridge talks to OpenCode on loopback. Your device talks to the
               bridge over your private network. There is no hosted relay and no
-              telemetry. If you configure a third-party push service, it
-              receives a token and a generic notification payload.
+              telemetry. The landing page reads the public GitHub star count.
+              If you configure a third-party push service, it receives a token
+              and a generic notification payload.
             </p>
           </details>
           <details class="reveal">
@@ -444,10 +462,13 @@ bash install.sh install --workdir "$HOME/projects"
         </div>
       </div>
       <div class="footer-links">
-        <a href="https://github.com/Aetherdz/opencode-mobile">Source</a>
-        <a href="https://github.com/Aetherdz/opencode-mobile-dist">Installers</a>
-        <a href="https://github.com/Aetherdz/opencode-mobile/blob/main/docs/security.md">Security</a>
-        <a href="https://github.com/Aetherdz/opencode-mobile/blob/main/README.ar.md" lang="ar" dir="rtl">العربية</a>
+        <a href="https://github.com/Aetherdz/opencode-mobile" rel="noreferrer">Source</a>
+        <a href="https://github.com/Aetherdz/opencode-mobile" rel="noreferrer" aria-label="Star OpenCode Mobile on GitHub"
+          >Star <span data-github-stars aria-hidden="true"></span></a
+        >
+        <a href="https://github.com/Aetherdz/opencode-mobile-dist" rel="noreferrer">Installers</a>
+        <a href="https://github.com/Aetherdz/opencode-mobile/blob/main/docs/security.md" rel="noreferrer">Security</a>
+        <a href="https://github.com/Aetherdz/opencode-mobile/blob/main/README.ar.md" rel="noreferrer" lang="ar" dir="rtl">العربية</a>
       </div>
       <p class="footer-legal">
         MIT licensed. Not affiliated with or endorsed by the OpenCode team.

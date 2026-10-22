@@ -18,6 +18,8 @@ jobs:
     steps:
       - name: Check out
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -47,10 +49,13 @@ jobs:
           ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
         run: |
           set -euo pipefail
+          umask 077
           if [ -z "$ANDROID_KEYSTORE_BASE64" ]; then
             echo "::error::ANDROID_KEYSTORE_BASE64 is not configured."
             exit 1
           fi
+          : > "$RUNNER_TEMP/release.keystore"
+          chmod 600 "$RUNNER_TEMP/release.keystore"
           printf '%s' "$ANDROID_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release.keystore"
           test -s "$RUNNER_TEMP/release.keystore"
 
@@ -76,12 +81,27 @@ jobs:
 
       - name: Verify and name APK
         id: artifact
+        env:
+          EXPECTED_CERT_SHA256: ${{ secrets.ANDROID_KEY_CERT_SHA256 }}
         run: |
           set -euo pipefail
           APK="app/android/app/build/outputs/apk/release/app-release.apk"
           test -s "$APK"
           BUILD_TOOLS="$(find "$ANDROID_HOME/build-tools" -mindepth 1 -maxdepth 1 -type d | sort -V | tail -1)"
           "$BUILD_TOOLS/apksigner" verify --verbose --print-certs "$APK"
+          CERT_DN="$("$BUILD_TOOLS/apksigner" verify --print-certs "$APK" | sed -n 's/.*certificate DN: //p' | head -1)"
+          if printf '%s' "$CERT_DN" | grep -qi 'CN=Android Debug'; then
+            echo "::error::APK is debug-signed; refusing to publish it as a release."
+            exit 1
+          fi
+          ACTUAL_CERT_SHA256="$("$BUILD_TOOLS/apksigner" verify --print-certs "$APK" | sed -n 's/.*certificate SHA-256 digest: //p' | head -1)"
+          if [ -n "$EXPECTED_CERT_SHA256" ] && [ "$ACTUAL_CERT_SHA256" != "$EXPECTED_CERT_SHA256" ]; then
+            echo "::error::APK signer $ACTUAL_CERT_SHA256 does not match expected release certificate."
+            exit 1
+          fi
+          if [ -z "$EXPECTED_CERT_SHA256" ]; then
+            echo "::warning::ANDROID_KEY_CERT_SHA256 is not set; pinned release-certificate verification was skipped."
+          fi
           "$BUILD_TOOLS/aapt" dump badging "$APK" | grep -E "^(package|sdkVersion|targetSdkVersion):"
           VERSION="$(node -p "require('./app/app.json').expo.version")"
           SHORT_SHA="${GITHUB_SHA::7}"
@@ -110,3 +130,7 @@ jobs:
             echo "Signed with the project release key stored in repository secrets."
             echo "Verify the certificate and checksum before publishing the asset."
           } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Remove release keystore
+        if: always()
+        run: rm -f "$RUNNER_TEMP/release.keystore"

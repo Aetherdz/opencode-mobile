@@ -25,4 +25,14 @@ describe("AuthGuard", () => {
     guard.reset("10.0.0.1");
     expect(guard.isBanned("10.0.0.1")).toBe(false);
   });
+
+  it("issues one-time WebSocket tickets", () => {
+    const guard = new AuthGuard("x".repeat(40), 3, 60_000);
+    const { ticket, expiresIn } = guard.issueWsTicket(1_000);
+    expect(ticket.length).toBeGreaterThan(20);
+    expect(expiresIn).toBe(1);
+    expect(guard.consumeWsTicket(ticket)).toBe(true);
+    expect(guard.consumeWsTicket(ticket)).toBe(false);
+    expect(guard.consumeWsTicket("missing")).toBe(false);
+  });
 });

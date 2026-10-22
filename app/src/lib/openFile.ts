@@ -14,13 +14,28 @@ export async function openFile(file: MessageFile): Promise<void> {
     const response = await fetch(url, { headers: authHeader() });
     if (!response.ok) throw new Error(`Download failed (${response.status}).`);
     const blob = await response.blob();
+    // A blob: URL inherits this page's origin. Never let a stored HTML/SVG
+    // attachment execute as a document in the app origin, where it could read
+    // the bridge token from sessionStorage. Only raster images and PDFs keep
+    // their type; everything else is forced to plain text.
+    const mime = (file.mime || blob.type || '').split(';', 1)[0].trim().toLowerCase();
+    const safePreview =
+      mime === 'application/pdf' ||
+      mime === 'image/png' ||
+      mime === 'image/jpeg' ||
+      mime === 'image/gif' ||
+      mime === 'image/webp';
+    const safeBlob = safePreview
+      ? blob
+      : new Blob([await blob.arrayBuffer()], { type: 'text/plain;charset=utf-8' });
     const globalWithUrl = globalThis as {
-      URL?: { createObjectURL?: (value: Blob) => string };
-      open?: (url?: string) => void;
+      URL?: { createObjectURL?: (value: Blob) => string; revokeObjectURL?: (url: string) => void };
+      open?: (url?: string, target?: string, features?: string) => void;
     };
-    const objectUrl = globalWithUrl.URL?.createObjectURL?.(blob);
+    const objectUrl = globalWithUrl.URL?.createObjectURL?.(safeBlob);
     if (objectUrl && globalWithUrl.open) {
-      globalWithUrl.open(objectUrl);
+      globalWithUrl.open(objectUrl, '_blank', 'noopener,noreferrer');
+      setTimeout(() => globalWithUrl.URL?.revokeObjectURL?.(objectUrl), 60_000);
       return;
     }
     throw new Error('Downloads are not available in this browser.');

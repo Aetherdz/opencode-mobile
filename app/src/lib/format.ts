@@ -16,7 +16,7 @@ export function formatBytes(bytes: number): string {
 
 export function formatClock(timestamp: number, locale: Locale): string {
   try {
-    return new Intl.DateTimeFormat(locale === 'ar' ? 'ar-EG-u-nu-latn' : 'en-US', {
+    return new Intl.DateTimeFormat(locale === 'ar' ? 'ar-EG-u-nu-latn' : locale === 'fr' ? 'fr-FR' : 'en-US', {
       hour: '2-digit',
       minute: '2-digit',
       hour12: false,
@@ -37,7 +37,7 @@ export function formatRelative(timestamp: number, locale: Locale, now = Date.now
   const days = Math.floor(hours / 24);
   if (days < 7) return translate(locale, 'time.daysShort', { count: days });
   try {
-    return new Intl.DateTimeFormat(locale === 'ar' ? 'ar-EG-u-nu-latn' : 'en-US', {
+    return new Intl.DateTimeFormat(locale === 'ar' ? 'ar-EG-u-nu-latn' : locale === 'fr' ? 'fr-FR' : 'en-US', {
       month: 'short',
       day: 'numeric',
     }).format(new Date(timestamp));
@@ -55,7 +55,7 @@ export function formatDay(timestamp: number, locale: Locale): string {
   if (diff === 0) return translate(locale, 'time.today');
   if (diff === 1) return translate(locale, 'time.yesterday');
   try {
-    return new Intl.DateTimeFormat(locale === 'ar' ? 'ar-EG-u-nu-latn' : 'en-US', {
+    return new Intl.DateTimeFormat(locale === 'ar' ? 'ar-EG-u-nu-latn' : locale === 'fr' ? 'fr-FR' : 'en-US', {
       weekday: 'short',
       month: 'short',
       day: 'numeric',

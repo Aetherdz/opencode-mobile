@@ -316,6 +316,14 @@ export class FileRegistry {
     return [...this.records.values()].filter((record) => record.sessionId === sessionId);
   }
 
+  totalBytesForSession(sessionId: string): number {
+    let total = 0;
+    for (const record of this.records.values()) {
+      if (record.sessionId === sessionId && record.source === "upload") total += record.size;
+    }
+    return total;
+  }
+
   async saveUpload(input: {
     sessionId: string;
     workdir: string;

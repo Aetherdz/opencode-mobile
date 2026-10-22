@@ -21,7 +21,9 @@ type Listener = (event: ServerWsEvent) => void;
 class BridgeSocket {
   private socket: WebSocket | null = null;
   private baseUrl = '';
+  private httpBaseUrl = '';
   private token = '';
+  private opening = false;
   private readonly subscriptions = new Set<string>();
   private readonly listeners = new Set<Listener>();
   private readonly lastEventIds = new Map<string, string>();
@@ -33,11 +35,13 @@ class BridgeSocket {
   private appStateBound = false;
 
   connect(baseUrl: string, token: string): void {
-    const normalized = baseUrl.replace(/\/+$/, '').replace(/^http/i, 'ws');
+    const httpBaseUrl = baseUrl.replace(/\/+$/, '');
+    const normalized = httpBaseUrl.replace(/^http/i, 'ws');
     if (this.socket && this.baseUrl === normalized && this.token === token) {
       if (this.socket.readyState === WebSocket.OPEN) return;
     }
     this.baseUrl = normalized;
+    this.httpBaseUrl = httpBaseUrl;
     this.token = token;
     this.closedByUser = false;
     this.bindAppState();
@@ -90,6 +94,7 @@ class BridgeSocket {
     this.lastEventIds.clear();
     // Do not retain a credential after the user disconnects.
     this.baseUrl = '';
+    this.httpBaseUrl = '';
     this.token = '';
     useConnection.setState({ state: 'idle', latency: null, lastError: null });
   }
@@ -127,72 +132,103 @@ class BridgeSocket {
   }
 
   private open(): void {
-    if (!this.baseUrl || !this.token) return;
+    if (this.opening) return;
+    if (!this.baseUrl || !this.httpBaseUrl || !this.token) return;
     if (this.socket && (this.socket.readyState === WebSocket.OPEN || this.socket.readyState === WebSocket.CONNECTING)) {
       return;
     }
     this.clearTimers();
-    const url = `${this.baseUrl}/ws?token=${encodeURIComponent(this.token)}`;
+    this.opening = true;
+    void this.openWithTicket().finally(() => {
+      this.opening = false;
+    });
+  }
+
+  private async openWithTicket(): Promise<void> {
+    const httpBaseUrl = this.httpBaseUrl;
+    const token = this.token;
+    if (!httpBaseUrl || !token) return;
     useConnection.setState({
       state: this.attempt === 0 ? 'connecting' : 'reconnecting',
       lastError: null,
     });
-    let socket: WebSocket;
     try {
-      socket = new WebSocket(url);
-    } catch {
-      this.scheduleReconnect();
-      return;
-    }
-    this.socket = socket;
-
-    socket.onopen = () => {
-      this.attempt = 0;
-      useConnection.setState({ state: 'open', lastError: null });
-      for (const sessionId of this.subscriptions) {
-        const lastEventId = this.lastEventIds.get(sessionId);
-        this.send({
-          type: 'subscribe',
-          sessionId,
-          ...(lastEventId ? { lastEventId } : {}),
-        });
-      }
-      this.pingTimer = setInterval(() => {
-        this.send({ type: 'ping' });
-      }, 20_000);
-    };
-
-    socket.onmessage = (message) => {
-      let event: ServerWsEvent;
-      try {
-        event = JSON.parse(String(message.data)) as ServerWsEvent;
-      } catch {
-        return;
-      }
-      if (event.type === 'pong') {
-        useConnection.setState({ latency: Math.max(0, Date.now() - event.t) });
-        return;
-      }
-      const record = event as ServerWsEvent & { eventId?: string };
-      if (record.eventId && 'sessionId' in record && typeof record.sessionId === 'string') {
-        this.lastEventIds.set(record.sessionId, record.eventId);
-      }
-      for (const listener of this.listeners) listener(event);
-    };
-
-    socket.onerror = () => {
-      useConnection.setState({ lastError: 'WebSocket error' });
-    };
-
-    socket.onclose = () => {
-      this.socket = null;
-      if (this.pingTimer) {
-        clearInterval(this.pingTimer);
-        this.pingTimer = null;
+      // Fetch a one-time, short-lived ticket instead of putting the bearer
+      // token in the WebSocket URL, where proxies and access logs can see it.
+      const response = await fetch(`${httpBaseUrl}/ws-ticket`, {
+        method: 'POST',
+        headers: { authorization: `Bearer ${token}` },
+      });
+      if (!response.ok) throw new Error(`Ticket request failed (${response.status}).`);
+      const body = (await response.json()) as { ticket?: unknown };
+      if (typeof body.ticket !== 'string' || !body.ticket) {
+        throw new Error('Ticket request returned no ticket.');
       }
       if (this.closedByUser) return;
+      if (this.token !== token) {
+        this.scheduleReconnect();
+        return;
+      }
+      const url = `${this.baseUrl}/ws?ticket=${encodeURIComponent(body.ticket)}`;
+      let socket: WebSocket;
+      try {
+        socket = new WebSocket(url);
+      } catch {
+        this.scheduleReconnect();
+        return;
+      }
+      this.socket = socket;
+
+      socket.onopen = () => {
+        this.attempt = 0;
+        useConnection.setState({ state: 'open', lastError: null });
+        for (const sessionId of this.subscriptions) {
+          const lastEventId = this.lastEventIds.get(sessionId);
+          this.send({
+            type: 'subscribe',
+            sessionId,
+            ...(lastEventId ? { lastEventId } : {}),
+          });
+        }
+        this.pingTimer = setInterval(() => {
+          this.send({ type: 'ping' });
+        }, 20_000);
+      };
+
+      socket.onmessage = (message) => {
+        let event: ServerWsEvent;
+        try {
+          event = JSON.parse(String(message.data)) as ServerWsEvent;
+        } catch {
+          return;
+        }
+        if (event.type === 'pong') {
+          useConnection.setState({ latency: Math.max(0, Date.now() - event.t) });
+          return;
+        }
+        const record = event as ServerWsEvent & { eventId?: string };
+        if (record.eventId && 'sessionId' in record && typeof record.sessionId === 'string') {
+          this.lastEventIds.set(record.sessionId, record.eventId);
+        }
+        for (const listener of this.listeners) listener(event);
+      };
+
+      socket.onerror = () => {
+        useConnection.setState({ lastError: 'WebSocket error' });
+      };
+
+      socket.onclose = () => {
+        this.socket = null;
+        if (this.pingTimer) {
+          clearInterval(this.pingTimer);
+          this.pingTimer = null;
+        }
+        if (this.closedByUser) return;
+        this.scheduleReconnect();
+      };
+    } catch {
       this.scheduleReconnect();
-    };
+    }
   }
 
   private scheduleReconnect(): void {

@@ -15,12 +15,27 @@ export function constantTimeEqual(a: string, b: string): boolean {
 
 export class AuthGuard {
   private readonly failures = new Map<string, FailureRecord>();
+  private readonly wsTickets = new Map<string, number>();
 
   constructor(
     private readonly token: string,
     private readonly banAfter: number,
     private readonly banMs: number,
   ) {}
+
+  issueWsTicket(ttlMs = 30_000): { ticket: string; expiresIn: number } {
+    const ticket = crypto.randomBytes(32).toString("base64url");
+    this.wsTickets.set(ticket, Date.now() + ttlMs);
+    return { ticket, expiresIn: Math.ceil(ttlMs / 1000) };
+  }
+
+  consumeWsTicket(ticket: string | undefined): boolean {
+    if (!ticket) return false;
+    const expiresAt = this.wsTickets.get(ticket);
+    if (!expiresAt) return false;
+    this.wsTickets.delete(ticket);
+    return expiresAt >= Date.now();
+  }
 
   isBanned(key: string): boolean {
     const record = this.failures.get(key);
@@ -60,6 +75,9 @@ export class AuthGuard {
       if (record.bannedUntil && record.bannedUntil <= now) this.failures.delete(key);
       else if (!record.bannedUntil && now - record.firstAt > this.banMs) this.failures.delete(key);
     }
+    for (const [ticket, expiresAt] of this.wsTickets) {
+      if (expiresAt <= now) this.wsTickets.delete(ticket);
+    }
   }
 }
 
@@ -68,23 +86,55 @@ export function bearerFromRequest(request: FastifyRequest): string | undefined {
   if (header?.startsWith("Bearer ")) return header.slice(7).trim();
   const direct = request.headers["x-auth-token"];
   if (typeof direct === "string" && direct.trim()) return direct.trim();
-  // Query tokens are accepted only for the WebSocket upgrade. React Native's
-  // WebSocket implementation cannot attach headers on all platforms.
-  if (request.routeOptions?.url === "/ws") {
-    const query = request.query as Record<string, unknown> | undefined;
-    if (query && typeof query.token === "string") return query.token;
-  }
   return undefined;
+}
+
+export function wsTicketFromRequest(request: FastifyRequest): string | undefined {
+  if (request.routeOptions?.url !== "/ws") return undefined;
+  const query = request.query as Record<string, unknown> | undefined;
+  if (query && typeof query.ticket === "string") return query.ticket;
+  return undefined;
+}
+
+function wsOriginAllowed(
+  origin: string | undefined,
+  host: string | undefined,
+  allowedOrigins: string[],
+): boolean {
+  // Native clients do not send Origin. Browser clients must be same-origin or
+  // explicitly allowlisted; this blocks cross-site WebSocket hijacking.
+  if (!origin) return true;
+  if (allowedOrigins.includes(origin)) return true;
+  try {
+    return Boolean(host) && new URL(origin).host === host;
+  } catch {
+    return false;
+  }
 }
 
 export function registerAuth(
   app: FastifyInstance,
   guard: AuthGuard,
+  allowedOrigins: string[] = [],
 ): (request: FastifyRequest, reply: FastifyReply) => Promise<void> {
   setInterval(() => guard.prune(), 60_000).unref();
 
   return async (request, reply) => {
     const key = request.ip || "unknown";
+    if (request.routeOptions?.url === "/ws") {
+      if (!wsOriginAllowed(request.headers.origin, request.headers.host, allowedOrigins)) {
+        reply.code(403).send({
+          code: "origin_not_allowed",
+          error: "origin_not_allowed",
+          message: "WebSocket origin is not allowed.",
+        });
+        return;
+      }
+      if (guard.consumeWsTicket(wsTicketFromRequest(request))) {
+        guard.reset(key);
+        return;
+      }
+    }
     const token = bearerFromRequest(request);
     // A valid token always wins. This prevents an attacker (or a stale
     // client) from locking the owner out by burning failed attempts for an

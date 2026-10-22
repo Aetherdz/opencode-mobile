@@ -1,5 +1,6 @@
 import { createContext, useContext, type ReactNode } from 'react';
 import { View, type StyleProp, type ViewStyle } from 'react-native';
+import { useSettings } from '@/state/settings';
 
 const RtlContext = createContext(false);
 
@@ -8,9 +9,9 @@ export function useRtl(): boolean {
 }
 
 /**
- * Forces RTL layout for the redesigned screens without changing the global
- * I18nManager or the rest of the app. Text alignment is still explicit in
- * AppText so English copy stays LTR while sitting on the right.
+ * Applies the layout direction for the active locale. English is LTR; Arabic
+ * is RTL. Text primitives still resolve their own direction per string, so
+ * mixed Arabic/English content keeps the correct reading order.
  */
 export function Rtl({
   children,
@@ -19,9 +20,10 @@ export function Rtl({
   children: ReactNode;
   style?: StyleProp<ViewStyle>;
 }) {
+  const rtl = useSettings((state) => state.locale === 'ar');
   return (
-    <RtlContext.Provider value={true}>
-      <View style={[{ direction: 'rtl' }, style]}>{children}</View>
+    <RtlContext.Provider value={rtl}>
+      <View style={[{ direction: rtl ? 'rtl' : 'ltr' }, style]}>{children}</View>
     </RtlContext.Provider>
   );
 }

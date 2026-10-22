@@ -4,6 +4,8 @@ import os from "node:os";
 import path from "node:path";
 import { z } from "zod";
 
+export const BRIDGE_VERSION = "0.2.0";
+
 const DEFAULT_TYPES = [
   "image/png",
   "image/jpeg",
@@ -55,12 +57,23 @@ const DEFAULT_TYPES = [
 const EnvSchema = z.object({
   PORT: z.coerce.number().int().positive().default(8787),
   HOST: z.string().default("127.0.0.1"),
-  AUTH_TOKEN: z.string().min(32, "AUTH_TOKEN must be at least 32 characters"),
+  AUTH_TOKEN: z
+    .string()
+    .min(32, "AUTH_TOKEN must be at least 32 characters")
+    .refine(
+      (value) => !/^(replace-with|change-?me|example|your-|test-|secret|password)/i.test(value.trim()),
+      "AUTH_TOKEN still looks like an example value; generate a random one",
+    )
+    .refine(
+      (value) => new Set(value).size >= 12,
+      "AUTH_TOKEN looks too repetitive; generate a random one",
+    ),
   OPENCODE_URL: z.string().url().optional(),
   OPENCODE_PASSWORD: z.string().optional(),
   ALLOWED_WORKDIRS: z.string().default(os.homedir()),
   MAX_UPLOAD_MB: z.coerce.number().positive().default(25),
   MAX_UPLOAD_TOTAL_MB: z.coerce.number().positive().default(100),
+  MAX_SESSION_UPLOAD_MB: z.coerce.number().positive().default(1024),
   MAX_FILES_PER_MESSAGE: z.coerce.number().int().positive().default(10),
   ALLOWED_UPLOAD_TYPES: z.string().default(DEFAULT_TYPES),
   DATA_DIR: z.string().default("./data"),
@@ -176,6 +189,7 @@ export function loadConfig(): {
   allowedWorkdirs: string[];
   maxUploadBytes: number;
   maxUploadTotalBytes: number;
+  maxSessionUploadBytes: number;
   maxFilesPerMessage: number;
   allowedTypes: { mimes: Set<string>; extensions: Set<string> };
   dataDir: string;
@@ -218,6 +232,7 @@ export function loadConfig(): {
     allowedWorkdirs,
     maxUploadBytes: Math.floor(env.MAX_UPLOAD_MB * 1024 * 1024),
     maxUploadTotalBytes: Math.floor(env.MAX_UPLOAD_TOTAL_MB * 1024 * 1024),
+    maxSessionUploadBytes: Math.floor(env.MAX_SESSION_UPLOAD_MB * 1024 * 1024),
     maxFilesPerMessage: env.MAX_FILES_PER_MESSAGE,
     allowedTypes: parseAllowedTypes(env.ALLOWED_UPLOAD_TYPES),
     dataDir,

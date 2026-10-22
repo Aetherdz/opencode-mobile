@@ -36,7 +36,7 @@ web build is a first-class target.
 - [x] Add tests for allowed, disallowed, and missing origins.
 - [x] Document the web workflow and the same-origin proxy recommendation.
 - [x] Add a web app manifest and document static hosting.
-- [x] Keep `npm run check` green (81 bridge tests at the time of writing).
+- [x] Keep `npm run check` green (84 bridge tests at the time of writing).
 
 Acceptance: a browser served from an allowlisted origin can call the bridge with
 a bearer token; any other origin is rejected by the browser because no CORS
@@ -51,9 +51,10 @@ from CI without exposing signing material.
 - [ ] Replace the icon and settle the trademark position before a stable release.
 - [x] Add `eas.json` and document local and EAS builds.
 - [x] Add a release workflow for bridge/web archives and checksums, plus a
-      separate debug APK workflow that clearly labels the debug signature.
+      separate release-signing workflow for the Android APK.
 - [x] Publish bridge and web bundles with SHA-256 checksums.
-- [ ] Publish a release-signed APK and complete the device QA pass.
+- [x] Publish a release-signed APK.
+- [ ] Complete the physical-device QA pass and produce an iOS build.
 - [x] Add release notes and versioning rules in `docs/release.md`.
 - [ ] Verify the release from a fresh clone.
 
@@ -105,7 +106,7 @@ points to verified downloads.
       Arabic README entry point.
 - [x] Deploy to GitHub Pages.
 - [x] Add a local link/fragment checker; analytics decision: no analytics.
-- [ ] Add an Android APK download once a release-signed build exists.
+- [x] Add a release-signed APK download.
 
 Acceptance: the site works without JavaScript for core content, has no external
 trackers, and every download link resolves to a release artifact with checksums.
@@ -141,7 +142,7 @@ Acceptance: each capability has a design note, tests, and a rollback path.
 | Decision | Current choice | Status |
 | --- | --- | --- |
 | License | MIT | Done |
-| Version | `1.0.0-beta.1`, Android `versionCode 6` | Provisional |
+| Version | `1.0.0-beta.2`, Android `versionCode 7` | Provisional |
 | Package ID | `com.aetherdz.opencodemobile` | Set for beta |
 | App icon | Official OpenCode logo | Trademark risk; replace before stable |
 | Repository layout | Source repo plus separate distribution repo | Done |

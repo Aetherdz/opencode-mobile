@@ -5,6 +5,7 @@ mobile.example.com {
 
 	handle /bridge/* {
 		uri strip_prefix /bridge
+		header Cache-Control "no-store"
 		reverse_proxy 127.0.0.1:8787
 	}
 
@@ -19,11 +20,12 @@ mobile.example.com {
 		X-Content-Type-Options "nosniff"
 		Referrer-Policy "no-referrer"
 		X-Frame-Options "DENY"
+		Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' http: https: ws: wss:; media-src 'self' blob:; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'"
+		Permissions-Policy "camera=(self), microphone=(), geolocation=(), payment=(), usb=(), serial=(), interest-cohort=()"
 		-Server
 	}
 
-	log {
-		output file /var/log/caddy/opencode-mobile.log
-		format json
-	}
+	# Access logging is intentionally disabled: the WebSocket upgrade carries a
+	# one-time ticket in request.uri. If you enable access logs, redact query
+	# strings and never log Authorization headers.
 }

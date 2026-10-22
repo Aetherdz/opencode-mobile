@@ -17,6 +17,7 @@ interface ExpoTicket {
 
 const EXPO_PUSH_URL = process.env.EXPO_PUSH_URL ?? "https://exp.host/--/api/v2/push/send";
 const COOLDOWN_MS = 15_000;
+const MAX_TARGETS = 20;
 
 export class PushService {
   private readonly targets = new Map<string, PushTarget>();
@@ -53,9 +54,13 @@ export class PushService {
     this.saveTimer.unref();
   }
 
-  register(token: string, platform: string): void {
+  register(token: string, platform: string): boolean {
+    if (!this.targets.has(token) && this.targets.size >= MAX_TARGETS) {
+      return false;
+    }
     this.targets.set(token, { token, platform, registeredAt: Date.now() });
     this.scheduleSave();
+    return true;
   }
 
   unregister(token: string): void {
@@ -107,8 +112,7 @@ export class PushService {
             sent += 1;
             return;
           }
-          const token = chunk[ticketIndex];
-          errors.push(`${token?.slice(0, 24) ?? "?"}: ${ticket.details?.error ?? ticket.message ?? "error"}`);
+          errors.push(ticket.details?.error ?? ticket.message ?? "push ticket rejected");
         });
       } catch (error) {
         errors.push(error instanceof Error ? error.message : "push request failed");
