@@ -6,10 +6,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and the project uses [Semantic Versioning](https://semver.org/). This is a
 pre-1.0 beta; minor versions may change the bridge protocol.
 
-## [1.0.0-beta.1] - Unreleased
+## [1.0.0-beta.1] - 2026-10-22
 
 First public beta. The app was previously developed as an internal build; this
-entry describes the public repository state, not a stable release.
+entry describes the public repository state, not a stable release. The Android
+APK is not part of this release until a release-signed build and device QA pass
+are available.
 
 ### Added
 

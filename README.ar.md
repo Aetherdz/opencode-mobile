@@ -56,7 +56,7 @@ flowchart LR
 | Node.js | `22.13` أو أحدث؛ يفضّل Node 24 LTS. |
 | npm | 10 أو أحدث. |
 | Expo | SDK 58 / React Native 0.88. |
-| Android | API 24 أو أحدث. ملفات APK الجاهزة arm64 فقط. |
+| Android | API 24 أو أحدث. ملفات APK للإصدار، عند نشرها، arm64 فقط. |
 | iOS | ابنِ عبر Expo/EAS على macOS. المستودع لا ينتج iOS binary في CI. |
 | Web | Chromium أو Firefox أو Safari حديث. الويب يستخدم `sessionStorage` للتوكن. يحتاج الـBridge إلى same-origin proxy للوصول إلى API. |
 | الشبكة | loopback على الجهاز، مع Tailscale أو نفق خاص للهاتف. |
@@ -268,16 +268,17 @@ npx expo export --platform web
 
 الخطة التفصيلية ومعايير القبول والقرارات المفتوحة في [ROADMAP.md](ROADMAP.md).
 
-أُنجز محلياً:
+المنشور:
 
-- CORS اختياري، وتصدير ويب كـSPA/PWA، وتوثيق الاستضافة الثابتة.
-- وصفات نشر Docker وsystemd وCaddy.
-- موقع ثابت، ومستودع توزيع منفصل بمثبّتات.
+- المصدر: <https://github.com/Aetherdz/opencode-mobile>
+- مثبّتات الطرفية: <https://github.com/Aetherdz/opencode-mobile-dist>
+- الموقع: <https://aetherdz.github.io/opencode-mobile/>
+- حزم Bridge والويب لإصدار beta مع checksums في GitHub Releases.
 
 المتبقي:
 
-- هوية التطبيق النهائية، وأيقونة محايدة، واسم صاحب الترخيص.
-- أتمتة إصدار APK موقّع واختبار الأجهزة.
+- APK أندرويد موقّع للإصدار واختبار الأجهزة.
+- أيقونة محايدة وموقف نهائي من العلامة التجارية.
 - تبديل model وagent عبر الـBridge.
 - TestFlight على iOS وقرار desktop wrapper.
 

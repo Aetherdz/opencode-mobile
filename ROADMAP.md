@@ -47,11 +47,13 @@ headers are returned.
 Goal: a signed Android APK and a reproducible release bundle can be produced
 from CI without exposing signing material.
 
-- [ ] Finalize app identity (package ID, display name, icon, license holder).
+- [x] Set the beta package ID, display name, repository links, and license holder.
+- [ ] Replace the icon and settle the trademark position before a stable release.
 - [x] Add `eas.json` and document local and EAS builds.
 - [x] Add a release workflow for bridge/web archives and checksums, plus a
       separate debug APK workflow that clearly labels the debug signature.
-- [ ] Publish APK, web bundle, bridge bundle, and SHA-256 checksums.
+- [x] Publish bridge and web bundles with SHA-256 checksums.
+- [ ] Publish a release-signed APK and complete the device QA pass.
 - [x] Add release notes and versioning rules in `docs/release.md`.
 - [ ] Verify the release from a fresh clone.
 
@@ -79,7 +81,7 @@ survives a reboot, and exposes no port beyond the intended interface.
 Goal: a new user can install, update, diagnose, and remove the product from a
 terminal.
 
-- [x] Create the separate `opencode-mobile-dist` repository (local, not published).
+- [x] Create and publish the separate `opencode-mobile-dist` repository.
 - [x] Write a POSIX `install.sh` with green success, red error, and yellow
       warning output; disable color when not a TTY or when `NO_COLOR` is set.
 - [x] Write a PowerShell installer for Windows.
@@ -101,8 +103,9 @@ points to verified downloads.
 - [x] Add the unofficial-project disclaimer and trademark notice.
 - [x] Add accessible navigation, focus states, reduced-motion support, and an
       Arabic README entry point.
-- [ ] Deploy to GitHub Pages or Cloudflare Pages.
+- [x] Deploy to GitHub Pages.
 - [x] Add a local link/fragment checker; analytics decision: no analytics.
+- [ ] Add an Android APK download once a release-signed build exists.
 
 Acceptance: the site works without JavaScript for core content, has no external
 trackers, and every download link resolves to a release artifact with checksums.
@@ -145,7 +148,7 @@ Acceptance: each capability has a design note, tests, and a rollback path.
 | Web access | Explicit origin allowlist, no wildcard | In progress |
 | Desktop | PWA first; wrapper later | Deferred |
 | Model switching | Only with stable upstream endpoints | Deferred |
-| Hosting | Static site plus GitHub Releases | Planned |
+| Hosting | GitHub Pages plus GitHub Releases | Live for beta |
 
 ## Risks
 

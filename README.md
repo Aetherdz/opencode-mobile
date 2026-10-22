@@ -57,7 +57,7 @@ See [docs/architecture.md](docs/architecture.md) for the component and event flo
 | Node.js | `22.13` or newer; Node 24 LTS is recommended. |
 | npm | 10 or newer. |
 | Expo | SDK 58 / React Native 0.88. |
-| Android | API 24 or newer. Prebuilt APKs are arm64 only. |
+| Android | API 24 or newer. Release APKs, when published, are arm64 only. |
 | iOS | Build with Expo/EAS on macOS. This repository does not produce an iOS binary in CI. |
 | Web | Current Chromium, Firefox, or Safari. Web uses `sessionStorage` for the token. Add the app origin to `CORS_ORIGINS`; prefer a same-origin proxy for public deployments. |
 | Network | Loopback on the host, plus Tailscale or another private tunnel for the phone. |
@@ -274,16 +274,17 @@ More detail is in [docs/troubleshooting.md](docs/troubleshooting.md).
 The detailed plan, acceptance criteria, and open decisions are in
 [ROADMAP.md](ROADMAP.md).
 
-Prepared locally:
+Published:
 
-- Opt-in CORS, a web SPA/PWA export, and static-host documentation.
-- Docker, systemd, and Caddy deployment recipes.
-- A static website and a separate distribution installer repository.
+- Source: <https://github.com/Aetherdz/opencode-mobile>
+- Terminal installers: <https://github.com/Aetherdz/opencode-mobile-dist>
+- Website: <https://aetherdz.github.io/opencode-mobile/>
+- Bridge and web beta bundles with SHA-256 checksums in GitHub Releases.
 
 Still open:
 
-- Final app identity, a neutral icon, and a license holder name.
-- Signed APK release automation and device QA.
+- A release-signed Android APK and a device QA pass.
+- A neutral icon and a final trademark position.
 - Model and agent switching through the bridge.
 - iOS TestFlight and a desktop wrapper decision.
 

@@ -79,6 +79,10 @@ See [web.md](web.md) for hosting and CORS.
 
 ## Android APK
 
+The first public beta publishes the bridge and web bundles only. Build and
+attach a release-signed APK with the steps below before presenting an Android
+download as available.
+
 ### Option A: EAS preview APK (recommended for distribution)
 
 EAS manages the signing key and gives you a stable upgrade path.
