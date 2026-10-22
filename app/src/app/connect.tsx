@@ -1,8 +1,10 @@
 import * as Clipboard from 'expo-clipboard';
+import { CameraView, useCameraPermissions } from 'expo-camera';
 import { router } from 'expo-router';
 import { useRef, useState, type ComponentRef } from 'react';
 import {
   ActivityIndicator,
+  Modal,
   Platform,
   ScrollView,
   StyleSheet,
@@ -76,6 +78,8 @@ export default function ConnectScreen() {
   const [urlTouched, setUrlTouched] = useState(false);
   const [tokenTouched, setTokenTouched] = useState(false);
   const [attempted, setAttempted] = useState(false);
+  const [scannerOpen, setScannerOpen] = useState(false);
+  const [cameraPermission, requestCameraPermission] = useCameraPermissions();
   const tokenRef = useRef<ComponentRef<typeof TextInput>>(null);
 
   const trimmedUrl = url.trim();
@@ -120,6 +124,45 @@ export default function ConnectScreen() {
     } catch {
       hapticError();
       setError(t('connect.fail'));
+    }
+  };
+
+  const openScanner = async () => {
+    if (Platform.OS === 'web') {
+      setError(t('connect.cameraPermission'));
+      return;
+    }
+    const permission = cameraPermission?.granted
+      ? cameraPermission
+      : await requestCameraPermission();
+    if (!permission?.granted) {
+      setError(t('connect.cameraPermission'));
+      return;
+    }
+    setScannerOpen(true);
+  };
+
+  const handleQr = (raw: string) => {
+    try {
+      const parsed = new URL(raw);
+      if (parsed.protocol !== 'opencode-mobile:' || parsed.hostname !== 'connect') {
+        throw new Error('Unsupported QR format');
+      }
+      const scannedUrl = parsed.searchParams.get('url') ?? '';
+      const scannedToken = parsed.searchParams.get('token') ?? '';
+      if (!HTTP_URL.test(scannedUrl) || scannedToken.length < TOKEN_MIN_LENGTH) {
+        throw new Error('Invalid QR payload');
+      }
+      setUrl(scannedUrl);
+      setToken(scannedToken);
+      setUrlTouched(true);
+      setTokenTouched(true);
+      setError(null);
+      setScannerOpen(false);
+      hapticSuccess();
+    } catch {
+      setError(t('connect.invalidQr'));
+      setScannerOpen(false);
     }
   };
 
@@ -235,6 +278,17 @@ export default function ConnectScreen() {
             </View>
 
             <View style={styles.formGroup}>
+              <Button
+                design="new"
+                label={t('connect.scanQr')}
+                onPress={() => void openScanner()}
+                fullWidth
+                size="md"
+                shape="pill"
+              />
+              <AppText variant="helper" color="secondary">
+                {t('connect.scanHint')}
+              </AppText>
               <View>
                 <TextField
                   design="new"
@@ -408,6 +462,32 @@ export default function ConnectScreen() {
           </ScrollView>
         </KeyboardAvoider>
       </Rtl>
+      <Modal
+        visible={scannerOpen}
+        animationType="slide"
+        onRequestClose={() => setScannerOpen(false)}
+      >
+        <View style={[styles.scanner, { backgroundColor: theme.colors.bg }]}>
+          <CameraView
+            style={StyleSheet.absoluteFill}
+            facing="back"
+            barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
+            onBarcodeScanned={({ data }) => handleQr(data)}
+          />
+          <View style={styles.scannerOverlay}>
+            <AppText variant="connectTitle" color="textStrong">{t('connect.scanQr')}</AppText>
+            <AppText variant="body15" color="textStrong">{t('connect.scanHint')}</AppText>
+            <Button
+              design="new"
+              label={t('common.cancel')}
+              onPress={() => setScannerOpen(false)}
+              fullWidth
+              size="md"
+              shape="pill"
+            />
+          </View>
+        </View>
+      </Modal>
     </Screen>
   );
 }
@@ -415,6 +495,13 @@ export default function ConnectScreen() {
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   flexText: { flex: 1 },
+  scanner: { flex: 1, justifyContent: 'flex-end' },
+  scannerOverlay: {
+    gap: 16,
+    padding: 24,
+    paddingBottom: 40,
+    backgroundColor: 'rgba(0,0,0,0.76)',
+  },
   content: {
     flexGrow: 1,
     justifyContent: 'space-between',

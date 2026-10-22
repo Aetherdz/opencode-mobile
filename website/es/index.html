@@ -17,14 +17,14 @@
     <title>Instalar — OpenCode Mobile</title>
     <meta
       name="description"
-      content="Instala el puente de OpenCode Mobile en el equipo que ejecuta OpenCode y conéctate después desde el teléfono. APK de Android firmado para la versión, compilación web y paquetes del puente."
+              content="Instala OpenCode Mobile una vez y crea un enlace temporal al móvil cuando lo necesites. El bridge permanece en loopback."
     />
     <meta name="theme-color" content="#0a0a0a" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="OpenCode Mobile — instalación" />
     <meta
       property="og:description"
-      content="Tu agente. Tu equipo. Tu bolsillo. Instala el puente y conéctate desde el teléfono."
+              content="Instala el bridge una vez y crea un enlace temporal al móvil cuando lo necesites."
     />
     <meta property="og:url" content="https://aetherdz.github.io/opencode-mobile/es/" />
     <meta
@@ -104,9 +104,9 @@
             <em>Tu bolsillo.</em>
           </h1>
           <p class="lede">
-            Instala un pequeño puente en el equipo que ya ejecuta OpenCode y
-            conéctate desde el teléfono. Sin cuenta, sin servidores intermedios y
-            sin telemetría.
+            Instala el bridge una vez en el equipo de OpenCode y crea un enlace
+            temporal al móvil cuando lo necesites. Sin cuenta ni relay, y sin
+            telemetría en la app.
           </p>
           <div class="actions">
             <a class="button button-primary" href="#install">Instalar el puente</a>
@@ -115,7 +115,7 @@
           <dl class="hero-facts">
             <div>
               <dt>Transporte</dt>
-              <dd>Loopback + Tailscale</dd>
+              <dd>Loopback + enlace temporal</dd>
             </div>
             <div>
               <dt>Licencia</dt>
@@ -202,8 +202,8 @@
           <p class="eyebrow">01 / La instalación</p>
           <h2 class="display">Tres pasos. Sin cuenta.</h2>
           <p>
-            Compila el puente, inicia OpenCode y apunta la app a tu dirección
-            privada. El instalador escribe el token y nunca lo muestra.
+            Instálalo una vez y usa después un comando corto cuando quieras un
+            enlace temporal para el móvil. El bridge queda en loopback.
           </p>
         </div>
         <div class="install-grid">
@@ -212,21 +212,21 @@
               <span class="step-number">01</span>
               <div>
                 <h3>Instalar el puente</h3>
-                <p>Descarga, verifica la suma de verificación y crea una configuración privada.</p>
+                <p>Instala el bridge verificado y crea una configuración privada.</p>
               </div>
             </li>
             <li>
               <span class="step-number">02</span>
               <div>
-                <h3>Iniciar el agente</h3>
-                <p>Mantén OpenCode en loopback. Usa Tailscale para el teléfono.</p>
+                <h3>Crea un enlace cuando lo necesites</h3>
+                <p>Ejecuta <code>opencode-mobile up</code> y elige Tailscale privado o túnel público temporal con confirmación.</p>
               </div>
             </li>
             <li>
               <span class="step-number">03</span>
               <div>
-                <h3>Conectar una vez</h3>
-                <p>Introduce la URL del puente y el token. El token se queda en el dispositivo.</p>
+                <h3>Conecta la aplicación</h3>
+                <p>Escanea el QR de la terminal o introduce la URL y el token; inicia sesión después.</p>
               </div>
             </li>
           </ol>
@@ -255,11 +255,10 @@
                   <span class="copy-label" data-copy-label aria-live="polite">Copiar</span>
                 </button>
               </div>
-              <pre id="cmd-bridge"><code><span class="term-comment"># installer pinned to a commit, verified before it runs</span>
-d=$(mktemp -d) &amp;&amp; cd "$d"
-curl -fsSLO https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>7c4ec38b7de7d87e88d7f215721a11bc338e128f/<wbr>install.sh
-echo "d140292ee5f26172a5ff140c693bc38e65bf244c184f4f9e9af7c2a260b596cb  install.sh" | sha256sum -c -
-bash install.sh install --workdir "$HOME/projects"</code></pre>
+              <pre id="cmd-bridge"><code><span class="term-comment"># Linux/macOS: descarga, revisa y configura una sola vez</span>
+curl -fsSLO https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>main/<wbr>install.sh &amp;&amp; less install.sh &amp;&amp; bash install.sh setup --workdir "$HOME/projects"
+<span class="term-comment"># Después: Tailscale privado o enlace público temporal con confirmación</span>
+opencode-mobile up</code></pre>
             </div>
 
             <div class="cmd-panel" id="panel-win">
@@ -296,7 +295,7 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
         <div class="docs-grid">
           <article class="docs-card">
             <span>Equipo</span>
-            <h3>Node.js 22.13 o superior</h3>
+            <h3>Node.js 22 o superior</h3>
             <p>El puente es un servicio Node sencillo. Sin base de datos, sin daemon y sin root.</p>
           </article>
           <article class="docs-card">
@@ -329,13 +328,14 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
             </p>
             <p class="download-note">
               Android 7.0+ en arm64. El APK no se distribuye a través de Google
-              Play. Verifícalo antes de instalar:
+              Play. Instálalo desde la página de versiones después de configurar el bridge:
             </p>
             <p class="download-note download-hash">
               sha256&nbsp;14eacd032ec5be69c4758032b2108e2a0f37dfd6aa6df2a85535c8d294d8234f
             </p>
           </div>
           <div class="download-actions">
+            <a class="button button-outline" href="./#install">Configurar el bridge</a>
             <a
               class="button button-primary"
               href="https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.2/opencode-mobile-1.0.0-beta.2.apk"

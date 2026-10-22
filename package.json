@@ -15,11 +15,13 @@
     "typecheck": "npm run typecheck:app && npm run typecheck:bridge",
     "lint": "cd app && npm run lint",
     "test": "cd bridge && npm test",
+    "test:setup": "node --test scripts/mobile-share.test.mjs",
     "build:bridge": "cd bridge && npm run build",
     "web:export": "cd app && npm run web:export",
     "check:site": "node scripts/check-site.mjs",
     "dev:bridge": "cd bridge && npm run dev",
+    "mobile:share": "node scripts/mobile-share.mjs",
     "dev:app": "cd app && npm run start",
-    "check": "npm run typecheck && npm run lint && npm run test"
+    "check": "npm run typecheck && npm run lint && npm run test && npm run test:setup"
   }
 }

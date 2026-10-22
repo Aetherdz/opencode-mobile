@@ -45,6 +45,9 @@ paths, or personal session titles are shown.
 | --- | --- | --- | --- |
 | <img src="docs/images/connect.png" alt="Connect screen" width="190" /> | <img src="docs/images/sessions.png" alt="Sessions screen" width="190" /> | <img src="docs/images/chat.png" alt="Chat screen" width="190" /> | <img src="docs/images/question.png" alt="Agent question card" width="190" /> |
 
+The connection screen also accepts the QR payload printed by `opencode-mobile up`;
+manual URL and token entry remain available.
+
 | Light theme | Français | العربية |
 | --- | --- | --- |
 | <img src="docs/images/sessions-light.png" alt="Light sessions screen" width="190" /> | <img src="docs/images/sessions-fr.png" alt="French sessions screen" width="190" /> | <img src="docs/images/sessions-ar.png" alt="Arabic RTL sessions screen" width="190" /> |
@@ -75,6 +78,28 @@ built-in Telegram bot, and a native desktop wrapper. The app does receive a
 `telegram` source label when another OpenCode client is used.
 
 ## Quick start
+
+### One-time host setup (Linux/macOS)
+
+For an automated install, see the [distribution installer](https://github.com/Aetherdz/opencode-mobile-dist). Review the script before running it; the website bootstrap fetches `main` and therefore trusts that branch:
+
+```bash
+bash install.sh setup --workdir "$HOME/projects"
+opencode-mobile up
+```
+
+The command above assumes the reviewed installer is in the current directory;
+clone `opencode-mobile-dist` first or download `install.sh` and inspect it.
+
+`setup` verifies the bridge release against `SHA256SUMS`, prompts for a
+project directory, preserves an existing token/config, and keeps the bridge on
+`127.0.0.1`. `up` checks OpenCode and bridge health, then offers private
+Tailscale Serve or an explicitly confirmed public temporary Cloudflare tunnel.
+Both URL and token can control the agent; the public URL changes each run and
+is not saved. `down`, `status`, `doctor`, and `apk` are available. The current
+APK is arm64-v8a only; `apk` verifies and displays its URL/checksum and does not
+install with adb without interactive approval. See the installer README for
+supported host architectures and setup limitations.
 
 ### 1. Start OpenCode
 

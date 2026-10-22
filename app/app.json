@@ -58,6 +58,13 @@
         }
       ],
       "expo-secure-store",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow OpenCode Mobile to scan a bridge connection QR code.",
+          "barcodeScannerEnabled": true
+        }
+      ],
       "expo-sharing",
       "expo-image",
       "expo-status-bar",

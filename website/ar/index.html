@@ -17,14 +17,14 @@
     <title>التثبيت — OpenCode Mobile</title>
     <meta
       name="description"
-      content="ثبّت جسر OpenCode Mobile على الجهاز الذي يشغّل OpenCode، ثم اتصل من هاتفك. تطبيق Android APK موقّع للإصدار، ونسخة ويب، وحزم الجسر."
+              content="ثبّت OpenCode Mobile مرة واحدة، ثم أنشئ رابطًا مؤقتًا للهاتف عند الحاجة. يبقى الجسر على loopback."
     />
     <meta name="theme-color" content="#0a0a0a" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="OpenCode Mobile — التثبيت" />
     <meta
       property="og:description"
-      content="وكيلك. جهازك. جيبك. ثبّت الجسر، ثم اتصل من هاتفك."
+              content="ثبّت الجسر مرة واحدة، وأنشئ رابط هاتف مؤقتًا كلما احتجت إليه."
     />
     <meta property="og:url" content="https://aetherdz.github.io/opencode-mobile/ar/" />
     <meta
@@ -104,8 +104,8 @@
             <em>في جيبك.</em>
           </h1>
           <p class="lede">
-            ثبّت جسرًا صغيرًا على الجهاز الذي يشغّل OpenCode بالفعل، ثم اتصل من
-            هاتفك. بلا حساب، وبلا خادم وسيط، وبلا تتبّع.
+            ثبّت الجسر مرة واحدة على جهاز OpenCode، ثم أنشئ رابطًا مؤقتًا لهاتفك
+            عند الحاجة. بلا حساب أو خادم وسيط، وبلا تتبّع في التطبيق.
           </p>
           <div class="actions">
             <a class="button button-primary" href="#install">ثبّت الجسر</a>
@@ -114,7 +114,7 @@
           <dl class="hero-facts">
             <div>
               <dt>النقل</dt>
-              <dd>Loopback + Tailscale</dd>
+              <dd>Loopback + رابط مؤقت</dd>
             </div>
             <div>
               <dt>الترخيص</dt>
@@ -201,8 +201,8 @@
           <p class="eyebrow">01 / التثبيت</p>
           <h2 class="display">ثلاث خطوات. بلا حساب.</h2>
           <p>
-            ابنِ الجسر، وشغّل OpenCode، ووجّه التطبيق إلى عنوانك الخاص. يكتب
-            المثبّت الرمز، ولا يطبعه أبدًا.
+            ثبّت مرة واحدة، ثم استخدم أمرًا قصيرًا كلما احتجت رابطًا مؤقتًا
+            للهاتف. يتحقق المثبّت من الحزمة ويبقي الجسر على loopback.
           </p>
         </div>
         <div class="install-grid">
@@ -211,21 +211,21 @@
               <span class="step-number">01</span>
               <div>
                 <h3>ثبّت الجسر</h3>
-                <p>نزّل الحزمة، وتحقق من بصمة التحقق، وأنشئ إعدادًا خاصًا.</p>
+                <p>ثبّت الجسر بعد التحقق وأنشئ إعدادًا خاصًا.</p>
               </div>
             </li>
             <li>
               <span class="step-number">02</span>
               <div>
-                <h3>شغّل الوكيل</h3>
-                <p>أبقِ OpenCode على loopback. واستخدم Tailscale للهاتف.</p>
+                <h3>أنشئ رابط الهاتف عند الحاجة</h3>
+                <p>شغّل <code>opencode-mobile up</code> واختر Tailscale الخاص أو نفقًا عامًا مؤقتًا بعد الموافقة.</p>
               </div>
             </li>
             <li>
               <span class="step-number">03</span>
               <div>
-                <h3>اتصل مرة واحدة</h3>
-                <p>أدخل عنوان الجسر والرمز. يبقى الرمز على الجهاز.</p>
+                <h3>اربط التطبيق</h3>
+                <p>امسح QR الظاهر في الطرفية أو أدخل الرابط والرمز يدويًا؛ سجّل الدخول بعد الاتصال.</p>
               </div>
             </li>
           </ol>
@@ -254,11 +254,10 @@
                   <span class="copy-label" data-copy-label aria-live="polite">نسخ</span>
                 </button>
               </div>
-              <pre id="cmd-bridge"><code><span class="term-comment"># installer pinned to a commit, verified before it runs</span>
-d=$(mktemp -d) &amp;&amp; cd "$d"
-curl -fsSLO https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>7c4ec38b7de7d87e88d7f215721a11bc338e128f/<wbr>install.sh
-echo "d140292ee5f26172a5ff140c693bc38e65bf244c184f4f9e9af7c2a260b596cb  install.sh" | sha256sum -c -
-bash install.sh install --workdir "$HOME/projects"</code></pre>
+              <pre id="cmd-bridge"><code><span class="term-comment"># نزّل المثبّت وراجعه ثم أعد الإعداد مرة واحدة (Linux/macOS)</span>
+curl -fsSLO https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>main/<wbr>install.sh &amp;&amp; less install.sh &amp;&amp; bash install.sh setup --workdir "$HOME/projects"
+<span class="term-comment"># لاحقًا: اختر Tailscale الخاص أو رابطًا عامًا مؤقتًا بموافقة صريحة</span>
+opencode-mobile up</code></pre>
             </div>
 
             <div class="cmd-panel" id="panel-win">
@@ -295,7 +294,7 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
         <div class="docs-grid">
           <article class="docs-card">
             <span>الجهاز المضيف</span>
-            <h3>Node.js 22.13 أو أحدث</h3>
+            <h3>Node.js 22 أو أحدث</h3>
             <p>الجسر خدمة Node عادية. بلا قاعدة بيانات، وبلا خدمة خلفية، وبلا صلاحيات جذر.</p>
           </article>
           <article class="docs-card">
@@ -327,14 +326,15 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
               غير المصقولة.
             </p>
             <p class="download-note">
-              Android 7.0+ على arm64. لا يوزّع APK عبر Google Play. تحقق منه قبل
-              التثبيت:
+              Android 7.0+ على arm64. لا يوزّع APK عبر Google Play. ثبّته من
+              صفحة الإصدارات بعد إعداد الجسر:
             </p>
             <p class="download-note download-hash">
               sha256&nbsp;14eacd032ec5be69c4758032b2108e2a0f37dfd6aa6df2a85535c8d294d8234f
             </p>
           </div>
           <div class="download-actions">
+            <a class="button button-outline" href="./#install">إعداد الجسر</a>
             <a
               class="button button-primary"
               href="https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.2/opencode-mobile-1.0.0-beta.2.apk"

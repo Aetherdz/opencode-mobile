@@ -195,6 +195,30 @@ only exposes the service to devices in your tailnet. Do not use Funnel unless
 you intentionally want a public endpoint and have reviewed the token and rate
 limit implications.
 
+## Quick mobile test
+
+For a short test from a phone, install [`cloudflared`](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/)
+once, make sure OpenCode is running, then run this from the repository root:
+
+```bash
+npm run --silent mobile:share -- --workdir /absolute/path/to/one/project
+```
+
+The launcher creates `bridge/.env` on first run, generates a random pairing
+token, keeps the bridge on loopback, starts a temporary Cloudflare Quick Tunnel,
+and displays the URL and token locally in a compact status view. Add both values
+to the app yourself. The token is shown only in this terminal; it is not sent to
+Telegram or included in the bridge service logs.
+Press Ctrl+C to stop both processes. Each quick-tunnel URL is temporary and may
+change on the next run; treat it as a public endpoint and use it only while
+testing. For a client running on the same computer, add `--local` to skip the
+tunnel.
+
+If `ALLOWED_WORKDIRS` is unset or still has the example placeholder, the
+launcher restricts it to the selected `--workdir` (or the current directory).
+It preserves an existing valid token and workdir configuration. Keep
+`bridge/.env` private and do not paste the token into chats.
+
 ## Security checklist
 
 - [ ] `AUTH_TOKEN` is random, at least 32 characters, and not reused.

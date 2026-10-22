@@ -17,14 +17,14 @@
     <title>Installer — OpenCode Mobile</title>
     <meta
       name="description"
-      content="Installez la passerelle OpenCode Mobile sur la machine qui exécute OpenCode, puis connectez-vous depuis votre téléphone. APK Android signé pour la version, version web et paquets de la passerelle."
+              content="Installez OpenCode Mobile une fois, puis créez un lien temporaire vers le téléphone quand nécessaire. La passerelle reste sur loopback."
     />
     <meta name="theme-color" content="#0a0a0a" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="OpenCode Mobile — installation" />
     <meta
       property="og:description"
-      content="Votre agent. Votre machine. Votre poche. Installez la passerelle, puis connectez-vous depuis votre téléphone."
+              content="Installez la passerelle une fois, puis créez un lien temporaire vers le téléphone quand nécessaire."
     />
     <meta property="og:url" content="https://aetherdz.github.io/opencode-mobile/fr/" />
     <meta
@@ -104,9 +104,9 @@
             <em>Votre poche.</em>
           </h1>
           <p class="lede">
-            Installez une petite passerelle sur la machine qui exécute déjà
-            OpenCode, puis connectez-vous depuis votre téléphone. Aucun compte,
-            aucun relais, aucune télémétrie.
+            Installez la passerelle une fois sur la machine OpenCode, puis créez
+            un lien temporaire vers le téléphone au besoin. Sans compte ni relais,
+            et sans télémétrie dans l’application.
           </p>
           <div class="actions">
             <a class="button button-primary" href="#install">Installer la passerelle</a>
@@ -115,7 +115,7 @@
           <dl class="hero-facts">
             <div>
               <dt>Transport</dt>
-              <dd>Loopback + Tailscale</dd>
+              <dd>Loopback + lien temporaire</dd>
             </div>
             <div>
               <dt>Licence</dt>
@@ -202,9 +202,8 @@
           <p class="eyebrow">01 / L’installation</p>
           <h2 class="display">Trois étapes. Aucun compte.</h2>
           <p>
-            Lancez la passerelle, démarrez OpenCode et indiquez à l’application
-            votre adresse privée. Le programme d’installation écrit le jeton ; il
-            ne l’affiche jamais.
+            Installez une fois, puis lancez une commande courte pour obtenir un
+            lien temporaire vers le téléphone. La passerelle reste sur loopback.
           </p>
         </div>
         <div class="install-grid">
@@ -213,21 +212,21 @@
               <span class="step-number">01</span>
               <div>
                 <h3>Installer la passerelle</h3>
-                <p>Téléchargez, vérifiez la somme de contrôle et créez une configuration privée.</p>
+                <p>Installez la passerelle vérifiée et créez une configuration privée.</p>
               </div>
             </li>
             <li>
               <span class="step-number">02</span>
               <div>
-                <h3>Démarrer l’agent</h3>
-                <p>Gardez OpenCode sur loopback. Utilisez Tailscale pour le téléphone.</p>
+                <h3>Créez un lien au besoin</h3>
+                <p>Lancez <code>opencode-mobile up</code> et choisissez Tailscale privé ou tunnel public temporaire avec confirmation.</p>
               </div>
             </li>
             <li>
               <span class="step-number">03</span>
               <div>
-                <h3>Se connecter une seule fois</h3>
-                <p>Saisissez l’URL de la passerelle et le jeton. Le jeton reste sur l’appareil.</p>
+                <h3>Connectez l’application</h3>
+                <p>Scannez le QR du terminal ou saisissez l’URL et le jeton. Connectez-vous ensuite.</p>
               </div>
             </li>
           </ol>
@@ -256,11 +255,10 @@
                   <span class="copy-label" data-copy-label aria-live="polite">Copier</span>
                 </button>
               </div>
-              <pre id="cmd-bridge"><code><span class="term-comment"># installer pinned to a commit, verified before it runs</span>
-d=$(mktemp -d) &amp;&amp; cd "$d"
-curl -fsSLO https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>7c4ec38b7de7d87e88d7f215721a11bc338e128f/<wbr>install.sh
-echo "d140292ee5f26172a5ff140c693bc38e65bf244c184f4f9e9af7c2a260b596cb  install.sh" | sha256sum -c -
-bash install.sh install --workdir "$HOME/projects"</code></pre>
+              <pre id="cmd-bridge"><code><span class="term-comment"># Linux/macOS : téléchargez, vérifiez, puis configurez une fois</span>
+curl -fsSLO https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>main/<wbr>install.sh &amp;&amp; less install.sh &amp;&amp; bash install.sh setup --workdir "$HOME/projects"
+<span class="term-comment"># Ensuite : Tailscale privé ou lien public temporaire avec confirmation</span>
+opencode-mobile up</code></pre>
             </div>
 
             <div class="cmd-panel" id="panel-win">
@@ -297,7 +295,7 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
         <div class="docs-grid">
           <article class="docs-card">
             <span>Hôte</span>
-            <h3>Node.js 22.13 ou plus récent</h3>
+            <h3>Node.js 22 ou plus récent</h3>
             <p>La passerelle est un simple service Node. Pas de base de données, pas de démon, pas de root.</p>
           </article>
           <article class="docs-card">
@@ -330,13 +328,14 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
             </p>
             <p class="download-note">
               Android 7.0+ sur arm64. L’APK n’est pas distribué via Google Play.
-              Vérifiez-le avant de l’installer :
+              Installez-le depuis la page des versions après la configuration :
             </p>
             <p class="download-note download-hash">
               sha256&nbsp;14eacd032ec5be69c4758032b2108e2a0f37dfd6aa6df2a85535c8d294d8234f
             </p>
           </div>
           <div class="download-actions">
+            <a class="button button-outline" href="./#install">Configurer le bridge</a>
             <a
               class="button button-primary"
               href="https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.2/opencode-mobile-1.0.0-beta.2.apk"

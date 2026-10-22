@@ -45,6 +45,10 @@ const strings: Record<string, Entry> = {
   },
   'connect.paste': { en: 'Paste', ar: 'لصق' },
   'connect.pasteEmpty': { en: 'The clipboard is empty.', ar: 'الحافظة فارغة.' },
+  'connect.scanQr': { en: 'Scan QR code', ar: 'مسح رمز QR' },
+  'connect.scanHint': { en: 'Scan a QR code containing the bridge URL and access token.', ar: 'امسح رمز QR الذي يحتوي على رابط الجسر ورمز الوصول.' },
+  'connect.cameraPermission': { en: 'Camera access is needed to scan a connection QR code.', ar: 'يلزم السماح بالكاميرا لمسح رمز اتصال QR.' },
+  'connect.invalidQr': { en: 'This QR code is not a valid OpenCode Mobile connection.', ar: 'رمز QR هذا ليس إعداد اتصال صالحًا لـ OpenCode Mobile.' },
   'connect.urlInvalid': {
     en: 'Start with http:// or https://.',
     ar: 'ابدأ بـ http:// أو https://.',

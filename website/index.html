@@ -17,14 +17,14 @@
     <title>Install — OpenCode Mobile</title>
     <meta
       name="description"
-      content="Install the OpenCode Mobile bridge on the machine that runs OpenCode, then connect from your phone. Release-signed Android APK, web build, and bridge bundles."
+      content="Install OpenCode Mobile once, then create a temporary phone link whenever you need it. The bridge stays on loopback."
     />
     <meta name="theme-color" content="#0a0a0a" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="OpenCode Mobile — install" />
     <meta
       property="og:description"
-      content="Your agent. Your machine. Your pocket. Install the bridge, then connect from your phone."
+      content="Install the bridge once, then create a temporary phone link whenever you need it."
     />
     <meta property="og:url" content="https://aetherdz.github.io/opencode-mobile/" />
     <meta
@@ -105,7 +105,7 @@
           </h1>
           <p class="lede">
             Install a small bridge on the machine that already runs OpenCode,
-            then connect from your phone. No account, no relay, no telemetry.
+            then connect from your phone. No account or relay, and no app telemetry.
           </p>
           <div class="actions">
             <a class="button button-primary" href="#install">Install the bridge</a>
@@ -114,7 +114,7 @@
           <dl class="hero-facts">
             <div>
               <dt>Transport</dt>
-              <dd>Loopback + Tailscale</dd>
+              <dd>Loopback + temporary link</dd>
             </div>
             <div>
               <dt>License</dt>
@@ -201,8 +201,9 @@
           <p class="eyebrow">01 / The install</p>
           <h2 class="display">Three steps. No account.</h2>
           <p>
-            Build the bridge, start OpenCode, and point the app at your private
-            address. The installer writes the token; it never prints it.
+            Install once, then use a short command whenever you want a temporary
+            phone link. The one-time setup is verified and keeps the bridge on
+            loopback.
           </p>
         </div>
         <div class="install-grid">
@@ -211,21 +212,21 @@
               <span class="step-number">01</span>
               <div>
                 <h3>Install the bridge</h3>
-                <p>Download, verify the checksum, and create a private config.</p>
+                <p>Install the verified bridge and create a private config.</p>
               </div>
             </li>
             <li>
               <span class="step-number">02</span>
               <div>
-                <h3>Start the agent</h3>
-                <p>Keep OpenCode on loopback. Use Tailscale for the phone.</p>
+                <h3>Start a phone link when needed</h3>
+                <p>Use <code>opencode-mobile up</code>; choose private Tailscale or a public temporary link with confirmation.</p>
               </div>
             </li>
             <li>
               <span class="step-number">03</span>
               <div>
-                <h3>Connect once</h3>
-                <p>Enter the bridge URL and token. The token stays on the device.</p>
+                <h3>Connect the app</h3>
+                <p>Scan the terminal QR or enter its URL and token manually; sign in after connecting.</p>
               </div>
             </li>
           </ol>
@@ -254,11 +255,10 @@
                   <span class="copy-label" data-copy-label aria-live="polite">Copy</span>
                 </button>
               </div>
-              <pre id="cmd-bridge"><code><span class="term-comment"># installer pinned to a commit, verified before it runs</span>
-d=$(mktemp -d) &amp;&amp; cd "$d"
-curl -fsSLO https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>7c4ec38b7de7d87e88d7f215721a11bc338e128f/<wbr>install.sh
-echo "d140292ee5f26172a5ff140c693bc38e65bf244c184f4f9e9af7c2a260b596cb  install.sh" | sha256sum -c -
-bash install.sh install --workdir "$HOME/projects"</code></pre>
+              <pre id="cmd-bridge"><code><span class="term-comment"># Download, review, then set up once</span>
+curl -fsSLO https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>main/<wbr>install.sh &amp;&amp; less install.sh &amp;&amp; bash install.sh setup --workdir "$HOME/projects"
+<span class="term-comment"># Later: private Tailscale or explicitly approved temporary public link</span>
+opencode-mobile up</code></pre>
             </div>
 
             <div class="cmd-panel" id="panel-win">
@@ -295,7 +295,7 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
         <div class="docs-grid">
           <article class="docs-card">
             <span>Host</span>
-            <h3>Node.js 22.13 or newer</h3>
+            <h3>Node.js 22 or newer</h3>
             <p>The bridge is a plain Node service. No database, no daemon, no root.</p>
           </article>
           <article class="docs-card">
@@ -305,8 +305,8 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
           </article>
           <article class="docs-card">
             <span>Phone</span>
-            <h3>A private address</h3>
-            <p>Loopback for the same machine, Tailscale or a tunnel for anything else.</p>
+            <h3>Private by default</h3>
+            <p>Tailscale Serve is private. A public temporary tunnel requires a warning and confirmation each run.</p>
           </article>
           <article class="docs-card">
             <span>Token</span>
@@ -328,13 +328,14 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
             </p>
             <p class="download-note">
               Android 7.0+ on arm64. The APK is not distributed through Google
-              Play. Verify it before installing:
+              Play. Install it from the release page after quick setup:
             </p>
             <p class="download-note download-hash">
               sha256&nbsp;14eacd032ec5be69c4758032b2108e2a0f37dfd6aa6df2a85535c8d294d8234f
             </p>
           </div>
           <div class="download-actions">
+            <a class="button button-outline" href="./#install">Set up the bridge</a>
             <a
               class="button button-primary"
               href="https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.2/opencode-mobile-1.0.0-beta.2.apk"
