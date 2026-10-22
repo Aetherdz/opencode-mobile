@@ -348,11 +348,41 @@ main {
 }
 
 .hero-copy { padding-top: clamp(0rem, 2.5vw, 2rem); }
+.hero-copy .hero-release { margin-top: 1.15rem; }
+.hero-copy .actions { margin-top: 0.9rem; }
+
+.hero-command {
+  display: grid;
+  gap: 0.45rem;
+  max-width: 37rem;
+  margin-top: 0.8rem;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 0.65rem;
+  background: var(--ink);
+  color: #e9e9e1;
+}
+
+.hero-command-label {
+  color: #a4a49b;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.hero-command code {
+  display: block;
+  overflow-wrap: anywhere;
+  color: inherit;
+  font-family: var(--mono);
+  font-size: clamp(0.56rem, 0.8vw, 0.72rem);
+  line-height: 1.55;
+}
 
 .hero > .hero-art { grid-column: 1; grid-row: 1; }
 .hero > .hero-copy { grid-column: 2; grid-row: 1; }
 .hero > .hero-copy .lede { margin-top: 0; }
-.hero > .hero-copy .actions { margin-top: 1rem; }
 
 .eyebrow {
   margin: 0 0 1.4rem;
@@ -1747,19 +1777,16 @@ main {
   }
 
   .hero-art {
-    min-height: 34rem;
+    min-height: clamp(22rem, 72vw, 34rem);
     grid-column: 1;
     grid-row: 1;
   }
 
-  .hero h1 {
-    font-size: clamp(3.6rem, 13vw, 6.4rem);
-  }
-
   .hero-copy { grid-column: 1; grid-row: 2; max-width: 42rem; margin-inline: auto; padding-top: 0; }
   .hero > .hero-copy .lede { margin-top: 1.4rem; }
-  .hero .display { max-width: 10ch; }
+  .hero .display { max-width: 12ch; font-size: clamp(2.8rem, 10.5vw, 4.5rem); }
   .hero-release { max-width: 42rem; }
+  .hero-command { max-width: 42rem; }
 
   .feature-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1861,20 +1888,21 @@ main {
   }
 
   .hero .eyebrow { font-size: 0.62rem; letter-spacing: 0.06em; }
-  .hero .display { font-size: clamp(3.25rem, 16vw, 5.2rem); }
-  .hero-release { align-items: stretch; flex-direction: column; }
+  .hero-release { align-items: stretch; flex-direction: column; margin-top: 1.25rem; }
   .hero-release-button { justify-content: space-between; }
+  .hero-command { width: 100%; }
 
   .hero-art {
-    min-height: 30rem;
+    min-height: clamp(18rem, 86vw, 27rem);
   }
 
   .phone {
-    width: min(18rem, 84vw);
+    width: min(15rem, 68vw);
+    transform: rotate(1deg);
   }
 
   .phone-screen {
-    min-height: 24rem;
+    min-height: 19rem;
   }
 
   .hero-facts {
@@ -2399,15 +2427,16 @@ html[dir="rtl"] code {
   .lang-switch summary { min-height: 2.35rem; padding-inline: 0.45rem; }
   .menu-toggle { width: 2.35rem; height: 2.35rem; }
 
-  .hero h1 {
-    font-size: clamp(3rem, 14vw, 3.8rem);
-  }
-
-  .hero .display { font-size: clamp(3rem, 15vw, 4rem); }
+  .hero .display { font-size: clamp(2.45rem, 10.8vw, 3.25rem); }
   .hero .eyebrow { max-width: 100%; flex-wrap: wrap; }
   .hero-release { padding: 0.8rem; }
   .hero-release-copy strong { font-size: 0.8rem; }
   .hero-release-copy small { font-size: 0.62rem; }
+  .hero-art { min-height: clamp(16rem, 80vw, 21rem); }
+  .phone { width: min(13.5rem, 64vw); }
+  .phone-screen { min-height: 17rem; }
+  .hero-command { padding: 0.65rem; }
+  .hero-command code { font-size: 0.62rem; }
 
   .cmd-tabs label {
     min-height: 3rem;

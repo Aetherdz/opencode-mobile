@@ -98,15 +98,25 @@ for (const relative of homePages) {
     continue;
   }
   const hero = html.slice(heroStart, heroEndTag);
-  for (const selector of ['class="eyebrow"', "<h1", 'class="lede"', 'class="hero-release"']) {
+  for (const selector of ['class="eyebrow"', "<h1", 'class="lede"', 'class="hero-release"', 'class="hero-command"', 'class="actions"']) {
     if (!hero.includes(selector)) errors.push(`${relative}: homepage hero is missing ${selector}`);
   }
   const artIndex = hero.indexOf('class="hero-art"');
   const copyIndex = hero.indexOf('class="hero-copy"');
-  const introIndex = hero.indexOf('class="lede"');
+  const actionsIndex = hero.indexOf('class="actions"');
+  const ledeIndex = hero.indexOf('class="lede"');
   const releaseIndex = hero.indexOf('class="hero-release"');
-  if (!(artIndex >= 0 && artIndex < copyIndex && copyIndex < introIndex && introIndex < releaseIndex)) {
-    errors.push(`${relative}: homepage hero order must be phone art, intro copy, then Android release card`);
+  const commandIndex = hero.indexOf('class="hero-command"');
+  const releaseEndIndex = hero.indexOf('</div>', releaseIndex);
+  const commandEndIndex = hero.indexOf('</div>', commandIndex);
+  const firstCloseAfterActions = hero.indexOf('</div>', actionsIndex);
+  const secondCloseAfterActions = hero.indexOf('</div>', firstCloseAfterActions + 6);
+  if (!(artIndex >= 0 && copyIndex > artIndex && ledeIndex > copyIndex && releaseIndex > ledeIndex && commandIndex > releaseEndIndex && actionsIndex > commandEndIndex && firstCloseAfterActions > actionsIndex && secondCloseAfterActions > firstCloseAfterActions)) {
+    errors.push(`${relative}: hero must place the APK card, setup command, then action links after the intro`);
+  }
+  const commandText = hero.slice(commandIndex, commandEndIndex);
+  if (!commandText.includes('curl -fsSL https://raw.githubusercontent.com/Aetherdz/opencode-mobile-dist/main/install.sh | bash -s -- setup')) {
+    errors.push(`${relative}: hero setup command is missing or incorrect`);
   }
   for (const id of ["install", "download", "next", "requirements"]) {
     if ((html.match(new RegExp(`id="${id}"`, "g")) ?? []).length !== 1) {
