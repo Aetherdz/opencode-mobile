@@ -30,10 +30,13 @@
     const copySource = document.getElementById(copyButton.dataset.copyTarget);
     if (!copySource) return;
 
+    let resetTimer = 0;
     copyButton.addEventListener("click", async () => {
       const text = copySource.textContent.trim();
+      let copied = false;
       try {
         await navigator.clipboard.writeText(text);
+        copied = true;
       } catch {
         const area = document.createElement("textarea");
         area.value = text;
@@ -42,11 +45,14 @@
         area.style.opacity = "0";
         document.body.append(area);
         area.select();
-        document.execCommand("copy");
+        copied = document.execCommand("copy");
         area.remove();
       }
-      copyButton.textContent = "Copied";
-      window.setTimeout(() => {
+      copyButton.textContent = copied ? "Copied" : "Press Ctrl+C";
+      // One shared timer per button: a second click must not be reset early
+      // by the timer left over from the first one.
+      window.clearTimeout(resetTimer);
+      resetTimer = window.setTimeout(() => {
         copyButton.textContent = "Copy";
       }, 1800);
     });

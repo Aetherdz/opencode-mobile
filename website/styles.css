@@ -1317,6 +1317,14 @@ main {
   margin-top: 1.8rem;
 }
 
+.notfound {
+  min-height: 60vh;
+}
+
+.notfound-title {
+  font-size: clamp(3rem, 10vw, 7rem);
+}
+
 .faq-list {
   border-top: 1px solid var(--line);
 }
