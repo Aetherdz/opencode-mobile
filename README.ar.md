@@ -8,7 +8,7 @@
 [![Platform](https://img.shields.io/badge/platform-Android%20%7C%20iOS%20%7C%20Web-black)](docs/development.md)
 [![Node](https://img.shields.io/badge/node-%3E%3D22.13-black)](https://nodejs.org/)
 
-[الموقع](https://aetherdz.github.io/opencode-mobile/) · [الإصدارات](https://github.com/Aetherdz/opencode-mobile/releases) · [التوثيق](docs/) · [English](README.md)
+[الموقع](https://aetherdz.github.io/opencode-mobile/) · [التثبيت](https://aetherdz.github.io/opencode-mobile/#install) · [توثيق الموقع](https://aetherdz.github.io/opencode-mobile/docs/) · [الإصدارات](https://github.com/Aetherdz/opencode-mobile/releases) · [التوثيق](docs/) · [English](README.md)
 
 [English](README.md) | **العربية**
 

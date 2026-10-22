@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://api.github.com; font-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'"
+    />
+    <meta name="referrer" content="no-referrer" />
+    <title>Guide — OpenCode Mobile</title>
+    <meta
+      name="description"
+      content="Run OpenCode Mobile end to end: start OpenCode, run the bridge, connect from a phone, tune configuration, and expose the bridge over Tailscale."
+    />
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="OpenCode Mobile — guide" />
+    <meta
+      property="og:description"
+      content="Start OpenCode, run the bridge, connect from a phone, and expose it over a private network."
+    />
+    <meta
+      property="og:url"
+      content="https://aetherdz.github.io/opencode-mobile/guide/"
+    />
+    <meta
+      property="og:image"
+      content="https://aetherdz.github.io/opencode-mobile/assets/og.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:image"
+      content="https://aetherdz.github.io/opencode-mobile/assets/og.png"
+    />
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <a class="brand" href="../" aria-label="OpenCode Mobile home">
+        <span class="brand-mark" aria-hidden="true">OC</span>
+        <span class="brand-name">OpenCode Mobile</span>
+      </a>
+      <button
+        class="menu-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="site-nav"
+      >
+        Menu
+      </button>
+      <nav class="site-nav" id="site-nav" aria-label="Primary">
+        <a href="../">Install</a>
+        <a href="../features/">Features</a>
+        <a href="./" aria-current="page">Guide</a>
+        <a href="../security/">Security</a>
+        <a href="../faq/">FAQ</a>
+        <a
+          class="nav-star"
+          href="https://github.com/Aetherdz/opencode-mobile"
+          rel="noreferrer"
+          aria-label="Star OpenCode Mobile on GitHub"
+        >
+          <span class="star-icon" aria-hidden="true">★</span>
+          <span>Star</span>
+          <span class="star-count" data-github-stars aria-hidden="true"></span>
+        </a>
+        <a class="nav-cta" href="../#download">Download</a>
+      </nav>
+    </header>
+
+    <main id="main" class="docs">
+      <aside class="docs-sidebar">
+        <p class="sidebar-title">Site</p>
+        <nav>
+          <ul class="sidebar-list">
+            <li><a href="../">Install</a></li>
+            <li><a href="../features/">Features</a></li>
+            <li><a href="./" aria-current="page">Guide</a></li>
+            <li><a href="../security/">Security</a></li>
+            <li><a href="../faq/">FAQ</a></li>
+          </ul>
+        </nav>
+        <p class="sidebar-title">On this page</p>
+        <nav>
+          <ul class="sidebar-list">
+            <li><a href="#start">Start OpenCode</a></li>
+            <li><a href="#bridge">Run the bridge</a></li>
+            <li><a href="#app">Run the app</a></li>
+            <li><a href="#config">Configuration</a></li>
+            <li><a href="#remote">Remote access</a></li>
+          </ul>
+        </nav>
+      </aside>
+
+      <div class="docs-body">
+        <article class="docs-article">
+          <header>
+            <p class="eyebrow">Guide</p>
+            <h1>Run it end to end.</h1>
+            <p class="docs-lede">
+              The bridge is an ordinary Node service. Everything below is a copy
+              and paste, no editor required.
+            </p>
+          </header>
+
+          <h2 id="start">Start OpenCode</h2>
+          <p>
+            The bridge discovers the local service through
+            <code>~/.local/state/opencode/service.json</code>. You can also set
+            <code>OPENCODE_URL</code> and <code>OPENCODE_PASSWORD</code>
+            explicitly; the URL must be loopback.
+          </p>
+          <div class="terminal">
+            <div class="terminal-bar">
+              <span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span>bash</span>
+              <button class="copy-button" type="button" data-copy-target="cmd-opencode">
+                Copy
+              </button>
+            </div>
+            <pre id="cmd-opencode"><code>opencode service start</code></pre>
+          </div>
+
+          <h2 id="bridge">Run the bridge</h2>
+          <p>
+            The installer does this for you. Run it by hand when you want to
+            read the config first.
+          </p>
+          <div class="terminal">
+            <div class="terminal-bar">
+              <span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span>bash</span>
+              <button class="copy-button" type="button" data-copy-target="cmd-bridge-manual">
+                Copy
+              </button>
+            </div>
+            <pre id="cmd-bridge-manual"><code>cd bridge
+npm ci
+cp .env.example .env
+openssl rand -hex 32   <span class="term-comment"># put this in AUTH_TOKEN</span>
+npm run build
+npm start</code></pre>
+          </div>
+          <p>
+            Set <code>ALLOWED_WORKDIRS</code> to the project roots you want to
+            expose, then check that the service answers:
+          </p>
+          <div class="terminal">
+            <div class="terminal-bar">
+              <span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span>bash</span>
+              <button class="copy-button" type="button" data-copy-target="cmd-health">
+                Copy
+              </button>
+            </div>
+            <pre id="cmd-health"><code>curl http://127.0.0.1:8787/health
+<span class="term-ok">{"ok":true}</span></code></pre>
+          </div>
+
+          <h2 id="app">Run the app</h2>
+          <p>
+            For a local browser build, allow the Expo origin in
+            <code>bridge/.env</code>. CORS controls browser reads; it is not
+            authentication, and the bearer token is still required.
+          </p>
+          <div class="terminal">
+            <div class="terminal-bar">
+              <span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span>bash</span>
+              <button class="copy-button" type="button" data-copy-target="cmd-app">
+                Copy
+              </button>
+            </div>
+            <pre id="cmd-app"><code>cd app
+npm ci
+npx expo start</code></pre>
+          </div>
+          <div class="docs-note">
+            <strong>CORS</strong>
+            <code>CORS_ORIGINS=http://localhost:8081,http://127.0.0.1:8081</code>
+            — exact origins only. Wildcards are rejected.
+          </div>
+
+          <h2 id="config">Configuration</h2>
+          <table class="docs-table">
+            <thead>
+              <tr>
+                <th>Variable</th>
+                <th>Default</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>AUTH_TOKEN</code></td>
+                <td>required</td>
+                <td>Shared bearer token, at least 32 characters.</td>
+              </tr>
+              <tr>
+                <td><code>HOST</code></td>
+                <td><code>127.0.0.1</code></td>
+                <td>Bind address. Keep it on loopback.</td>
+              </tr>
+              <tr>
+                <td><code>PORT</code></td>
+                <td><code>8787</code></td>
+                <td>Bridge HTTP port.</td>
+              </tr>
+              <tr>
+                <td><code>ALLOWED_WORKDIRS</code></td>
+                <td>home directory</td>
+                <td>Roots allowed for sessions and uploads. Keep it narrow.</td>
+              </tr>
+              <tr>
+                <td><code>CORS_ORIGINS</code></td>
+                <td>empty</td>
+                <td>Exact browser origins allowed to call the bridge.</td>
+              </tr>
+              <tr>
+                <td><code>MAX_UPLOAD_MB</code></td>
+                <td><code>25</code></td>
+                <td>Per-file limit.</td>
+              </tr>
+              <tr>
+                <td><code>MAX_SESSION_UPLOAD_MB</code></td>
+                <td><code>1024</code></td>
+                <td>Cumulative upload cap per session.</td>
+              </tr>
+              <tr>
+                <td><code>RATE_LIMIT_PER_MINUTE</code></td>
+                <td><code>180</code></td>
+                <td>Unauthenticated request budget per IP.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2 id="remote">Remote access</h2>
+          <p>
+            The safe default is loopback plus Tailscale. Never bind the bridge
+            to <code>0.0.0.0</code> and expose the port to the internet.
+          </p>
+          <div class="terminal">
+            <div class="terminal-bar">
+              <span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span>bash</span>
+              <button class="copy-button" type="button" data-copy-target="cmd-tailscale">
+                Copy
+              </button>
+            </div>
+            <pre id="cmd-tailscale"><code>tailscale serve --bg http://127.0.0.1:8787
+
+<span class="term-comment"># then enter this in the app</span>
+https://&lt;machine&gt;.&lt;tailnet&gt;.ts.net</code></pre>
+          </div>
+          <p>
+            An SSH tunnel works too for a quick test from a laptop. Cloudflare
+            Tunnel is possible for a short experiment, but it puts the bridge
+            behind a public address.
+          </p>
+          <div class="docs-next">
+            <a class="button button-primary" href="../security/">Security model</a>
+            <a class="button button-outline" href="../faq/">FAQ</a>
+          </div>
+        </article>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-brand">
+        <span class="brand-mark" aria-hidden="true">OC</span>
+        <div>
+          <strong>OpenCode Mobile</strong>
+          <p>Unofficial client for a local agent.</p>
+        </div>
+      </div>
+      <div class="footer-links">
+        <a href="../">Install</a>
+        <a href="../features/">Features</a>
+        <a href="../security/">Security</a>
+        <a href="../faq/">FAQ</a>
+        <a href="https://github.com/Aetherdz/opencode-mobile" rel="noreferrer">Source</a>
+        <a href="https://github.com/Aetherdz/opencode-mobile" rel="noreferrer" aria-label="Star OpenCode Mobile on GitHub"
+          >Star <span data-github-stars aria-hidden="true"></span></a
+        >
+        <a href="https://github.com/Aetherdz/opencode-mobile/blob/main/README.ar.md" rel="noreferrer" lang="ar" dir="rtl">العربية</a>
+      </div>
+      <p class="footer-legal">
+        MIT licensed. Not affiliated with or endorsed by the OpenCode team.
+        <span id="year">2026</span>.
+      </p>
+    </footer>
+
+    <script src="../app.js" defer></script>
+  </body>
+</html>

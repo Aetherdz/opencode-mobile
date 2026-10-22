@@ -8,17 +8,17 @@
       content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://api.github.com; font-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'"
     />
     <meta name="referrer" content="no-referrer" />
-    <title>OpenCode Mobile — your agent, in your pocket</title>
+    <title>Install — OpenCode Mobile</title>
     <meta
       name="description"
-      content="An unofficial, self-hosted mobile and web client for the OpenCode coding agent. Chat, review diffs, approve tools, and keep the agent on your own hardware."
+      content="Install the OpenCode Mobile bridge on the machine that runs OpenCode, then connect from your phone. Release-signed Android APK, web build, and bridge bundles."
     />
     <meta name="theme-color" content="#0a0a0a" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="OpenCode Mobile" />
+    <meta property="og:title" content="OpenCode Mobile — install" />
     <meta
       property="og:description"
-      content="Your agent. Your machine. Your pocket. An unofficial, self-hosted client for OpenCode."
+      content="Your agent. Your machine. Your pocket. Install the bridge, then connect from your phone."
     />
     <meta property="og:url" content="https://aetherdz.github.io/opencode-mobile/" />
     <meta
@@ -53,10 +53,11 @@
         Menu
       </button>
       <nav class="site-nav" id="site-nav" aria-label="Primary">
-        <a href="#features">Features</a>
-        <a href="#security">Security</a>
-        <a href="#platforms">Platforms</a>
-        <a href="#install">Install</a>
+        <a href="./" aria-current="page">Install</a>
+        <a href="./features/">Features</a>
+        <a href="./guide/">Guide</a>
+        <a href="./security/">Security</a>
+        <a href="./faq/">FAQ</a>
         <a
           class="nav-star"
           href="https://github.com/Aetherdz/opencode-mobile"
@@ -73,7 +74,7 @@
 
     <main id="main">
       <section class="hero">
-        <div class="hero-copy reveal">
+        <div class="hero-copy">
           <p class="eyebrow">Unofficial client · Public beta</p>
           <h1 class="display">
             Your agent.<br />
@@ -81,19 +82,12 @@
             <em>Your pocket.</em>
           </h1>
           <p class="lede">
-            OpenCode Mobile is a focused client for the OpenCode coding agent.
-            Keep the model, the files, and the session on hardware you control.
-            Chat, review diffs, and approve tools from a phone, tablet, or
-            browser.
+            Install a small bridge on the machine that already runs OpenCode,
+            then connect from your phone. No account, no relay, no telemetry.
           </p>
           <div class="actions">
-            <a class="button button-primary" href="#download">Get the beta</a>
-            <a
-              class="button button-quiet"
-              href="https://github.com/Aetherdz/opencode-mobile"
-              rel="noreferrer"
-              >View source</a
-            >
+            <a class="button button-primary" href="#install">Install the bridge</a>
+            <a class="button button-quiet" href="#download">Download the app</a>
           </div>
           <dl class="hero-facts">
             <div>
@@ -111,7 +105,7 @@
           </dl>
         </div>
 
-        <div class="hero-art reveal" aria-hidden="true">
+        <div class="hero-art" aria-hidden="true">
           <div class="orbit orbit-one"></div>
           <div class="orbit orbit-two"></div>
           <div class="phone">
@@ -162,158 +156,12 @@
       <div class="ticker" aria-hidden="true">
         <span>Sessions</span><span>Streaming</span><span>Approvals</span
         ><span>Diffs</span><span>Attachments</span><span>Push</span
-        ><span>Arabic + English</span><span>Dark + light</span>
+        ><span>Arabic + English + French</span><span>Dark + light</span>
       </div>
 
-      <section class="section" id="features">
-        <div class="section-head reveal">
-          <p class="eyebrow">01 / The loop</p>
-          <h2 class="display">The parts you actually use.</h2>
-          <p>
-            Not a dashboard. A small, fast surface for the work between a prompt
-            and a merged change.
-          </p>
-        </div>
-        <div class="feature-grid">
-          <article class="feature reveal">
-            <span class="feature-index">01</span>
-            <h3>Every session, in reach</h3>
-            <p>
-              Search, group, rename, create, and delete sessions. Waiting
-              sessions are visible before you open them.
-            </p>
-          </article>
-          <article class="feature reveal">
-            <span class="feature-index">02</span>
-            <h3>Streaming that reconnects</h3>
-            <p>
-              Follow a turn as it happens, page through older messages, and
-              return to the latest message without losing the thread.
-            </p>
-          </article>
-          <article class="feature reveal">
-            <span class="feature-index">03</span>
-            <h3>Approvals with context</h3>
-            <p>
-              Review the tool, the target, and the diff before you allow it.
-              Destructive actions ask twice.
-            </p>
-          </article>
-          <article class="feature reveal">
-            <span class="feature-index">04</span>
-            <h3>Files, not screenshots</h3>
-            <p>
-              Attach images, camera captures, and documents. Validation happens
-              at the bridge, not only in the UI.
-            </p>
-          </article>
-          <article class="feature reveal">
-            <span class="feature-index">05</span>
-            <h3>Quiet notifications</h3>
-            <p>
-              Optional push for finished turns, questions, and approvals.
-              Payloads carry IDs and generic text, not message bodies.
-            </p>
-          </article>
-          <article class="feature reveal">
-            <span class="feature-index">06</span>
-            <h3>Bilingual by default</h3>
-            <p>
-              Arabic and English, RTL layout, mixed-direction text, and a
-              monochrome theme that gets out of the way.
-            </p>
-          </article>
-        </div>
-      </section>
-
-      <section class="section section-dark" id="security">
-        <div class="section-head reveal">
-          <p class="eyebrow">02 / The boundary</p>
-          <h2 class="display">The network edge is the point.</h2>
-          <p>
-            The app talks to a local bridge. The bridge talks to OpenCode on
-            loopback. Nothing is relayed through a hosted account.
-          </p>
-        </div>
-        <div class="security-grid">
-          <div class="security-copy reveal">
-            <p class="security-lead">
-              One token. One owner. A deliberately small blast radius.
-            </p>
-            <ul class="check-list">
-              <li>Bearer token with constant-time comparison and failed-auth bans.</li>
-              <li>Workdir allowlist for sessions, uploads, and downloads.</li>
-              <li>Upload type, extension, magic-byte, size, and filename checks.</li>
-              <li>Loopback-only OpenCode URL; Tailscale or a reverse proxy for remote access.</li>
-              <li>No telemetry, no hosted relay, no account system. The landing page reads the public GitHub star count.</li>
-              <li>Opt-in CORS with exact origins. Wildcards are rejected.</li>
-            </ul>
-            <a class="text-link" href="https://github.com/Aetherdz/opencode-mobile/blob/main/docs/security.md" rel="noreferrer"
-              >Read the threat model</a
-            >
-          </div>
-          <div class="security-diagram reveal" aria-label="Network flow diagram">
-            <div class="diagram-node">
-              <span class="diagram-label">Device</span>
-              <strong>Mobile / Web</strong>
-              <small>Your token</small>
-            </div>
-            <div class="diagram-line"><span>private network</span></div>
-            <div class="diagram-node">
-              <span class="diagram-label">Host</span>
-              <strong>Bridge</strong>
-              <small>127.0.0.1:8787</small>
-            </div>
-            <div class="diagram-line"><span>loopback</span></div>
-            <div class="diagram-node">
-              <span class="diagram-label">Agent</span>
-              <strong>OpenCode</strong>
-              <small>Your machine</small>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="section" id="platforms">
-        <div class="section-head reveal">
-          <p class="eyebrow">03 / The surface</p>
-          <h2 class="display">One client. Several rooms.</h2>
-          <p>
-            Native where it matters, web where it is convenient, and a bridge
-            that runs on the machine that already has your code.
-          </p>
-        </div>
-        <div class="platform-grid">
-          <article class="platform reveal">
-            <span class="platform-tag">Android</span>
-            <h3>Sideload the beta</h3>
-            <p>API 24 or newer. The beta APK is release-signed and built for arm64-v8a.</p>
-            <span class="platform-meta">arm64 · Expo SDK 58</span>
-          </article>
-          <article class="platform reveal">
-            <span class="platform-tag">iOS</span>
-            <h3>Build with EAS</h3>
-            <p>Expo Router and native modules. Build on macOS or EAS.</p>
-            <span class="platform-meta">TestFlight later</span>
-          </article>
-          <article class="platform reveal">
-            <span class="platform-tag">Web</span>
-            <h3>Install the PWA</h3>
-            <p>Static export, same-origin proxy, no offline cache of sessions.</p>
-            <span class="platform-meta">Chromium · Firefox · Safari</span>
-          </article>
-          <article class="platform reveal">
-            <span class="platform-tag">Host</span>
-            <h3>Run the bridge</h3>
-            <p>Node on Linux, macOS, or Windows. Docker and systemd recipes.</p>
-            <span class="platform-meta">Node 20+</span>
-          </article>
-        </div>
-      </section>
-
       <section class="section section-install" id="install">
-        <div class="section-head reveal">
-          <p class="eyebrow">04 / The install</p>
+        <div class="section-head">
+          <p class="eyebrow">01 / The install</p>
           <h2 class="display">Three steps. No account.</h2>
           <p>
             Build the bridge, start OpenCode, and point the app at your private
@@ -321,7 +169,7 @@
           </p>
         </div>
         <div class="install-grid">
-          <ol class="steps reveal">
+          <ol class="steps">
             <li>
               <span class="step-number">01</span>
               <div>
@@ -344,15 +192,16 @@
               </div>
             </li>
           </ol>
-          <div class="terminal reveal">
-            <div class="terminal-bar">
-              <span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span>
-              <span>install.sh</span>
-              <button class="copy-button" type="button" data-copy-target="install-command">
-                Copy
-              </button>
-            </div>
-            <pre id="install-command"><code><span class="term-comment"># Linux / macOS (installer pinned to a commit)</span>
+          <div class="terminal-stack">
+            <div class="terminal">
+              <div class="terminal-bar">
+                <span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                <span>Linux · macOS</span>
+                <button class="copy-button" type="button" data-copy-target="cmd-bridge">
+                  Copy
+                </button>
+              </div>
+              <pre id="cmd-bridge"><code><span class="term-comment"># installer pinned to a commit</span>
 curl -fsSLO https://raw.githubusercontent.com/Aetherdz/opencode-mobile-dist/7c4ec38b7de7d87e88d7f215721a11bc338e128f/install.sh
 echo "d140292ee5f26172a5ff140c693bc38e65bf244c184f4f9e9af7c2a260b596cb  install.sh" | sha256sum -c -
 bash install.sh install --workdir "$HOME/projects"
@@ -360,24 +209,62 @@ bash install.sh install --workdir "$HOME/projects"
 <span class="term-ok">OK</span>  checksum verified
 <span class="term-ok">OK</span>  bridge installed
 <span class="term-ok">OK</span>  config written (mode 600)
-<span class="term-warn">WARN</span> start OpenCode before connecting
-
-<span class="term-comment"># Windows PowerShell (installer pinned to a commit)</span>
+<span class="term-warn">WARN</span> start OpenCode before connecting</code></pre>
+            </div>
+            <div class="terminal">
+              <div class="terminal-bar">
+                <span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                <span>Windows PowerShell</span>
+                <button class="copy-button" type="button" data-copy-target="cmd-bridge-win">
+                  Copy
+                </button>
+              </div>
+              <pre id="cmd-bridge-win"><code><span class="term-comment"># installer pinned to a commit</span>
 irm https://raw.githubusercontent.com/Aetherdz/opencode-mobile-dist/7c4ec38b7de7d87e88d7f215721a11bc338e128f/install.ps1 -OutFile install.ps1
 .\install.ps1 -Command install -WorkDir "$env:USERPROFILE\projects"</code></pre>
+            </div>
           </div>
         </div>
       </section>
 
+      <section class="section" id="requirements">
+        <div class="section-head">
+          <p class="eyebrow">02 / The prerequisites</p>
+          <h2 class="display">What has to be true first.</h2>
+        </div>
+        <div class="docs-grid">
+          <article class="docs-card">
+            <span>Host</span>
+            <h3>Node.js 22.13 or newer</h3>
+            <p>The bridge is a plain Node service. No database, no daemon, no root.</p>
+          </article>
+          <article class="docs-card">
+            <span>Host</span>
+            <h3>OpenCode already running</h3>
+            <p>The bridge talks to your local OpenCode on loopback. It does not replace it.</p>
+          </article>
+          <article class="docs-card">
+            <span>Phone</span>
+            <h3>A private address</h3>
+            <p>Loopback for the same machine, Tailscale or a tunnel for anything else.</p>
+          </article>
+          <article class="docs-card">
+            <span>Token</span>
+            <h3>One shared secret</h3>
+            <p>The installer generates it and writes it to a mode 600 config file.</p>
+          </article>
+        </div>
+      </section>
+
       <section class="section section-download" id="download">
-        <div class="download-inner reveal">
+        <div class="download-inner">
           <div>
-            <p class="eyebrow">05 / The build</p>
+            <p class="eyebrow">03 / The build</p>
             <h2 class="display">Take the beta for a walk.</h2>
             <p>
-              The first public beta ships as source, a release-signed Android
-              build, and bridge and web bundles. Read the limitations, keep
-              the bridge private, and expect sharp edges.
+              The beta ships as source, a release-signed Android build, and
+              bridge and web bundles. Keep the bridge private, and expect sharp
+              edges.
             </p>
             <p class="download-note">
               Android 7.0+ on arm64. The APK is not distributed through Google
@@ -416,53 +303,33 @@ irm https://raw.githubusercontent.com/Aetherdz/opencode-mobile-dist/7c4ec38b7de7
         </div>
       </section>
 
-      <section class="section" id="faq">
-        <div class="section-head reveal">
-          <p class="eyebrow">06 / The fine print</p>
-          <h2 class="display">Questions worth asking.</h2>
+      <section class="section" id="next">
+        <div class="section-head">
+          <p class="eyebrow">04 / The rest</p>
+          <h2 class="display">Read what you need.</h2>
+          <p>Each page is short on purpose.</p>
         </div>
-        <div class="faq-list">
-          <details class="reveal">
-            <summary>Is this an official OpenCode app?</summary>
-            <p>
-              No. It is an independent client. The OpenCode name and logo belong
-              to the upstream project. This project is not endorsed by the
-              OpenCode team.
-            </p>
-          </details>
-          <details class="reveal">
-            <summary>Does my code leave my machine?</summary>
-            <p>
-              The bridge talks to OpenCode on loopback. Your device talks to the
-              bridge over your private network. There is no hosted relay and no
-              telemetry. The landing page reads the public GitHub star count.
-              If you configure a third-party push service, it receives a token
-              and a generic notification payload.
-            </p>
-          </details>
-          <details class="reveal">
-            <summary>Do I need Tailscale?</summary>
-            <p>
-              Only for remote access. On the same machine, loopback is enough.
-              For a phone on another network, Tailscale or an HTTPS reverse
-              proxy is the supported path.
-            </p>
-          </details>
-          <details class="reveal">
-            <summary>Is there a Play Store or App Store build?</summary>
-            <p>
-              Not yet. Android is a sideloaded beta. iOS is built with EAS and
-              has no TestFlight track in this repository.
-            </p>
-          </details>
-          <details class="reveal">
-            <summary>Why is model switching missing?</summary>
-            <p>
-              The first beta focuses on a reliable session loop. Model and agent
-              switching will land only when the upstream API exposes stable
-              endpoints; the roadmap tracks it as a post-beta item.
-            </p>
-          </details>
+        <div class="docs-grid">
+          <a class="docs-card" href="./features/">
+            <span>01</span>
+            <h3>Features</h3>
+            <p>Sessions, streaming, approvals, diffs, attachments, and push.</p>
+          </a>
+          <a class="docs-card" href="./guide/">
+            <span>02</span>
+            <h3>Guide</h3>
+            <p>Configuration, remote access, and the commands you actually need.</p>
+          </a>
+          <a class="docs-card" href="./security/">
+            <span>03</span>
+            <h3>Security</h3>
+            <p>The trust boundaries, the controls, and the deployment checklist.</p>
+          </a>
+          <a class="docs-card" href="./faq/">
+            <span>04</span>
+            <h3>FAQ</h3>
+            <p>Short answers to the questions that come up before installing.</p>
+          </a>
         </div>
       </section>
     </main>
@@ -476,12 +343,14 @@ irm https://raw.githubusercontent.com/Aetherdz/opencode-mobile-dist/7c4ec38b7de7
         </div>
       </div>
       <div class="footer-links">
+        <a href="./features/">Features</a>
+        <a href="./guide/">Guide</a>
+        <a href="./security/">Security</a>
+        <a href="./faq/">FAQ</a>
         <a href="https://github.com/Aetherdz/opencode-mobile" rel="noreferrer">Source</a>
         <a href="https://github.com/Aetherdz/opencode-mobile" rel="noreferrer" aria-label="Star OpenCode Mobile on GitHub"
           >Star <span data-github-stars aria-hidden="true"></span></a
         >
-        <a href="https://github.com/Aetherdz/opencode-mobile-dist" rel="noreferrer">Installers</a>
-        <a href="https://github.com/Aetherdz/opencode-mobile/blob/main/docs/security.md" rel="noreferrer">Security</a>
         <a href="https://github.com/Aetherdz/opencode-mobile/blob/main/README.ar.md" rel="noreferrer" lang="ar" dir="rtl">العربية</a>
       </div>
       <p class="footer-legal">

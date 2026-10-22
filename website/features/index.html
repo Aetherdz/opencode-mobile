@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://api.github.com; font-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'"
+    />
+    <meta name="referrer" content="no-referrer" />
+    <title>Features — OpenCode Mobile</title>
+    <meta
+      name="description"
+      content="Sessions, streaming, approvals with diffs, attachments, quiet push notifications, and English, Arabic, and French layouts for OpenCode Mobile."
+    />
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="OpenCode Mobile — features" />
+    <meta
+      property="og:description"
+      content="Not a dashboard. A small, fast surface for the work between a prompt and a merged change."
+    />
+    <meta
+      property="og:url"
+      content="https://aetherdz.github.io/opencode-mobile/features/"
+    />
+    <meta
+      property="og:image"
+      content="https://aetherdz.github.io/opencode-mobile/assets/og.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:image"
+      content="https://aetherdz.github.io/opencode-mobile/assets/og.png"
+    />
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <a class="brand" href="../" aria-label="OpenCode Mobile home">
+        <span class="brand-mark" aria-hidden="true">OC</span>
+        <span class="brand-name">OpenCode Mobile</span>
+      </a>
+      <button
+        class="menu-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="site-nav"
+      >
+        Menu
+      </button>
+      <nav class="site-nav" id="site-nav" aria-label="Primary">
+        <a href="../">Install</a>
+        <a href="./" aria-current="page">Features</a>
+        <a href="../guide/">Guide</a>
+        <a href="../security/">Security</a>
+        <a href="../faq/">FAQ</a>
+        <a
+          class="nav-star"
+          href="https://github.com/Aetherdz/opencode-mobile"
+          rel="noreferrer"
+          aria-label="Star OpenCode Mobile on GitHub"
+        >
+          <span class="star-icon" aria-hidden="true">★</span>
+          <span>Star</span>
+          <span class="star-count" data-github-stars aria-hidden="true"></span>
+        </a>
+        <a class="nav-cta" href="../#download">Download</a>
+      </nav>
+    </header>
+
+    <main id="main" class="docs">
+      <aside class="docs-sidebar">
+        <p class="sidebar-title">Site</p>
+        <nav>
+          <ul class="sidebar-list">
+            <li><a href="../">Install</a></li>
+            <li><a href="./" aria-current="page">Features</a></li>
+            <li><a href="../guide/">Guide</a></li>
+            <li><a href="../security/">Security</a></li>
+            <li><a href="../faq/">FAQ</a></li>
+          </ul>
+        </nav>
+        <p class="sidebar-title">On this page</p>
+        <nav>
+          <ul class="sidebar-list">
+            <li><a href="#loop">The loop</a></li>
+            <li><a href="#rooms">Where it runs</a></li>
+            <li><a href="#missing">Not included</a></li>
+          </ul>
+        </nav>
+      </aside>
+
+      <div class="docs-body">
+        <article class="docs-article">
+          <header>
+            <p class="eyebrow">Features</p>
+            <h1>The parts you actually use.</h1>
+            <p class="docs-lede">
+              Not a dashboard. A small, fast surface for the work between a
+              prompt and a merged change.
+            </p>
+          </header>
+
+          <h2 id="loop">The loop</h2>
+          <div class="feature-grid">
+            <article class="feature">
+              <span class="feature-index">01</span>
+              <h3>Every session, in reach</h3>
+              <p>
+                Search, group, rename, create, and delete sessions. Waiting
+                sessions are visible before you open them.
+              </p>
+            </article>
+            <article class="feature">
+              <span class="feature-index">02</span>
+              <h3>Streaming that reconnects</h3>
+              <p>
+                Follow a turn as it happens, page through older messages, and
+                return to the latest message without losing the thread.
+              </p>
+            </article>
+            <article class="feature">
+              <span class="feature-index">03</span>
+              <h3>Approvals with context</h3>
+              <p>
+                Review the tool, the target, and the diff before you allow it.
+                Destructive actions ask twice.
+              </p>
+            </article>
+            <article class="feature">
+              <span class="feature-index">04</span>
+              <h3>Files, not screenshots</h3>
+              <p>
+                Attach images, camera captures, and documents. Validation happens
+                at the bridge, not only in the UI.
+              </p>
+            </article>
+            <article class="feature">
+              <span class="feature-index">05</span>
+              <h3>Quiet notifications</h3>
+              <p>
+                Optional push for finished turns, questions, and approvals.
+                Payloads carry IDs and generic text, not message bodies.
+              </p>
+            </article>
+            <article class="feature">
+              <span class="feature-index">06</span>
+              <h3>Three languages</h3>
+              <p>
+                English, Arabic, and French, with an RTL layout, mixed-direction
+                text, and a monochrome theme that gets out of the way.
+              </p>
+            </article>
+          </div>
+
+          <h2 id="rooms">Where it runs</h2>
+          <div class="platform-grid">
+            <article class="platform">
+              <span class="platform-tag">Android</span>
+              <h3>Sideload the beta</h3>
+              <p>API 24 or newer. The beta APK is release-signed and built for arm64-v8a.</p>
+              <span class="platform-meta">arm64 · Expo SDK 58</span>
+            </article>
+            <article class="platform">
+              <span class="platform-tag">iOS</span>
+              <h3>Build with EAS</h3>
+              <p>Expo Router and native modules. Build on macOS or EAS.</p>
+              <span class="platform-meta">TestFlight later</span>
+            </article>
+            <article class="platform">
+              <span class="platform-tag">Web</span>
+              <h3>Install the PWA</h3>
+              <p>Static export, same-origin proxy, no offline cache of sessions.</p>
+              <span class="platform-meta">Chromium · Firefox · Safari</span>
+            </article>
+            <article class="platform">
+              <span class="platform-tag">Host</span>
+              <h3>Run the bridge</h3>
+              <p>Node on Linux, macOS, or Windows. Docker and systemd recipes.</p>
+              <span class="platform-meta">Node 20+</span>
+            </article>
+          </div>
+
+          <h2 id="missing">Not included</h2>
+          <p>
+            Model or agent switching, per-session model choice, a bundled Telegram
+            bot, and a native desktop wrapper. The app shows a
+            <code>telegram</code> source when another OpenCode client is used,
+            but it does not implement one.
+          </p>
+          <div class="docs-next">
+            <a class="button button-primary" href="../guide/">Read the guide</a>
+            <a class="button button-outline" href="../security/">Security model</a>
+          </div>
+        </article>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-brand">
+        <span class="brand-mark" aria-hidden="true">OC</span>
+        <div>
+          <strong>OpenCode Mobile</strong>
+          <p>Unofficial client for a local agent.</p>
+        </div>
+      </div>
+      <div class="footer-links">
+        <a href="../">Install</a>
+        <a href="../guide/">Guide</a>
+        <a href="../security/">Security</a>
+        <a href="../faq/">FAQ</a>
+        <a href="https://github.com/Aetherdz/opencode-mobile" rel="noreferrer">Source</a>
+        <a href="https://github.com/Aetherdz/opencode-mobile" rel="noreferrer" aria-label="Star OpenCode Mobile on GitHub"
+          >Star <span data-github-stars aria-hidden="true"></span></a
+        >
+        <a href="https://github.com/Aetherdz/opencode-mobile/blob/main/README.ar.md" rel="noreferrer" lang="ar" dir="rtl">العربية</a>
+      </div>
+      <p class="footer-legal">
+        MIT licensed. Not affiliated with or endorsed by the OpenCode team.
+        <span id="year">2026</span>.
+      </p>
+    </footer>
+
+    <script src="../app.js" defer></script>
+  </body>
+</html>

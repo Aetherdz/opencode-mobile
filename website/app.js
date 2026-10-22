@@ -25,10 +25,11 @@
     });
   }
 
-  const copyButton = document.querySelector(".copy-button");
-  const copySource = document.querySelector("#install-command");
+  const copyButtons = document.querySelectorAll("[data-copy-target]");
+  copyButtons.forEach((copyButton) => {
+    const copySource = document.getElementById(copyButton.dataset.copyTarget);
+    if (!copySource) return;
 
-  if (copyButton && copySource) {
     copyButton.addEventListener("click", async () => {
       const text = copySource.textContent.trim();
       try {
@@ -49,7 +50,7 @@
         copyButton.textContent = "Copy";
       }, 1800);
     });
-  }
+  });
 
   const starNodes = document.querySelectorAll("[data-github-stars]");
   if (starNodes.length > 0) {
@@ -146,6 +147,29 @@
           .finally(() => window.clearTimeout(timer));
       }
     }
+  }
+
+  const pageLinks = [...document.querySelectorAll('.sidebar-list a[href^="#"]')];
+  const sections = pageLinks
+    .map((link) => document.getElementById(link.getAttribute("href").slice(1)))
+    .filter(Boolean);
+
+  if (sections.length > 0 && "IntersectionObserver" in window) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          pageLinks.forEach((link) => {
+            link.classList.toggle(
+              "is-active",
+              link.getAttribute("href") === `#${entry.target.id}`,
+            );
+          });
+        });
+      },
+      { rootMargin: "-15% 0px -70% 0px" },
+    );
+    sections.forEach((section) => observer.observe(section));
   }
 
   const year = document.querySelector("#year");

@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://api.github.com; font-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'"
+    />
+    <meta name="referrer" content="no-referrer" />
+    <title>Security — OpenCode Mobile</title>
+    <meta
+      name="description"
+      content="The OpenCode Mobile trust boundaries: one bearer token, a workdir allowlist, upload validation, loopback-only OpenCode access, and no hosted relay."
+    />
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="OpenCode Mobile — security" />
+    <meta
+      property="og:description"
+      content="One token. One owner. A deliberately small blast radius."
+    />
+    <meta
+      property="og:url"
+      content="https://aetherdz.github.io/opencode-mobile/security/"
+    />
+    <meta
+      property="og:image"
+      content="https://aetherdz.github.io/opencode-mobile/assets/og.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:image"
+      content="https://aetherdz.github.io/opencode-mobile/assets/og.png"
+    />
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <a class="brand" href="../" aria-label="OpenCode Mobile home">
+        <span class="brand-mark" aria-hidden="true">OC</span>
+        <span class="brand-name">OpenCode Mobile</span>
+      </a>
+      <button
+        class="menu-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="site-nav"
+      >
+        Menu
+      </button>
+      <nav class="site-nav" id="site-nav" aria-label="Primary">
+        <a href="../">Install</a>
+        <a href="../features/">Features</a>
+        <a href="../guide/">Guide</a>
+        <a href="./" aria-current="page">Security</a>
+        <a href="../faq/">FAQ</a>
+        <a
+          class="nav-star"
+          href="https://github.com/Aetherdz/opencode-mobile"
+          rel="noreferrer"
+          aria-label="Star OpenCode Mobile on GitHub"
+        >
+          <span class="star-icon" aria-hidden="true">★</span>
+          <span>Star</span>
+          <span class="star-count" data-github-stars aria-hidden="true"></span>
+        </a>
+        <a class="nav-cta" href="../#download">Download</a>
+      </nav>
+    </header>
+
+    <main id="main" class="docs">
+      <aside class="docs-sidebar">
+        <p class="sidebar-title">Site</p>
+        <nav>
+          <ul class="sidebar-list">
+            <li><a href="../">Install</a></li>
+            <li><a href="../features/">Features</a></li>
+            <li><a href="../guide/">Guide</a></li>
+            <li><a href="./" aria-current="page">Security</a></li>
+            <li><a href="../faq/">FAQ</a></li>
+          </ul>
+        </nav>
+        <p class="sidebar-title">On this page</p>
+        <nav>
+          <ul class="sidebar-list">
+            <li><a href="#boundary">The boundary</a></li>
+            <li><a href="#controls">Controls</a></li>
+            <li><a href="#checklist">Deployment checklist</a></li>
+          </ul>
+        </nav>
+        <p class="sidebar-title">Repository</p>
+        <nav>
+          <ul class="sidebar-list">
+            <li>
+              <a
+                href="https://github.com/Aetherdz/opencode-mobile/blob/main/docs/security.md"
+                rel="noreferrer"
+                >Threat model</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://github.com/Aetherdz/opencode-mobile/blob/main/deploy/README.md"
+                rel="noreferrer"
+                >Deployment</a
+              >
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+      <div class="docs-body">
+        <article class="docs-article">
+          <header>
+            <p class="eyebrow">Security</p>
+            <h1>The network edge is the point.</h1>
+            <p class="docs-lede">
+              The app talks to a local bridge. The bridge talks to OpenCode on
+              loopback. Nothing is relayed through a hosted account.
+            </p>
+          </header>
+
+          <h2 id="boundary">The boundary</h2>
+          <div class="security-diagram">
+            <div class="diagram-node">
+              <span class="diagram-label">Device</span>
+              <strong>Mobile / Web</strong>
+              <small>Your token</small>
+            </div>
+            <div class="diagram-line"><span>private network</span></div>
+            <div class="diagram-node">
+              <span class="diagram-label">Host</span>
+              <strong>Bridge</strong>
+              <small>127.0.0.1:8787</small>
+            </div>
+            <div class="diagram-line"><span>loopback</span></div>
+            <div class="diagram-node">
+              <span class="diagram-label">Agent</span>
+              <strong>OpenCode</strong>
+              <small>Your machine</small>
+            </div>
+          </div>
+          <div class="docs-note">
+            <strong>One token</strong>
+            The bridge token is equivalent to shell access on your machine.
+            Whoever holds it can ask the agent to read files, run commands, and
+            change code inside the allowed workdirs.
+          </div>
+
+          <h2 id="controls">Controls</h2>
+          <ul>
+            <li>Bearer token with constant-time comparison and failed-auth bans.</li>
+            <li>One-time WebSocket tickets, so the credential never lands in a URL or an access log.</li>
+            <li>Workdir allowlist for sessions, uploads, and downloads.</li>
+            <li>Upload type, extension, magic-byte, size, and filename checks.</li>
+            <li>Loopback-only OpenCode URL; Tailscale or a reverse proxy for remote access.</li>
+            <li>No telemetry, no hosted relay, no account system.</li>
+            <li>Opt-in CORS with exact origins. Wildcards are rejected.</li>
+          </ul>
+          <p>
+            The full threat model, the redaction rules, and the known gaps live
+            in
+            <a
+              href="https://github.com/Aetherdz/opencode-mobile/blob/main/docs/security.md"
+              rel="noreferrer"
+              >docs/security.md</a
+            >.
+          </p>
+
+          <h2 id="checklist">Deployment checklist</h2>
+          <ul>
+            <li><code>AUTH_TOKEN</code> is at least 32 random characters and unique to this bridge.</li>
+            <li><code>HOST</code> stays on <code>127.0.0.1</code>; remote access goes through Tailscale or a tunnel.</li>
+            <li><code>ALLOWED_WORKDIRS</code> lists only the roots you intend to expose.</li>
+            <li><code>CORS_ORIGINS</code> is empty unless a browser build needs it.</li>
+            <li>Release files are verified against the published <code>SHA256SUMS</code>.</li>
+            <li>The token is rotated when a device is lost or the machine is shared.</li>
+          </ul>
+          <div class="docs-next">
+            <a class="button button-primary" href="../guide/">Read the guide</a>
+            <a class="button button-outline" href="../faq/">FAQ</a>
+          </div>
+        </article>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-brand">
+        <span class="brand-mark" aria-hidden="true">OC</span>
+        <div>
+          <strong>OpenCode Mobile</strong>
+          <p>Unofficial client for a local agent.</p>
+        </div>
+      </div>
+      <div class="footer-links">
+        <a href="../">Install</a>
+        <a href="../features/">Features</a>
+        <a href="../guide/">Guide</a>
+        <a href="../faq/">FAQ</a>
+        <a href="https://github.com/Aetherdz/opencode-mobile" rel="noreferrer">Source</a>
+        <a href="https://github.com/Aetherdz/opencode-mobile" rel="noreferrer" aria-label="Star OpenCode Mobile on GitHub"
+          >Star <span data-github-stars aria-hidden="true"></span></a
+        >
+        <a href="https://github.com/Aetherdz/opencode-mobile/blob/main/README.ar.md" rel="noreferrer" lang="ar" dir="rtl">العربية</a>
+      </div>
+      <p class="footer-legal">
+        MIT licensed. Not affiliated with or endorsed by the OpenCode team.
+        <span id="year">2026</span>.
+      </p>
+    </footer>
+
+    <script src="../app.js" defer></script>
+  </body>
+</html>

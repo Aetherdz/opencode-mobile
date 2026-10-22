@@ -31,6 +31,12 @@ one-time ticket from `POST /ws-ticket` first.
 
 ### Changed
 
+- The website is now a small set of pages instead of one long page. The home
+  page is the install page with copyable commands, and each topic lives on its
+  own page: features, guide, security, FAQ, and a documentation index.
+- Documentation pages use a sticky sidebar with the page sections and an
+  active-section marker.
+- Every command block on the site has its own copy button.
 - `ALLOWED_WORKDIRS` now gates session content reads, message sends, diffs,
   files, questions, permission responses, stops, deletes, and WebSocket
   subscribe/send/approval/stop actions, not only session creation and uploads.

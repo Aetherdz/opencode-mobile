@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://api.github.com; font-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'"
+    />
+    <meta name="referrer" content="no-referrer" />
+    <title>FAQ — OpenCode Mobile</title>
+    <meta
+      name="description"
+      content="Short answers about OpenCode Mobile: is it official, does code leave your machine, do you need Tailscale, is there a store build, and why model switching is missing."
+    />
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="OpenCode Mobile — FAQ" />
+    <meta
+      property="og:description"
+      content="Questions worth asking, answered briefly."
+    />
+    <meta
+      property="og:url"
+      content="https://aetherdz.github.io/opencode-mobile/faq/"
+    />
+    <meta
+      property="og:image"
+      content="https://aetherdz.github.io/opencode-mobile/assets/og.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:image"
+      content="https://aetherdz.github.io/opencode-mobile/assets/og.png"
+    />
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <a class="brand" href="../" aria-label="OpenCode Mobile home">
+        <span class="brand-mark" aria-hidden="true">OC</span>
+        <span class="brand-name">OpenCode Mobile</span>
+      </a>
+      <button
+        class="menu-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="site-nav"
+      >
+        Menu
+      </button>
+      <nav class="site-nav" id="site-nav" aria-label="Primary">
+        <a href="../">Install</a>
+        <a href="../features/">Features</a>
+        <a href="../guide/">Guide</a>
+        <a href="../security/">Security</a>
+        <a href="./" aria-current="page">FAQ</a>
+        <a
+          class="nav-star"
+          href="https://github.com/Aetherdz/opencode-mobile"
+          rel="noreferrer"
+          aria-label="Star OpenCode Mobile on GitHub"
+        >
+          <span class="star-icon" aria-hidden="true">★</span>
+          <span>Star</span>
+          <span class="star-count" data-github-stars aria-hidden="true"></span>
+        </a>
+        <a class="nav-cta" href="../#download">Download</a>
+      </nav>
+    </header>
+
+    <main id="main" class="docs">
+      <aside class="docs-sidebar">
+        <p class="sidebar-title">Site</p>
+        <nav>
+          <ul class="sidebar-list">
+            <li><a href="../">Install</a></li>
+            <li><a href="../features/">Features</a></li>
+            <li><a href="../guide/">Guide</a></li>
+            <li><a href="../security/">Security</a></li>
+            <li><a href="./" aria-current="page">FAQ</a></li>
+          </ul>
+        </nav>
+        <p class="sidebar-title">Repository</p>
+        <nav>
+          <ul class="sidebar-list">
+            <li>
+              <a
+                href="https://github.com/Aetherdz/opencode-mobile/blob/main/docs/troubleshooting.md"
+                rel="noreferrer"
+                >Troubleshooting</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://github.com/Aetherdz/opencode-mobile/blob/main/ROADMAP.md"
+                rel="noreferrer"
+                >Roadmap</a
+              >
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+      <div class="docs-body">
+        <article class="docs-article">
+          <header>
+            <p class="eyebrow">FAQ</p>
+            <h1>Questions worth asking.</h1>
+            <p class="docs-lede">
+              The short answers. Longer ones live in the repository docs.
+            </p>
+          </header>
+
+          <div class="faq-list">
+            <details>
+              <summary>Is this an official OpenCode app?</summary>
+              <p>
+                No. It is an independent client. The OpenCode name and logo
+                belong to the upstream project. This project is not endorsed by
+                the OpenCode team.
+              </p>
+            </details>
+            <details>
+              <summary>Does my code leave my machine?</summary>
+              <p>
+                The bridge talks to OpenCode on loopback. Your device talks to the
+                bridge over your private network. There is no hosted relay and no
+                telemetry. This site reads the public GitHub star count and
+                nothing else. If you configure a third-party push service, it
+                receives a token and a generic notification payload.
+              </p>
+            </details>
+            <details>
+              <summary>Do I need Tailscale?</summary>
+              <p>
+                Only for remote access. On the same machine, loopback is enough.
+                For a phone on another network, Tailscale or an HTTPS reverse
+                proxy is the supported path.
+              </p>
+            </details>
+            <details>
+              <summary>Is there a Play Store or App Store build?</summary>
+              <p>
+                Not yet. Android is a sideloaded beta, release-signed and
+                limited to arm64. iOS is built with EAS and has no TestFlight
+                track in this repository.
+              </p>
+            </details>
+            <details>
+              <summary>Why is model switching missing?</summary>
+              <p>
+                The first beta focuses on a reliable session loop. Model and agent
+                switching will land only when the upstream API exposes stable
+                endpoints; the roadmap tracks it as a post-beta item.
+              </p>
+            </details>
+            <details>
+              <summary>Which languages does the app support?</summary>
+              <p>
+                English, Arabic, and French, with a right-to-left layout for
+                Arabic. The website stays English-only.
+              </p>
+            </details>
+            <details>
+              <summary>Why did the WebSocket token disappear from the URL?</summary>
+              <p>
+                Putting a long-lived credential in a query string leaks it into
+                access logs and proxy traces. The client now asks for a one-time
+                ticket that expires in 30 seconds and is consumed on first use.
+              </p>
+            </details>
+          </div>
+
+          <div class="docs-next">
+            <a class="button button-primary" href="../">Install</a>
+            <a class="button button-outline" href="../guide/">Guide</a>
+          </div>
+        </article>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-brand">
+        <span class="brand-mark" aria-hidden="true">OC</span>
+        <div>
+          <strong>OpenCode Mobile</strong>
+          <p>Unofficial client for a local agent.</p>
+        </div>
+      </div>
+      <div class="footer-links">
+        <a href="../">Install</a>
+        <a href="../features/">Features</a>
+        <a href="../guide/">Guide</a>
+        <a href="../security/">Security</a>
+        <a href="https://github.com/Aetherdz/opencode-mobile" rel="noreferrer">Source</a>
+        <a href="https://github.com/Aetherdz/opencode-mobile" rel="noreferrer" aria-label="Star OpenCode Mobile on GitHub"
+          >Star <span data-github-stars aria-hidden="true"></span></a
+        >
+        <a href="https://github.com/Aetherdz/opencode-mobile/blob/main/README.ar.md" rel="noreferrer" lang="ar" dir="rtl">العربية</a>
+      </div>
+      <p class="footer-legal">
+        MIT licensed. Not affiliated with or endorsed by the OpenCode team.
+        <span id="year">2026</span>.
+      </p>
+    </footer>
+
+    <script src="../app.js" defer></script>
+  </body>
+</html>

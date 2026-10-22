@@ -9,8 +9,10 @@ Self-hosted, token-authenticated, and built for the moments when you are away
 from the keyboard but still need to answer the agent.
 
 [Website](https://aetherdz.github.io/opencode-mobile/) ·
+[Install](https://aetherdz.github.io/opencode-mobile/#install) ·
+[Docs](https://aetherdz.github.io/opencode-mobile/docs/) ·
 [Releases](https://github.com/Aetherdz/opencode-mobile/releases) ·
-[Docs](docs/) ·
+[Repository docs](docs/) ·
 [العربية](README.ar.md)
 
 [![Stars](https://img.shields.io/github/stars/Aetherdz/opencode-mobile?style=flat-square&label=stars&color=000000)](https://github.com/Aetherdz/opencode-mobile/stargazers)

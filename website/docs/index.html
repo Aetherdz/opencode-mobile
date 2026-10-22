@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://api.github.com; font-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'"
+    />
+    <meta name="referrer" content="no-referrer" />
+    <title>Documentation — OpenCode Mobile</title>
+    <meta
+      name="description"
+      content="Every OpenCode Mobile document in one place: install, guide, features, security, troubleshooting, architecture, deployment, and release notes."
+    />
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="OpenCode Mobile — documentation" />
+    <meta
+      property="og:description"
+      content="Every document in one place: install, guide, features, security, and the repository docs."
+    />
+    <meta
+      property="og:url"
+      content="https://aetherdz.github.io/opencode-mobile/docs/"
+    />
+    <meta
+      property="og:image"
+      content="https://aetherdz.github.io/opencode-mobile/assets/og.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:image"
+      content="https://aetherdz.github.io/opencode-mobile/assets/og.png"
+    />
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <a class="brand" href="../" aria-label="OpenCode Mobile home">
+        <span class="brand-mark" aria-hidden="true">OC</span>
+        <span class="brand-name">OpenCode Mobile</span>
+      </a>
+      <button
+        class="menu-toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="site-nav"
+      >
+        Menu
+      </button>
+      <nav class="site-nav" id="site-nav" aria-label="Primary">
+        <a href="../">Install</a>
+        <a href="../features/">Features</a>
+        <a href="../guide/">Guide</a>
+        <a href="../security/">Security</a>
+        <a href="../faq/">FAQ</a>
+        <a
+          class="nav-star"
+          href="https://github.com/Aetherdz/opencode-mobile"
+          rel="noreferrer"
+          aria-label="Star OpenCode Mobile on GitHub"
+        >
+          <span class="star-icon" aria-hidden="true">★</span>
+          <span>Star</span>
+          <span class="star-count" data-github-stars aria-hidden="true"></span>
+        </a>
+        <a class="nav-cta" href="../#download">Download</a>
+      </nav>
+    </header>
+
+    <main id="main" class="docs">
+      <aside class="docs-sidebar">
+        <p class="sidebar-title">Site</p>
+        <nav>
+          <ul class="sidebar-list">
+            <li><a href="../">Install</a></li>
+            <li><a href="../features/">Features</a></li>
+            <li><a href="../guide/">Guide</a></li>
+            <li><a href="../security/">Security</a></li>
+            <li><a href="../faq/">FAQ</a></li>
+            <li><a href="./" aria-current="page">Docs</a></li>
+          </ul>
+        </nav>
+        <p class="sidebar-title">Repository</p>
+        <nav>
+          <ul class="sidebar-list">
+            <li>
+              <a
+                href="https://github.com/Aetherdz/opencode-mobile/blob/main/README.md"
+                rel="noreferrer"
+                >Readme</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://github.com/Aetherdz/opencode-mobile/blob/main/CHANGELOG.md"
+                rel="noreferrer"
+                >Changelog</a
+              >
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+      <div class="docs-body">
+        <article class="docs-article">
+          <header>
+            <p class="eyebrow">Documentation</p>
+            <h1>Everything, one index.</h1>
+            <p class="docs-lede">
+              The site holds the short version. The repository holds the long
+              version. This page points at both.
+            </p>
+          </header>
+
+          <h2 id="site">On this site</h2>
+          <div class="docs-grid">
+            <a class="docs-card" href="../">
+              <span>Install</span>
+              <h3>Get it running</h3>
+              <p>Bridge installer, prerequisites, and the release-signed APK.</p>
+            </a>
+            <a class="docs-card" href="../features/">
+              <span>Features</span>
+              <h3>What it does</h3>
+              <p>Sessions, streaming, approvals, diffs, attachments, and push.</p>
+            </a>
+            <a class="docs-card" href="../guide/">
+              <span>Guide</span>
+              <h3>Run it end to end</h3>
+              <p>Commands, configuration, and remote access over Tailscale.</p>
+            </a>
+            <a class="docs-card" href="../security/">
+              <span>Security</span>
+              <h3>Trust boundaries</h3>
+              <p>Controls, the deployment checklist, and the threat model.</p>
+            </a>
+            <a class="docs-card" href="../faq/">
+              <span>FAQ</span>
+              <h3>Short answers</h3>
+              <p>The questions that come up before installing.</p>
+            </a>
+          </div>
+
+          <h2 id="repository">In the repository</h2>
+          <table class="docs-table">
+            <thead>
+              <tr>
+                <th>Document</th>
+                <th>What it covers</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>README.md</code></td>
+                <td>Full setup, configuration table, and the download list.</td>
+              </tr>
+              <tr>
+                <td><code>README.ar.md</code></td>
+                <td>The same guide in Arabic.</td>
+              </tr>
+              <tr>
+                <td><code>docs/architecture.md</code></td>
+                <td>How the bridge, the app, and OpenCode fit together.</td>
+              </tr>
+              <tr>
+                <td><code>docs/security.md</code></td>
+                <td>Threat model, controls, known gaps, and audit status.</td>
+              </tr>
+              <tr>
+                <td><code>docs/development.md</code></td>
+                <td>Local development, tests, and the build pipeline.</td>
+              </tr>
+              <tr>
+                <td><code>docs/troubleshooting.md</code></td>
+                <td>Error-by-error fixes for the common failures.</td>
+              </tr>
+              <tr>
+                <td><code>docs/release.md</code></td>
+                <td>Tagging, signing, and publishing a release.</td>
+              </tr>
+              <tr>
+                <td><code>deploy/README.md</code></td>
+                <td>Systemd, Docker, and Caddy recipes.</td>
+              </tr>
+              <tr>
+                <td><code>ROADMAP.md</code></td>
+                <td>What is done and what is deliberately next.</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="docs-next">
+            <a
+              class="button button-primary"
+              href="https://github.com/Aetherdz/opencode-mobile/tree/main/docs"
+              rel="noreferrer"
+              >Browse the docs folder</a
+            >
+            <a class="button button-outline" href="../">Install</a>
+          </div>
+        </article>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-brand">
+        <span class="brand-mark" aria-hidden="true">OC</span>
+        <div>
+          <strong>OpenCode Mobile</strong>
+          <p>Unofficial client for a local agent.</p>
+        </div>
+      </div>
+      <div class="footer-links">
+        <a href="../">Install</a>
+        <a href="../features/">Features</a>
+        <a href="../guide/">Guide</a>
+        <a href="../security/">Security</a>
+        <a href="../faq/">FAQ</a>
+        <a href="https://github.com/Aetherdz/opencode-mobile" rel="noreferrer">Source</a>
+        <a href="https://github.com/Aetherdz/opencode-mobile" rel="noreferrer" aria-label="Star OpenCode Mobile on GitHub"
+          >Star <span data-github-stars aria-hidden="true"></span></a
+        >
+        <a href="https://github.com/Aetherdz/opencode-mobile/blob/main/README.ar.md" rel="noreferrer" lang="ar" dir="rtl">العربية</a>
+      </div>
+      <p class="footer-legal">
+        MIT licensed. Not affiliated with or endorsed by the OpenCode team.
+        <span id="year">2026</span>.
+      </p>
+    </footer>
+
+    <script src="../app.js" defer></script>
+  </body>
+</html>

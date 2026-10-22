@@ -7,10 +7,21 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "website");
-const htmlFiles = fs
-  .readdirSync(root, { withFileTypes: true })
-  .filter((entry) => entry.isFile() && entry.name.endsWith(".html"))
-  .map((entry) => path.join(root, entry.name));
+
+function collectHtml(dir) {
+  const files = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      files.push(...collectHtml(full));
+    } else if (entry.isFile() && entry.name.endsWith(".html")) {
+      files.push(full);
+    }
+  }
+  return files;
+}
+
+const htmlFiles = collectHtml(root);
 
 const idsByFile = new Map();
 for (const file of htmlFiles) {
