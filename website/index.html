@@ -255,8 +255,8 @@
                   <span class="copy-label" data-copy-label aria-live="polite">Copy</span>
                 </button>
               </div>
-              <pre id="cmd-bridge"><code><span class="term-comment"># Download, review, then set up once</span>
-curl -fsSLO https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>main/<wbr>install.sh &amp;&amp; less install.sh &amp;&amp; mkdir -p "$HOME/.local/share/opencode-mobile-installer" &amp;&amp; cp install.sh "$HOME/.local/share/opencode-mobile-installer/install.sh" &amp;&amp; chmod 700 "$HOME/.local/share/opencode-mobile-installer/install.sh" &amp;&amp; bash "$HOME/.local/share/opencode-mobile-installer/install.sh" setup --workdir "$HOME/projects"
+              <pre id="cmd-bridge"><code><span class="term-comment"># One command to set up</span>
+curl -fsSL https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>main/<wbr>install.sh | bash -s -- setup
 <span class="term-comment"># Later: public temporary link (the command warns and asks before exposing it)</span>
 opencode-mobile up</code></pre>
             </div>

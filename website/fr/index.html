@@ -255,8 +255,8 @@
                   <span class="copy-label" data-copy-label aria-live="polite">Copier</span>
                 </button>
               </div>
-              <pre id="cmd-bridge"><code><span class="term-comment"># Linux/macOS : téléchargez, vérifiez, puis configurez une fois</span>
-curl -fsSLO https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>main/<wbr>install.sh &amp;&amp; less install.sh &amp;&amp; mkdir -p "$HOME/.local/share/opencode-mobile-installer" &amp;&amp; cp install.sh "$HOME/.local/share/opencode-mobile-installer/install.sh" &amp;&amp; chmod 700 "$HOME/.local/share/opencode-mobile-installer/install.sh" &amp;&amp; bash "$HOME/.local/share/opencode-mobile-installer/install.sh" setup --workdir "$HOME/projects"
+              <pre id="cmd-bridge"><code><span class="term-comment"># Une commande pour configurer (Linux/macOS)</span>
+curl -fsSL https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>main/<wbr>install.sh | bash -s -- setup
 <span class="term-comment"># Ensuite : lien public temporaire après avertissement et confirmation</span>
 opencode-mobile up</code></pre>
             </div>

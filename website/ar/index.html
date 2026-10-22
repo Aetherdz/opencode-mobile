@@ -254,8 +254,8 @@
                   <span class="copy-label" data-copy-label aria-live="polite">نسخ</span>
                 </button>
               </div>
-              <pre id="cmd-bridge"><code><span class="term-comment"># نزّل المثبّت وراجعه ثم أعد الإعداد مرة واحدة (Linux/macOS)</span>
-curl -fsSLO https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>main/<wbr>install.sh &amp;&amp; less install.sh &amp;&amp; mkdir -p "$HOME/.local/share/opencode-mobile-installer" &amp;&amp; cp install.sh "$HOME/.local/share/opencode-mobile-installer/install.sh" &amp;&amp; chmod 700 "$HOME/.local/share/opencode-mobile-installer/install.sh" &amp;&amp; bash "$HOME/.local/share/opencode-mobile-installer/install.sh" setup --workdir "$HOME/projects"
+              <pre id="cmd-bridge"><code><span class="term-comment"># أمر واحد للإعداد (Linux/macOS)</span>
+curl -fsSL https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>main/<wbr>install.sh | bash -s -- setup
 <span class="term-comment"># لاحقًا: رابط عام مؤقت بعد التحذير والموافقة</span>
 opencode-mobile up</code></pre>
             </div>

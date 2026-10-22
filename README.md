@@ -88,8 +88,9 @@ mkdir -p "$HOME/.local/share/opencode-mobile-installer" && cp install.sh "$HOME/
 opencode-mobile up
 ```
 
-The command above assumes the reviewed installer is in the current directory;
-clone `opencode-mobile-dist` first or download `install.sh` and inspect it.
+The command above fetches the latest installer from GitHub `main`; this is
+convenient but trusts that branch. Bridge release assets are verified against
+`SHA256SUMS` after download.
 
 `setup` verifies the bridge release against `SHA256SUMS`, prompts for a
 project directory, preserves an existing token/config, and keeps the bridge on
