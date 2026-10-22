@@ -107,18 +107,34 @@
             ثبّت الجسر مرة واحدة على جهاز OpenCode، ثم أنشئ رابطًا مؤقتًا لهاتفك
             عند الحاجة. بلا حساب أو خادم وسيط، وبلا تتبّع في التطبيق.
           </p>
-          <div class="actions">
-            <a class="button button-primary" href="#install">ثبّت الجسر</a>
-            <a class="button button-quiet" href="https://github.com/Aetherdz/opencode-mobile/releases" rel="noreferrer">كل الإصدارات</a>
-          </div>
           <div class="hero-release">
             <div class="hero-release-copy">
               <span class="hero-release-kicker">Android · نسخة تجريبية عامة</span>
               <strong>OpenCode Mobile <span>1.0.0-beta.3</span></strong>
               <small>Android 7+ · arm64 · ملف الإصدار</small>
             </div>
-            <a class="hero-release-button" href="https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.3/opencode-mobile-1.0.0-beta.3.apk" aria-label="تنزيل OpenCode Mobile لأندرويد، النسخة 1.0.0-beta.3"><span>تنزيل APK</span><b aria-hidden="true">↓</b></a>
+            <a class="hero-release-button" href="https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.3/opencode-mobile-1.0.0-beta.3.apk" aria-label="تنزيل OpenCode Mobile لأندرويد، النسخة 1.0.0-beta.3">
+              <span>تنزيل APK</span><b aria-hidden="true">↓</b>
+            </a>
           </div>
+          <div class="actions">
+            <a class="button button-primary" href="#install">ثبّت الجسر</a>
+            <a class="button button-quiet" href="https://github.com/Aetherdz/opencode-mobile/releases" rel="noreferrer">كل الإصدارات</a>
+          </div>
+          <dl class="hero-facts">
+            <div>
+              <dt>النقل</dt>
+              <dd>Loopback + رابط مؤقت</dd>
+            </div>
+            <div>
+              <dt>الترخيص</dt>
+              <dd>MIT</dd>
+            </div>
+            <div>
+              <dt>التتبّع</dt>
+              <dd>لا يوجد في التطبيق</dd>
+            </div>
+          </dl>
         </div>
 
         <div class="hero-art" aria-hidden="true">
@@ -305,6 +321,54 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
         </div>
       </section>
 
+      <section class="section section-download" id="download">
+        <div class="download-inner">
+          <div>
+            <p class="eyebrow">03 / الإصدار</p>
+            <h2 class="display">جرّب النسخة التجريبية بنفسك.</h2>
+            <p>
+              تصل النسخة التجريبية على شكل مصدر، وبناء Android موقّع للإصدار،
+              وحزم للجسر والويب. أبقِ الجسر خاصًا، وتوقّع أن تصادف بعض الزوايا
+              غير المصقولة.
+            </p>
+            <p class="download-note">
+              Android 7.0+ على arm64. لا يوزّع APK عبر Google Play. ثبّته من
+              صفحة الإصدارات بعد إعداد الجسر:
+            </p>
+            <p class="download-note download-hash">
+              sha256&nbsp;e8368fa0ad8b10d0040da4319fd86277fe685fcb33b740794eccdbd8b85b3ed7
+            </p>
+          </div>
+          <div class="download-actions">
+            <a class="button button-outline" href="./#install">إعداد الجسر</a>
+            <a
+              class="button button-primary"
+              href="https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.3/opencode-mobile-1.0.0-beta.3.apk"
+              rel="noreferrer"
+              >تنزيل APK</a
+            >
+            <a
+              class="button button-outline"
+              href="https://github.com/Aetherdz/opencode-mobile/releases"
+              rel="noreferrer"
+              >ملفات الإصدار التجريبي</a
+            >
+            <a
+              class="button button-outline"
+              href="https://github.com/Aetherdz/opencode-mobile-dist"
+              rel="noreferrer"
+              >المثبّتات</a
+            >
+            <a
+              class="text-link"
+              href="https://github.com/Aetherdz/opencode-mobile/releases"
+              rel="noreferrer"
+              >SHA256SUMS وملاحظات الإصدار</a
+            >
+          </div>
+        </div>
+      </section>
+
       <section class="section" id="next">
         <div class="section-head">
           <p class="eyebrow">04 / الباقي</p>
@@ -334,33 +398,9 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
           </a>
         </div>
       </section>
-
-      <section class="section section-download" id="download">
-        <div class="download-inner">
-          <div>
-            <p class="eyebrow">03 / الإصدار</p>
-            <h2 class="display">جرّب النسخة التجريبية بنفسك.</h2>
-            <p>تصل النسخة التجريبية على شكل مصدر، وبناء Android موقّع، وحزم للجسر والويب. أبقِ الجسر خاصًا.</p>
-            <p class="download-note">Android 7.0+ على arm64. لا يوزّع APK عبر Google Play. نزّله من صفحة الإصدار بعد إعداد الجسر:</p>
-            <p class="download-note download-hash">sha256&nbsp;e8368fa0ad8b10d0040da4319fd86277fe685fcb33b740794eccdbd8b85b3ed7</p>
-          </div>
-          <div class="download-actions">
-            <a class="button button-outline" href="./#install">إعداد الجسر</a>
-            <a class="button button-primary" href="https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.3/opencode-mobile-1.0.0-beta.3.apk" rel="noreferrer">تنزيل APK</a>
-            <a class="button button-outline" href="https://github.com/Aetherdz/opencode-mobile/releases" rel="noreferrer">ملفات الإصدار التجريبي</a>
-            <a class="button button-outline" href="https://github.com/Aetherdz/opencode-mobile-dist" rel="noreferrer">المثبّتات</a>
-            <a class="text-link" href="https://github.com/Aetherdz/opencode-mobile/releases" rel="noreferrer">SHA256SUMS وملاحظات الإصدار</a>
-          </div>
-        </div>
-      </section>
     </main>
 
     <footer class="site-footer">
-      <dl class="hero-facts">
-        <div><dt>النقل</dt><dd>Loopback + رابط مؤقت</dd></div>
-        <div><dt>الترخيص</dt><dd>MIT</dd></div>
-        <div><dt>التتبّع</dt><dd>لا يوجد في التطبيق</dd></div>
-      </dl>
       <div class="footer-brand">
         <img class="brand-mark" src="../assets/brand-mark.svg?v=mobile-mark-2" width="40" height="40" alt="" aria-hidden="true" />
         <div class="footer-brand-copy">
@@ -392,8 +432,12 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
           </div>
         </div>
       </nav>
-      <p class="footer-legal">مرخّص بموجب MIT. غير مرتبط بفريق OpenCode ولا معتمد منه. <span id="year">2026</span>.</p>
+      <p class="footer-legal">
+        مرخّص بموجب MIT. غير مرتبط بفريق OpenCode ولا معتمد منه.
+        <span id="year">2026</span>.
+      </p>
     </footer>
+
     <script src="../app.js" defer></script>
   </body>
 </html>
