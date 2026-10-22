@@ -168,15 +168,22 @@
             <a class="button button-primary" href="#install">Instalar el puente</a>
             <a class="button button-quiet" href="https://github.com/Aetherdz/opencode-mobile/releases" rel="noreferrer">Todas las versiones</a>
           </div>
-          <div class="hero-command">
-            <div class="hero-command-heading">
-              <span class="hero-command-label">Instalación Linux · macOS</span>
-              <button class="copy-button hero-command-copy" type="button" data-copy-target="cmd-hero" aria-label="Copiar el comando de instalación para Linux y macOS">
-                <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5.6" y="4.6" width="8" height="9.2" rx="1.2" /><path d="M10.4 4.6V3.2A1.2 1.2 0 0 0 9.2 2H2.6A1.2 1.2 0 0 0 1.4 3.2v7.6A1.2 1.2 0 0 0 2.6 12h3" /></svg>
-                <span class="copy-label" data-copy-label aria-live="polite">Copiar</span>
-              </button>
+          <div class="cmd-switcher">
+            <input class="cmd-radio" type="radio" name="cmd-os" id="cmd-os-posix" checked autocomplete="off" />
+            <input class="cmd-radio" type="radio" name="cmd-os" id="cmd-os-win" autocomplete="off" />
+            <div class="cmd-tabs"><label for="cmd-os-posix">Linux · macOS</label><label for="cmd-os-win">Windows</label></div>
+            <div class="cmd-panel" id="panel-posix">
+              <div class="cmd-bar"><span class="cmd-prompt" aria-hidden="true">$</span><button class="copy-button" type="button" data-copy-target="cmd-bridge" aria-label="Copiar el comando de instalación para Linux y macOS"><svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5.6" y="4.6" width="8" height="9.2" rx="1.2" /><path d="M10.4 4.6V3.2A1.2 1.2 0 0 0 9.2 2H2.6A1.2 1.2 0 0 0 1.4 3.2v7.6A1.2 1.2 0 0 0 2.6 12h3" /></svg><span class="copy-label" data-copy-label aria-live="polite">Copiar</span></button></div>
+              <pre id="cmd-bridge"><code>curl -fsSL https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>main/<wbr>install.sh | bash -s -- setup</code></pre>
             </div>
-            <pre id="cmd-hero"><code>curl -fsSL https://raw.githubusercontent.com/Aetherdz/opencode-mobile-dist/main/install.sh | bash -s -- setup</code></pre>
+            <p class="cmd-note">Después de configurar, ejecuta <code>opencode-mobile</code> para iniciar el enlace temporal.</p>
+            <div class="cmd-panel" id="panel-win">
+              <div class="cmd-bar"><span class="cmd-prompt" aria-hidden="true">&gt;</span><button class="copy-button" type="button" data-copy-target="cmd-bridge-win" aria-label="Copiar el comando de instalación para Windows"><svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5.6" y="4.6" width="8" height="9.2" rx="1.2" /><path d="M10.4 4.6V3.2A1.2 1.2 0 0 0 9.2 2H2.6A1.2 1.2 0 0 0 1.4 3.2v7.6A1.2 1.2 0 0 0 2.6 12h3" /></svg><span class="copy-label" data-copy-label aria-live="polite">Copiar</span></button></div>
+              <pre id="cmd-bridge-win"><code>$h = "3a493282e252468ed96012cd0019f5252314bfb5c7b810be34476602616a14aa"
+irm https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>7c4ec38b7de7d87e88d7f215721a11bc338e128f/<wbr>install.ps1 -OutFile install.ps1
+if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksum mismatch" }
+.\install.ps1 -Command install -WorkDir "$env:USERPROFILE\projects"</code></pre>
+            </div>
           </div>
         </div>
       </section>
@@ -235,57 +242,6 @@
               </div>
             </li>
           </ol>
-          <div class="cmd-switcher">
-            <input class="cmd-radio" type="radio" name="cmd-os" id="cmd-os-posix" checked autocomplete="off" />
-            <input class="cmd-radio" type="radio" name="cmd-os" id="cmd-os-win" autocomplete="off" />
-
-            <div class="cmd-tabs">
-              <label for="cmd-os-posix">Linux · macOS</label>
-              <label for="cmd-os-win">Windows</label>
-            </div>
-
-            <div class="cmd-panel" id="panel-posix">
-              <div class="cmd-bar">
-                <span class="cmd-prompt" aria-hidden="true">$</span>
-                <button
-                  class="copy-button"
-                  type="button"
-                  data-copy-target="cmd-bridge"
-                  aria-label="Copiar el comando de instalación para Linux y macOS"
-                >
-                  <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true" focusable="false">
-                    <rect x="5.6" y="4.6" width="8" height="9.2" rx="1.2" />
-                    <path d="M10.4 4.6V3.2A1.2 1.2 0 0 0 9.2 2H2.6A1.2 1.2 0 0 0 1.4 3.2v7.6A1.2 1.2 0 0 0 2.6 12h3" />
-                  </svg>
-                  <span class="copy-label" data-copy-label aria-live="polite">Copiar</span>
-                </button>
-              </div>
-              <pre id="cmd-bridge"><code>curl -fsSL https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>main/<wbr>install.sh | bash -s -- setup</code></pre>
-            </div>
-            <p class="cmd-note">Después de configurar, ejecuta <code>opencode-mobile</code> para iniciar el enlace temporal.</p>
-            <div class="cmd-panel" id="panel-win">
-              <div class="cmd-bar">
-                <span class="cmd-prompt" aria-hidden="true">&gt;</span>
-                <button
-                  class="copy-button"
-                  type="button"
-                  data-copy-target="cmd-bridge-win"
-                  aria-label="Copiar el comando de instalación para Windows"
-                >
-                  <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true" focusable="false">
-                    <rect x="5.6" y="4.6" width="8" height="9.2" rx="1.2" />
-                    <path d="M10.4 4.6V3.2A1.2 1.2 0 0 0 9.2 2H2.6A1.2 1.2 0 0 0 1.4 3.2v7.6A1.2 1.2 0 0 0 2.6 12h3" />
-                  </svg>
-                  <span class="copy-label" data-copy-label aria-live="polite">Copiar</span>
-                </button>
-              </div>
-              <pre id="cmd-bridge-win"><code>$h = "3a493282e252468ed96012cd0019f5252314bfb5c7b810be34476602616a14aa"
-irm https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>7c4ec38b7de7d87e88d7f215721a11bc338e128f/<wbr>install.ps1 -OutFile install.ps1
-if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksum mismatch" }
-.\install.ps1 -Command install -WorkDir "$env:USERPROFILE\projects"</code></pre>
-            </div>
-          </div>
-        </div>
       </section>
 
       <section class="section" id="requirements">

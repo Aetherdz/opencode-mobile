@@ -93,12 +93,12 @@ for (const relative of homePages) {
     continue;
   }
   const heroEndTag = html.indexOf('<section class="ticker"', heroStart);
-  if (heroStart < 0 || heroEndTag < 0) {
+  if (heroEndTag < 0) {
     errors.push(`${relative}: homepage hero section is missing`);
     continue;
   }
   const hero = html.slice(heroStart, heroEndTag);
-  for (const selector of ['class="eyebrow"', "<h1", 'class="lede"', 'class="hero-release"', 'class="hero-command"', 'class="actions"']) {
+  for (const selector of ['class="eyebrow"', "<h1", 'class="lede"', 'class="hero-release"', 'class="cmd-switcher"', 'class="actions"']) {
     if (!hero.includes(selector)) errors.push(`${relative}: homepage hero is missing ${selector}`);
   }
   const artIndex = hero.indexOf('class="hero-art"');
@@ -106,20 +106,25 @@ for (const relative of homePages) {
   const actionsIndex = hero.indexOf('class="actions"');
   const ledeIndex = hero.indexOf('class="lede"');
   const releaseIndex = hero.indexOf('class="hero-release"');
-  const commandIndex = hero.indexOf('class="hero-command"');
+  const commandIndex = hero.indexOf('class="cmd-switcher"');
   const releaseEndIndex = hero.indexOf('</div>', releaseIndex);
-  const commandEndIndex = hero.indexOf('</div>', hero.indexOf('</pre>', commandIndex));
-  const firstCloseAfterActions = hero.indexOf('</div>', actionsIndex);
-  const secondCloseAfterActions = hero.indexOf('</div>', firstCloseAfterActions + 6);
-  if (!(artIndex >= 0 && copyIndex > artIndex && ledeIndex > copyIndex && releaseIndex > ledeIndex && actionsIndex > releaseEndIndex && commandIndex > firstCloseAfterActions && secondCloseAfterActions > firstCloseAfterActions)) {
+  const commandEndIndex = hero.indexOf('</div>', hero.indexOf('id="panel-win"', commandIndex));
+  if (!(artIndex >= 0 && copyIndex > artIndex && ledeIndex > copyIndex && releaseIndex > ledeIndex && actionsIndex > releaseEndIndex && commandIndex > actionsIndex)) {
     errors.push(`${relative}: hero must place APK, install/release actions, then the setup command`);
   }
   const commandText = hero.slice(commandIndex, commandEndIndex);
-  if (!commandText.includes('curl -fsSL https://raw.githubusercontent.com/Aetherdz/opencode-mobile-dist/main/install.sh | bash -s -- setup')) {
+  if (!commandText.includes('curl -fsSL') || !commandText.includes('opencode-mobile-dist/') || !commandText.includes('install.sh | bash -s -- setup')) {
     errors.push(`${relative}: hero setup command is missing or incorrect`);
   }
-  if (!commandText.includes('data-copy-target="cmd-hero"') || !html.includes('id="cmd-hero"')) {
-    errors.push(`${relative}: hero setup command must have its working copy control`);
+  if ((html.match(/id="cmd-bridge"/g) ?? []).length !== 1 || (html.match(/id="cmd-bridge-win"/g) ?? []).length !== 1 || (html.match(/data-copy-target="cmd-bridge"/g) ?? []).length !== 1 || (html.match(/data-copy-target="cmd-bridge-win"/g) ?? []).length !== 1) {
+    errors.push(`${relative}: the single moved command switcher must keep exactly one working copy control per OS`);
+  }
+  if (!commandText.includes('data-copy-target="cmd-bridge"') || !commandText.includes('data-copy-target="cmd-bridge-win"')) {
+    errors.push(`${relative}: the moved command switcher is missing a copy control`);
+  }
+  const installSwitcherCount = (html.match(/class="cmd-switcher"/g) ?? []).length;
+  if (installSwitcherCount !== 1 || html.includes('class="hero-command"')) {
+    errors.push(`${relative}: expected one moved, original command switcher and no duplicate command box`);
   }
   for (const id of ["install", "download", "next", "requirements"]) {
     if ((html.match(new RegExp(`id="${id}"`, "g")) ?? []).length !== 1) {
@@ -141,7 +146,7 @@ for (const relative of homePages) {
   const apkHero = hero.indexOf('class="hero-release"');
   const commandSection = html.indexOf('id="install"');
   if (!(apkHero >= 0 && apkHero < commandSection)) {
-    errors.push(`${relative}: APK download card must appear before the install command section`);
+    errors.push(`${relative}: APK download card must appear before the install section`);
   }
   if ((html.match(/class="hero-facts"/g) ?? []).length !== 1 || html.indexOf('class="hero-facts"') < footerIndex) {
     errors.push(`${relative}: transport, license, and telemetry facts must appear once in the footer`);

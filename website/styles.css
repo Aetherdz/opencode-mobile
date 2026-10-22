@@ -349,7 +349,19 @@ main {
 
 .hero-copy { padding-top: clamp(0rem, 2.5vw, 2rem); }
 .hero-copy .hero-release { margin-top: 1.15rem; }
-.hero-copy .actions { margin-top: 0.9rem; }
+.hero-copy .actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, max-content));
+  align-items: center;
+  gap: 0.55rem;
+  margin-top: 1rem;
+}
+.hero-copy .actions .button { width: auto; min-height: 2.55rem; padding: 0.62rem 0.78rem; font-size: 0.64rem; }
+
+.hero-copy .cmd-switcher { max-width: 34rem; margin-top: 0.75rem; }
+.hero-copy .cmd-tabs label { min-height: 2.5rem; }
+.hero-copy .cmd-panel pre { padding: 0.7rem 0.85rem 0.85rem; font-size: 0.72rem; }
+.hero-copy .cmd-note { font-size: 0.7rem; }
 
 .hero-command {
   display: grid;
@@ -1787,8 +1799,8 @@ main {
   }
 
   .hero-copy { grid-column: 1; grid-row: 2; max-width: 42rem; margin-inline: auto; padding-top: 0; }
-  .hero > .hero-copy .lede { margin-top: 1.4rem; }
-  .hero .display { max-width: 12ch; font-size: clamp(2.8rem, 10.5vw, 4.5rem); }
+  .hero > .hero-copy .lede { margin-top: 1rem; }
+  .hero .display { max-width: 12ch; font-size: clamp(3.4rem, 12vw, 5rem); }
   .hero-release { max-width: 42rem; }
   .hero-command { max-width: 42rem; }
 
@@ -1889,7 +1901,7 @@ main {
 
   .hero {
     grid-template-columns: minmax(0, 1fr);
-    padding: 3rem 0 4rem;
+    padding: 2.25rem 0 2.5rem;
   }
 
   .hero > .hero-art,
@@ -1914,8 +1926,9 @@ main {
   .hero-command-label { min-width: 0; overflow-wrap: anywhere; }
   .hero-command pre { margin: 0; overflow-x: auto; white-space: pre; }
   .hero-command pre code { min-width: max-content; overflow-wrap: normal; white-space: pre; }
-  .hero .actions { display: grid; grid-template-columns: minmax(0, 1fr); }
-  .hero .actions .button { width: 100%; }
+  .hero .actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; margin-top: 0.9rem; }
+  .hero .actions .button { width: 100%; min-width: 0; min-height: 2.5rem; padding-inline: 0.35rem; font-size: clamp(0.54rem, 2.2vw, 0.67rem); white-space: nowrap; }
+  .hero .actions .button-primary { margin-top: 0; }
 
   .hero-art {
     min-height: clamp(18rem, 86vw, 27rem);
@@ -2452,14 +2465,14 @@ html[dir="rtl"] code {
   .lang-switch summary { min-height: 2.35rem; padding-inline: 0.45rem; }
   .menu-toggle { width: 2.35rem; height: 2.35rem; }
 
-  .hero .display { font-size: clamp(2.2rem, 9vw, 2.8rem); }
+  .hero .display { max-width: 100%; font-size: clamp(2.6rem, 10vw, 3.6rem); }
   .hero .eyebrow { max-width: 100%; flex-wrap: wrap; }
   .hero-release { padding: 0.8rem; }
   .hero-release-copy strong { font-size: 0.8rem; }
   .hero-release-copy small { font-size: 0.62rem; }
-  .hero-art { min-height: clamp(22rem, 105vw, 30rem); }
-  .phone { width: min(17rem, 78vw); }
-  .phone-screen { min-height: 23rem; }
+  .hero-art { min-height: clamp(19rem, 88vw, 24rem); }
+  .phone { width: min(16rem, 72vw); }
+  .phone-screen { min-height: 21rem; }
   .hero-command { padding: 0.65rem; }
   .hero-command pre { font-size: 0.58rem; }
 
