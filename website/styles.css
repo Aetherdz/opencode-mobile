@@ -91,57 +91,121 @@ button {
   z-index: 20;
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: clamp(1rem, 2vw, 2rem);
   justify-content: space-between;
-  min-height: 4.5rem;
-  padding: 0 3vw;
-  border-bottom: 1px solid var(--line);
-  background: rgba(243, 243, 239, 0.86);
-  backdrop-filter: blur(14px);
+  min-height: 5.25rem;
+  padding: 0 clamp(1rem, 4vw, 3.75rem);
+  border-bottom: 1px solid rgba(10, 10, 10, 0.12);
+  background: rgba(243, 243, 239, 0.92);
+  backdrop-filter: blur(18px) saturate(1.2);
+  transition: min-height 220ms ease, box-shadow 220ms ease, background 220ms ease;
 }
 
 .brand {
-  display: inline-flex;
+  position: relative;
+  display: inline-grid;
+  grid-template-columns: 2.5rem auto;
+  grid-template-rows: auto auto;
   align-items: center;
-  gap: 0.75rem;
+  column-gap: 0.75rem;
   color: var(--ink);
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.08em;
   text-decoration: none;
   text-transform: uppercase;
+  flex: 0 0 auto;
 }
 
 .brand-mark {
+  position: relative;
   display: inline-grid;
-  width: 2.1rem;
-  height: 2.1rem;
+  width: 2.55rem;
+  height: 2.55rem;
   place-items: center;
+  border: 1px solid rgba(10, 10, 10, 0.15);
+  border-radius: 50%;
   background: var(--ink);
   color: var(--paper);
-  font-family: var(--mono);
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: -0.04em;
+  font-family: var(--sans);
+  font-size: 0.92rem;
+  font-weight: 650;
+  letter-spacing: -0.1em;
+  grid-row: 1 / span 2;
+  transition: transform 180ms ease, box-shadow 180ms ease;
 }
+
+.brand-mark span,
+.brand-mark b { display: block; font-weight: inherit; }
+.brand-mark span { transform: translateX(0.06em); }
+.brand-mark b { margin-left: -0.08em; }
+.brand-mark i {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  width: 0.66em;
+  height: 0.66em;
+  border: 1.5px solid currentColor;
+  border-radius: 50%;
+  background: var(--ink);
+  transform: translateX(-50%) scale(0.45);
+  transition: transform 220ms ease;
+}
+.brand:hover .brand-mark i { transform: translateX(-50%) scale(0.72); }
+.brand:hover .brand-mark { transform: translateY(-1px); box-shadow: 0 5px 13px rgba(10, 10, 10, 0.16); }
+
+.brand-name { align-self: end; line-height: 1.15; }
+
+.brand-build {
+  align-self: start;
+  margin-top: 0.28rem;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.52rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+}
+
+.brand-build i { color: var(--green); font-style: normal; }
+
+@media (max-width: 980px) {
+  .site-header { min-height: 4.75rem; }
+}
+
 
 .site-nav {
   display: flex;
   align-items: center;
-  gap: 1.8rem;
-  font-size: 0.78rem;
+  gap: clamp(0.85rem, 1.8vw, 1.55rem);
+  font-size: 0.68rem;
   font-weight: 600;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.09em;
   text-transform: uppercase;
 }
 
 .site-nav a {
-  padding: 0.4rem 0;
+  position: relative;
+  padding: 0.55rem 0;
   text-decoration: none;
+  white-space: nowrap;
 }
 
-.site-nav a:hover {
-  text-decoration: underline;
+.site-nav a:not(.nav-cta)::after {
+  position: absolute;
+  right: 0;
+  bottom: 0.15rem;
+  left: 0;
+  height: 1px;
+  background: var(--green);
+  content: "";
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 200ms ease;
+}
+
+.site-nav a:not(.nav-cta):hover::after,
+.site-nav a[aria-current="page"]:not(.nav-cta)::after {
+  transform: scaleX(1);
 }
 
 .nav-star {
@@ -153,16 +217,21 @@ button {
 .nav-github {
   display: inline-flex;
   align-items: center;
-  padding: 0.3rem 0.45rem;
-  border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.55);
+  justify-content: center;
+  width: 3rem;
+  height: 2.75rem;
+  padding: 0.25rem;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
   text-decoration: none !important;
-  transition: border-color 160ms ease, background 160ms ease;
+  transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
 }
 
 .nav-github:hover {
-  border-color: var(--ink);
-  background: var(--paper-strong);
+  border-color: var(--line);
+  background: rgba(255, 255, 255, 0.75);
+  transform: translateY(-1px);
 }
 
 .nav-github-icon {
@@ -172,22 +241,40 @@ button {
   color: var(--ink);
 }
 
+.nav-github:focus-visible,
+.lang-switch summary:focus-visible,
+.menu-toggle:focus-visible {
+  outline-color: var(--green);
+  outline-offset: 3px;
+}
+
+.lang-menu {
+  border-radius: 0.75rem;
+  padding: 0.4rem;
+}
+
+.lang-menu a { border-radius: 0.45rem; }
+
 .nav-github-mark {
   display: block;
 }
 
 .nav-github-count {
   position: absolute;
-  top: -0.6rem;
-  right: -0.85rem;
-  min-width: 1.15rem;
+  top: -0.45rem;
+  right: -0.7rem;
+  min-width: 1.25rem;
+  min-height: 1.25rem;
+  display: grid;
+  place-items: center;
   padding: 0 0.28rem;
-  border: 1px solid var(--ink);
+  border: 2px solid var(--paper);
   border-radius: 999px;
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--green);
+  color: #fff;
   font-family: var(--mono);
-  font-size: 0.55rem;
+  font-size: 0.58rem;
+  font-weight: 700;
   letter-spacing: 0;
   line-height: 1.3;
   text-align: center;
@@ -1565,9 +1652,7 @@ main {
     padding: 0 1rem;
   }
 
-  .brand-name {
-    display: none;
-  }
+  .brand-name { display: block; }
 
   .menu-toggle {
     display: inline-flex;
@@ -1675,24 +1760,43 @@ main {
 
   .site-footer {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding-top: 2rem;
+    padding-bottom: 1.25rem;
   }
 
   .footer-links {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    justify-content: stretch;
-    gap: 1.1rem 1.25rem;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    grid-template-areas:
+      "product documentation"
+      "community documentation";
+    align-items: start;
+    justify-content: initial;
+    gap: 1.25rem 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
   }
+
+  .footer-link-group:nth-child(1) { grid-area: product; }
+  .footer-link-group:nth-child(2) { grid-area: documentation; }
+  .footer-link-group:nth-child(3) { grid-area: community; }
 
   .footer-link-group:last-child {
-    grid-column: 1 / -1;
+    grid-column: auto;
   }
 
+  .footer-link-group { gap: 0.45rem; }
+  .footer-group-title { font-size: 0.62rem; letter-spacing: 0.1em; }
+  .footer-group-items { gap: 0.15rem; }
+
   .footer-links a {
-    min-height: 2.75rem;
+    min-height: 2.5rem;
+    font-size: 0.84rem;
   }
 
   .footer-legal {
-    padding-top: 1rem;
+    padding-top: 1.1rem;
+    line-height: 1.7;
   }
 }
 
@@ -1715,7 +1819,7 @@ main {
    header bar, so they are reachable on a phone without opening the menu. */
 
 .site-header {
-  gap: 1.25rem;
+  gap: clamp(1rem, 2vw, 2rem);
 }
 
 .site-nav {
@@ -1725,24 +1829,33 @@ main {
 .header-tools {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.35rem;
 }
 
 .lang-switch {
   position: relative;
 }
 
+.nav-github:focus-visible,
+.lang-switch summary:focus-visible,
+.menu-toggle:focus-visible {
+  outline-color: var(--green);
+  outline-offset: 3px;
+}
+
 .lang-switch summary {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  min-height: 2.4rem;
-  padding: 0 0.55rem;
+  min-height: 2.75rem;
+  padding: 0 0.8rem;
   border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.55);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.52);
   font-family: var(--mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.08em;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   list-style: none;
   cursor: pointer;
   transition: border-color 160ms ease, background 160ms ease;
@@ -1772,8 +1885,9 @@ main {
   z-index: 30;
   min-width: 9.5rem;
   margin: 0;
-  padding: 0.3rem;
+  padding: 0.4rem;
   border: 1px solid var(--ink);
+  border-radius: 0.75rem;
   background: var(--paper-strong);
   box-shadow: 0 12px 30px rgba(10, 10, 10, 0.12);
   list-style: none;
@@ -1782,6 +1896,7 @@ main {
 .lang-menu a {
   display: block;
   padding: 0.5rem 0.6rem;
+  border-radius: 0.45rem;
   font-size: 0.9rem;
   text-decoration: none;
 }
@@ -1795,16 +1910,26 @@ main {
   font-weight: 700;
 }
 
+.lang-menu a[aria-current="true"]::after {
+  float: right;
+  color: var(--green);
+  content: "✓";
+}
+
 .menu-toggle {
   display: none;
-  width: 2.6rem;
-  height: 2.6rem;
+  width: 2.75rem;
+  height: 2.75rem;
   padding: 0;
   place-items: center;
-  border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid var(--ink);
+  border-radius: 50%;
+  background: var(--ink);
   cursor: pointer;
+  transition: background 180ms ease, transform 180ms ease;
 }
+
+.menu-toggle:hover { background: var(--ink-soft); transform: rotate(-4deg); }
 
 .menu-toggle-bars {
   display: grid;
@@ -1815,7 +1940,7 @@ main {
 .menu-toggle-bars i {
   display: block;
   height: 1.5px;
-  background: var(--ink);
+  background: var(--paper);
   transition: transform 200ms ease, opacity 200ms ease;
 }
 
@@ -1971,6 +2096,19 @@ html[dir="rtl"] .nav-github-count {
   left: -0.85rem;
 }
 
+html[lang="en"],
+html[lang="fr"],
+html[lang="es"] {
+  direction: ltr;
+  text-align: left;
+}
+
+html[lang="en"] .site-header,
+html[lang="fr"] .site-header,
+html[lang="es"] .site-header {
+  direction: ltr;
+}
+
 html[dir="rtl"] .cmd-panel,
 html[dir="rtl"] .terminal {
   direction: ltr;
@@ -1989,6 +2127,8 @@ html[dir="rtl"] code {
 /* --------------------------------------------------------------- small phone */
 
 @media (max-width: 980px) {
+  .site-header { min-height: 4.75rem; }
+
   .site-nav {
     display: flex;
     max-height: calc(100dvh - 4.5rem);
@@ -2029,15 +2169,15 @@ html[dir="rtl"] code {
 }
 
 @media (max-width: 430px) {
-  .site-header {
-    padding: 0 0.75rem;
-    gap: 0.6rem;
-  }
-
-  .brand-mark {
-    width: 1.9rem;
-    height: 1.9rem;
-  }
+  .site-header { padding: 0 0.75rem; gap: 0.6rem; }
+  .brand-mark { width: 2.3rem; height: 2.3rem; font-size: 0.82rem; }
+  .brand { grid-template-columns: 2.3rem auto; grid-template-rows: auto; column-gap: 0.55rem; }
+  .brand-name { align-self: center; font-size: 0.68rem; }
+  .brand-build { display: none; }
+  .header-tools { gap: 0.1rem; }
+  .nav-github { width: 2.5rem; }
+  .lang-switch summary { min-height: 2.5rem; padding-inline: 0.55rem; }
+  .menu-toggle { width: 2.5rem; height: 2.5rem; }
 
   .hero h1 {
     font-size: clamp(2.9rem, 14vw, 3.6rem);
@@ -2064,5 +2204,12 @@ html[dir="rtl"] code {
     max-width: 100%;
     overflow-x: auto;
     white-space: nowrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header, .brand-mark, .nav-github, .lang-switch summary, .menu-toggle,
+  .menu-toggle-bars i, .lang-chevron, .site-nav a::after {
+    transition-duration: 0.01ms !important;
   }
 }

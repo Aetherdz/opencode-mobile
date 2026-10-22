@@ -1,6 +1,6 @@
 import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Linking } from 'react-native';
 import { ApiError, uploadFile, type UploadAsset } from '@/api/client';
 import type { MessageFile } from '@/api/types';
@@ -77,6 +77,15 @@ export function useAttachments(sessionId: string | undefined, limits: Attachment
   const [error, setError] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const activeUploads = useRef(0);
+  const mounted = useRef(true);
+  const removedIds = useRef(new Set<string>());
+
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
 
   const maxFiles = Math.max(1, limits.maxFiles);
   const maxBytes = Math.max(1, limits.maxBytes);
@@ -96,6 +105,7 @@ export function useAttachments(sessionId: string | undefined, limits: Attachment
       );
       try {
         const file = await uploadFile(sessionId, pending.asset, (fraction) => {
+          if (!mounted.current || removedIds.current.has(pending.id)) return;
           setItems((current) =>
             current.map((item) =>
               item.id === pending.id && item.status === 'uploading'
@@ -104,6 +114,7 @@ export function useAttachments(sessionId: string | undefined, limits: Attachment
             ),
           );
         });
+        if (!mounted.current || removedIds.current.has(pending.id)) return;
         setItems((current) =>
           current.map((item) =>
             item.id === pending.id
@@ -112,6 +123,7 @@ export function useAttachments(sessionId: string | undefined, limits: Attachment
           ),
         );
       } catch (uploadError) {
+        if (!mounted.current || removedIds.current.has(pending.id)) return;
         const message = uploadErrorMessage(uploadError, t('chat.uploadFailed'));
         setItems((current) =>
           current.map((item) =>
@@ -123,7 +135,7 @@ export function useAttachments(sessionId: string | undefined, limits: Attachment
         setError(message);
       } finally {
         activeUploads.current = Math.max(0, activeUploads.current - 1);
-        if (activeUploads.current === 0) setUploading(false);
+        if (activeUploads.current === 0 && mounted.current) setUploading(false);
       }
     },
     [sessionId, t],
@@ -269,6 +281,7 @@ export function useAttachments(sessionId: string | undefined, limits: Attachment
   }, [addAssets]);
 
   const remove = useCallback((id: string) => {
+    removedIds.current.add(id);
     setItems((current) => current.filter((item) => item.id !== id));
   }, []);
 

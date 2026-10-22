@@ -71,8 +71,7 @@ paths, so it works from a subdirectory as well as a domain root.
   latest release.
 - Set an absolute `og:image` URL if a custom domain replaces GitHub Pages.
 - Add a canonical URL if a custom domain is chosen.
-- Replace the CSS phone mockup with real captures when the screenshot harness
-  lands.
+- Keep README screenshots captured from the Expo app, not hand-drawn approximations.
 - Verify the release links after each release.
 - Keep the unofficial disclaimer visible in the header and footer.
 - Upload `.github/social-preview.png` in **Settings → General → Social preview**.

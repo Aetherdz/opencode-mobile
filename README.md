@@ -38,12 +38,13 @@ that is already running on your host.
 
 ## Screens
 
-Captured from the web build with synthetic demo data. No real tokens, private
-paths, or personal session titles are shown.
+Connect is captured from the actual Expo web app. Sessions, Chat, and Questions
+are illustrative previews pending capture against a seeded demo bridge. No real
+tokens or account data are shown.
 
 | Connect | Sessions | Chat | Questions |
 | --- | --- | --- | --- |
-| <img src="docs/images/connect.png" alt="Connect screen" width="190" /> | <img src="docs/images/sessions.png" alt="Sessions screen" width="190" /> | <img src="docs/images/chat.png" alt="Chat screen" width="190" /> | <img src="docs/images/question.png" alt="Agent question card" width="190" /> |
+| <img src="docs/images/connect.png" alt="Connect screen" width="190" /> | <img src="docs/images/sessions.png" alt="Illustrative sessions preview" width="190" /> | <img src="docs/images/chat.png" alt="Illustrative chat preview" width="190" /> | <img src="docs/images/question.png" alt="Illustrative agent question card" width="190" /> |
 
 The connection screen also accepts the QR payload printed by `opencode-mobile`;
 manual URL and token entry remain available.
@@ -58,8 +59,7 @@ manual URL and token entry remain available.
 | --- |
 | <img src="docs/images/navigation-en.png" alt="Updated English navigation drawer" width="190" /> |
 
-This UI preview uses synthetic session titles and contains no live account
-data.
+The alternate locale and theme previews are retained as existing UI examples.
 
 ## Features
 

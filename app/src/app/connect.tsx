@@ -48,6 +48,12 @@ function hostOf(url: string): string {
   return rest.split(/[/:?#]/)[0].toLowerCase();
 }
 
+function normalizedInputUrl(value: string): string {
+  const trimmed = value.trim();
+  if (!trimmed) return '';
+  return /^https?:\/\//i.test(trimmed) ? trimmed : `http://${trimmed}`;
+}
+
 function isPrivateHost(host: string): boolean {
   const value = host.replace(/^\[|\]$/g, '');
   if (value === 'localhost' || value === '::1') return true;
@@ -82,7 +88,7 @@ export default function ConnectScreen() {
   const [cameraPermission, requestCameraPermission] = useCameraPermissions();
   const tokenRef = useRef<ComponentRef<typeof TextInput>>(null);
 
-  const trimmedUrl = url.trim();
+  const trimmedUrl = normalizedInputUrl(url);
   const trimmedToken = token.trim();
   const urlValid = HTTP_URL.test(trimmedUrl);
   const tokenValid = trimmedToken.length >= TOKEN_MIN_LENGTH;
@@ -100,7 +106,7 @@ export default function ConnectScreen() {
   };
 
   const handleUrlChange = (value: string) => {
-    setUrl(value.replace(/^\s+/, ''));
+    setUrl(value.replace(/^\s+/, '').replace(/\s+/g, ''));
     clearError();
   };
 
@@ -248,8 +254,8 @@ export default function ConnectScreen() {
               styles.content,
               {
                 paddingHorizontal: layout.padX,
-                paddingTop: 32,
-                paddingBottom: 20,
+                paddingTop: 24,
+                paddingBottom: 24,
               },
             ]}
             keyboardShouldPersistTaps="handled"
@@ -257,38 +263,46 @@ export default function ConnectScreen() {
             showsVerticalScrollIndicator={false}
           >
             <View style={styles.headerGroup}>
-              <Icon name="code-slash-outline" size={layout.logo} color="textStrong" />
-              <AppText
-                variant="eyebrow12"
-                color="secondary"
-                style={{ marginTop: 28 }}
-              >
-                {t('appName')}
-              </AppText>
-              <AppText variant="connectTitle" style={{ marginTop: 8 }}>
+              <View style={styles.brandRow}>
+                <View
+                  style={[
+                    styles.brandMark,
+                    { backgroundColor: theme.colors.surface, borderColor: theme.colors.border },
+                  ]}
+                >
+                  <Icon name="code-slash-outline" size={22} color="textStrong" />
+                </View>
+                <AppText variant="eyebrow12" color="secondary">
+                  {t('appName')}
+                </AppText>
+              </View>
+              <AppText variant="connectTitle" style={{ marginTop: 22 }}>
                 {t('connect.title')}
               </AppText>
               <AppText
                 variant="body15"
                 color="secondary"
-                style={{ marginTop: 10 }}
+                style={{ marginTop: 8 }}
               >
                 {t('connect.subtitle')}
               </AppText>
             </View>
 
             <View style={styles.formGroup}>
-              <Button
-                design="new"
-                label={t('connect.scanQr')}
-                onPress={() => void openScanner()}
-                fullWidth
-                size="md"
-                shape="pill"
-              />
-              <AppText variant="helper" color="secondary">
-                {t('connect.scanHint')}
-              </AppText>
+              <View style={styles.scanGroup}>
+                <Button
+                  design="new"
+                  variant="secondary"
+                  label={t('connect.scanQr')}
+                  onPress={() => void openScanner()}
+                  fullWidth
+                  size="md"
+                  shape="pill"
+                />
+                <AppText variant="helper" color="secondary">
+                  {t('connect.scanHint')}
+                </AppText>
+              </View>
               <View>
                 <TextField
                   design="new"
@@ -430,6 +444,7 @@ export default function ConnectScreen() {
 
               <Button
                 design="new"
+                variant="secondary"
                 label={loading ? t('connect.connecting') : t('connect.connect')}
                 onPress={() => void connect()}
                 loading={loading}
@@ -442,7 +457,7 @@ export default function ConnectScreen() {
                 style={[
                   styles.note,
                   {
-                    backgroundColor: theme.colors.surface,
+                    backgroundColor: theme.colors.surface1,
                     borderColor: theme.colors.border,
                   },
                 ]}
@@ -504,22 +519,39 @@ const styles = StyleSheet.create({
   },
   content: {
     flexGrow: 1,
-    justifyContent: 'space-between',
-    gap: 24,
+    justifyContent: 'space-evenly',
+    gap: 26,
     width: '100%',
-    maxWidth: 520,
+    maxWidth: 480,
     alignSelf: 'center',
   },
   headerGroup: {
     width: '100%',
   },
+  brandRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  brandMark: {
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderRadius: 14,
+    borderCurve: 'continuous',
+  },
   formGroup: {
     width: '100%',
-    gap: 18,
+    gap: 16,
+  },
+  scanGroup: {
+    gap: 8,
   },
   footerGroup: {
     width: '100%',
-    gap: 14,
+    gap: 12,
   },
   warningRow: {
     flexDirection: 'row',

@@ -29,10 +29,48 @@
       if (target instanceof Element && target.closest("a")) closeMenu();
     });
 
+    document.addEventListener("click", (event) => {
+      if (!nav.contains(event.target) && !menuButton.contains(event.target)) closeMenu();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key !== "Tab" || !nav.classList.contains("is-open")) return;
+      const links = [...nav.querySelectorAll('a[href]')];
+      if (!links.length) return;
+      const first = links[0];
+      const last = links[links.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        menuButton.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        menuButton.focus();
+      }
+    });
+
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") closeMenu();
     });
   }
+
+  document.querySelectorAll(".lang-switch").forEach((switcher) => {
+    const summary = switcher.querySelector("summary");
+    if (!summary) return;
+    switcher.addEventListener("toggle", () => {
+      summary.setAttribute("aria-expanded", String(switcher.open));
+    });
+    switcher.addEventListener("click", (event) => {
+      if (event.target instanceof Element && event.target.closest(".lang-menu a")) {
+        switcher.open = false;
+      }
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && switcher.open) {
+        switcher.open = false;
+        summary.focus();
+      }
+    });
+  });
 
   const copyButtons = document.querySelectorAll("[data-copy-target]");
   copyButtons.forEach((copyButton) => {
