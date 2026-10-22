@@ -169,8 +169,14 @@
             <a class="button button-quiet" href="https://github.com/Aetherdz/opencode-mobile/releases" rel="noreferrer">Toutes les versions</a>
           </div>
           <div class="hero-command">
-            <span class="hero-command-label">Installation Linux · macOS</span>
-            <code>curl -fsSL https://raw.githubusercontent.com/Aetherdz/opencode-mobile-dist/main/install.sh | bash -s -- setup</code>
+            <div class="hero-command-heading">
+              <span class="hero-command-label">Installation Linux · macOS</span>
+              <button class="copy-button hero-command-copy" type="button" data-copy-target="cmd-hero" aria-label="Copier la commande d’installation Linux et macOS">
+                <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5.6" y="4.6" width="8" height="9.2" rx="1.2" /><path d="M10.4 4.6V3.2A1.2 1.2 0 0 0 9.2 2H2.6A1.2 1.2 0 0 0 1.4 3.2v7.6A1.2 1.2 0 0 0 2.6 12h3" /></svg>
+                <span class="copy-label" data-copy-label aria-live="polite">Copier</span>
+              </button>
+            </div>
+            <pre id="cmd-hero"><code>curl -fsSL https://raw.githubusercontent.com/Aetherdz/opencode-mobile-dist/main/install.sh | bash -s -- setup</code></pre>
           </div>
         </div>
       </section>

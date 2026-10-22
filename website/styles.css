@@ -363,6 +363,10 @@ main {
   color: #e9e9e1;
 }
 
+.hero-command-heading { display: flex; align-items: center; justify-content: space-between; gap: 0.7rem; }
+.hero-command-copy { flex: 0 0 auto; }
+.hero-command pre { margin: 0; overflow-x: auto; white-space: pre; }
+
 .hero-command-label {
   color: #a4a49b;
   font-family: var(--mono);
@@ -373,7 +377,7 @@ main {
 
 .hero-command code {
   display: block;
-  overflow-wrap: anywhere;
+  min-width: max-content;
   color: inherit;
   font-family: var(--mono);
   font-size: clamp(0.56rem, 0.8vw, 0.72rem);
@@ -1884,13 +1888,34 @@ main {
   }
 
   .hero {
+    grid-template-columns: minmax(0, 1fr);
     padding: 3rem 0 4rem;
   }
 
+  .hero > .hero-art,
+  .hero > .hero-copy {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    grid-column: 1;
+  }
+
+  .hero > .hero-art { grid-row: 1; }
+  .hero > .hero-copy { grid-row: 2; }
+  .hero-copy > * { min-width: 0; }
+  .hero-copy .display { max-width: 100%; overflow-wrap: anywhere; }
+
   .hero .eyebrow { font-size: 0.62rem; letter-spacing: 0.06em; }
   .hero-release { align-items: stretch; flex-direction: column; margin-top: 1.25rem; }
+  .hero-release-copy strong { overflow-wrap: anywhere; }
   .hero-release-button { justify-content: space-between; }
   .hero-command { width: 100%; }
+  .hero-command-heading { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+  .hero-command-label { min-width: 0; overflow-wrap: anywhere; }
+  .hero-command pre { margin: 0; overflow-x: auto; white-space: pre; }
+  .hero-command pre code { min-width: max-content; overflow-wrap: normal; white-space: pre; }
+  .hero .actions { display: grid; grid-template-columns: minmax(0, 1fr); }
+  .hero .actions .button { width: 100%; }
 
   .hero-art {
     min-height: clamp(18rem, 86vw, 27rem);
@@ -2427,16 +2452,16 @@ html[dir="rtl"] code {
   .lang-switch summary { min-height: 2.35rem; padding-inline: 0.45rem; }
   .menu-toggle { width: 2.35rem; height: 2.35rem; }
 
-  .hero .display { font-size: clamp(2.45rem, 10.8vw, 3.25rem); }
+  .hero .display { font-size: clamp(2.2rem, 9vw, 2.8rem); }
   .hero .eyebrow { max-width: 100%; flex-wrap: wrap; }
   .hero-release { padding: 0.8rem; }
   .hero-release-copy strong { font-size: 0.8rem; }
   .hero-release-copy small { font-size: 0.62rem; }
-  .hero-art { min-height: clamp(16rem, 80vw, 21rem); }
-  .phone { width: min(13.5rem, 64vw); }
-  .phone-screen { min-height: 17rem; }
+  .hero-art { min-height: clamp(22rem, 105vw, 30rem); }
+  .phone { width: min(17rem, 78vw); }
+  .phone-screen { min-height: 23rem; }
   .hero-command { padding: 0.65rem; }
-  .hero-command code { font-size: 0.62rem; }
+  .hero-command pre { font-size: 0.58rem; }
 
   .cmd-tabs label {
     min-height: 3rem;

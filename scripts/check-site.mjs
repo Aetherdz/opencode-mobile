@@ -108,7 +108,7 @@ for (const relative of homePages) {
   const releaseIndex = hero.indexOf('class="hero-release"');
   const commandIndex = hero.indexOf('class="hero-command"');
   const releaseEndIndex = hero.indexOf('</div>', releaseIndex);
-  const commandEndIndex = hero.indexOf('</div>', commandIndex);
+  const commandEndIndex = hero.indexOf('</div>', hero.indexOf('</pre>', commandIndex));
   const firstCloseAfterActions = hero.indexOf('</div>', actionsIndex);
   const secondCloseAfterActions = hero.indexOf('</div>', firstCloseAfterActions + 6);
   if (!(artIndex >= 0 && copyIndex > artIndex && ledeIndex > copyIndex && releaseIndex > ledeIndex && actionsIndex > releaseEndIndex && commandIndex > firstCloseAfterActions && secondCloseAfterActions > firstCloseAfterActions)) {
@@ -117,6 +117,9 @@ for (const relative of homePages) {
   const commandText = hero.slice(commandIndex, commandEndIndex);
   if (!commandText.includes('curl -fsSL https://raw.githubusercontent.com/Aetherdz/opencode-mobile-dist/main/install.sh | bash -s -- setup')) {
     errors.push(`${relative}: hero setup command is missing or incorrect`);
+  }
+  if (!commandText.includes('data-copy-target="cmd-hero"') || !html.includes('id="cmd-hero"')) {
+    errors.push(`${relative}: hero setup command must have its working copy control`);
   }
   for (const id of ["install", "download", "next", "requirements"]) {
     if ((html.match(new RegExp(`id="${id}"`, "g")) ?? []).length !== 1) {
