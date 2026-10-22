@@ -49,6 +49,15 @@ paths, or personal session titles are shown.
 | --- | --- | --- |
 | <img src="docs/images/sessions-light.png" alt="Light sessions screen" width="190" /> | <img src="docs/images/sessions-fr.png" alt="French sessions screen" width="190" /> | <img src="docs/images/sessions-ar.png" alt="Arabic RTL sessions screen" width="190" /> |
 
+### Updated English UI
+
+| Updated navigation drawer |
+| --- |
+| <img src="docs/images/navigation-en.png" alt="Updated English navigation drawer" width="190" /> |
+
+This UI preview uses synthetic session titles and contains no live account
+data.
+
 ## Features
 
 - Connect over LAN or Tailscale with one bearer token.

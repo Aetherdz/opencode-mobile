@@ -19,6 +19,7 @@ README links do not break.
 | `chat-light.png` | Chat | The same screen in the light theme. |
 | `question.png` | Chat | Question card with two generic options. |
 | `social-preview.png` | Repository preview | Wordmark and the unofficial disclaimer. 1280×640. |
+| `navigation-en.png` | Updated English navigation | Current drawer with synthetic recent-session titles; no live account data. |
 
 `settings-fr.png` was an earlier French capture that still showed the beta 1
 version number and is no longer referenced by either README.
