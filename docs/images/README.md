@@ -1,21 +1,27 @@
 # README images
 
-The current files in this directory are generated placeholders. Replace them
-with clean captures before the public release. Keep the same filenames so the
-README links do not change.
+These files are the real captures used in `README.md` and `README.ar.md`.
+They were taken from the web build with synthetic demo data, so they contain no
+real token, path, address, or session title. Keep the filenames stable so the
+README links do not break.
 
-## Required captures
+## Current captures
 
-| File | Screen | What it should show |
+| File | Screen | Notes |
 | --- | --- | --- |
-| `connect.png` | Connect | URL field with a neutral Tailscale-style demo address, token field empty, primary connect action. |
-| `sessions.png` | Sessions | Three demo sessions, one waiting for input, one running, one idle. Use invented project names. |
-| `chat.png` | Chat | A short assistant reply, one tool activity row, and the composer. Do not show a real diff or terminal output. |
-| `question.png` | Chat | A question card with two generic options and the free-text field. |
-| `social-preview.png` | Repository preview | The wordmark and the unofficial disclaimer. 1280×640 or 1200×630. |
+| `hero.png` | README hero | Wordmark banner for the top of both READMEs. |
+| `connect.png` | Connect | Neutral demo address, empty token field, connect action. |
+| `sessions.png` | Sessions | Three demo sessions with invented project names. |
+| `sessions-light.png` | Sessions | The same screen in the light theme. |
+| `sessions-ar.png` | Sessions | Arabic, right-to-left layout. |
+| `sessions-fr.png` | Sessions | French layout. |
+| `chat.png` | Chat | Short assistant reply, one tool activity row, composer. |
+| `chat-light.png` | Chat | The same screen in the light theme. |
+| `question.png` | Chat | Question card with two generic options. |
+| `social-preview.png` | Repository preview | Wordmark and the unofficial disclaimer. 1280×640. |
 
-Recommended phone captures: 1080×2400 or 1170×2532, portrait. The README can
-scale them down. Use the same theme and font scale for all four.
+`settings-fr.png` was an earlier French capture that still showed the beta 1
+version number and is no longer referenced by either README.
 
 ## Privacy checklist
 
@@ -50,7 +56,8 @@ the sessions only for the capture, then delete them. Check the full image at
 
 ## Social preview
 
-`social-preview.png` is used for the repository's social card and for the
-website metadata. It must say "Unofficial" or "Not affiliated with OpenCode" in
-the image or in the adjacent description. Do not use the OpenCode logo in a way
-that implies endorsement. The current placeholder uses text only.
+`social-preview.png` is used for the repository's social card. The copy in
+`.github/social-preview.png` is the one to upload manually in
+**Settings → General → Social preview**. It must say "Unofficial" or "Not
+affiliated with OpenCode" in the image or in the adjacent description. Do not
+use the OpenCode logo in a way that implies endorsement.
