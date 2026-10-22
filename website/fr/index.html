@@ -96,48 +96,6 @@
 
     <main id="main">
       <section class="hero">
-        <div class="hero-copy">
-          <p class="eyebrow">Client non officiel <span aria-hidden="true">·</span> Bêta publique</p>
-          <h1 class="display">
-            Votre agent.<br />
-            Votre machine.<br />
-            <em>Votre poche.</em>
-          </h1>
-          <p class="lede">
-            Installez la passerelle une fois sur la machine OpenCode, puis créez
-            un lien temporaire vers le téléphone au besoin. Sans compte ni relais,
-            et sans télémétrie dans l’application.
-          </p>
-          <div class="hero-release">
-            <div class="hero-release-copy">
-              <span class="hero-release-kicker">Android · Bêta publique</span>
-              <strong>OpenCode Mobile <span>1.0.0-beta.3</span></strong>
-              <small>Android 7+ · arm64 · APK de version</small>
-            </div>
-            <a class="hero-release-button" href="https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.3/opencode-mobile-1.0.0-beta.3.apk" aria-label="Télécharger OpenCode Mobile Android bêta 1.0.0-beta.3">
-              <span>Télécharger APK</span><b aria-hidden="true">↓</b>
-            </a>
-          </div>
-          <div class="actions">
-            <a class="button button-primary" href="#install">Installer la passerelle</a>
-            <a class="button button-quiet" href="https://github.com/Aetherdz/opencode-mobile/releases" rel="noreferrer">Toutes les versions</a>
-          </div>
-          <dl class="hero-facts">
-            <div>
-              <dt>Transport</dt>
-              <dd>Loopback + lien temporaire</dd>
-            </div>
-            <div>
-              <dt>Licence</dt>
-              <dd>MIT</dd>
-            </div>
-            <div>
-              <dt>Télémétrie</dt>
-              <dd>Aucune dans l’application</dd>
-            </div>
-          </dl>
-        </div>
-
         <div class="hero-art" aria-hidden="true">
           <div class="orbit orbit-one"></div>
           <div class="orbit orbit-two"></div>
@@ -182,6 +140,33 @@
               <span>Demandez à l’agent…</span>
               <span class="phone-send">↑</span>
             </div>
+          </div>
+        </div>
+        <div class="hero-copy">
+          <p class="eyebrow">Client non officiel <span aria-hidden="true">·</span> Bêta publique</p>
+          <h1 class="display">
+            Votre agent.<br />
+            Votre machine.<br />
+            <em>Votre poche.</em>
+          </h1>
+          <p class="lede">
+            Installez la passerelle une fois sur la machine OpenCode, puis créez
+            un lien temporaire vers le téléphone au besoin. Sans compte ni relais,
+            et sans télémétrie dans l’application.
+          </p>
+          <div class="hero-release">
+            <div class="hero-release-copy">
+              <span class="hero-release-kicker">Android · Bêta publique</span>
+              <strong>OpenCode Mobile <span>1.0.0-beta.3</span></strong>
+              <small>Android 7+ · arm64 · APK de version</small>
+            </div>
+            <a class="hero-release-button" href="https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.3/opencode-mobile-1.0.0-beta.3.apk" aria-label="Télécharger OpenCode Mobile Android bêta 1.0.0-beta.3">
+              <span>Télécharger APK</span><b aria-hidden="true">↓</b>
+            </a>
+          </div>
+          <div class="actions">
+            <a class="button button-primary" href="#install">Installer la passerelle</a>
+            <a class="button button-quiet" href="https://github.com/Aetherdz/opencode-mobile/releases" rel="noreferrer">Toutes les versions</a>
           </div>
         </div>
       </section>
@@ -322,10 +307,40 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
         </div>
       </section>
 
+      <section class="section" id="next">
+        <div class="section-head">
+          <p class="eyebrow">03 / La suite</p>
+          <h2 class="display">Lisez ce dont vous avez besoin.</h2>
+          <p>Chaque page est volontairement courte.</p>
+        </div>
+        <div class="docs-grid">
+          <a class="docs-card" href="./features/">
+            <span>01</span>
+            <h3>Fonctionnalités</h3>
+            <p>Sessions, diffusion en continu, approbations, diffs, pièces jointes et push.</p>
+          </a>
+          <a class="docs-card" href="./guide/">
+            <span>02</span>
+            <h3>Guide</h3>
+            <p>Configuration, accès à distance et les commandes dont vous avez vraiment besoin.</p>
+          </a>
+          <a class="docs-card" href="./security/">
+            <span>03</span>
+            <h3>Sécurité</h3>
+            <p>Les limites de confiance, les contrôles et la liste de vérification du déploiement.</p>
+          </a>
+          <a class="docs-card" href="./faq/">
+            <span>04</span>
+            <h3>FAQ</h3>
+            <p>Des réponses courtes aux questions qui reviennent avant l’installation.</p>
+          </a>
+        </div>
+      </section>
+
       <section class="section section-download" id="download">
         <div class="download-inner">
           <div>
-            <p class="eyebrow">03 / La version</p>
+            <p class="eyebrow">04 / La version</p>
             <h2 class="display">Emmenez la bêta faire un tour.</h2>
             <p>
               La bêta est livrée sous forme de code source, d’une version Android
@@ -369,36 +384,6 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
           </div>
         </div>
       </section>
-
-      <section class="section" id="next">
-        <div class="section-head">
-          <p class="eyebrow">04 / La suite</p>
-          <h2 class="display">Lisez ce dont vous avez besoin.</h2>
-          <p>Chaque page est volontairement courte.</p>
-        </div>
-        <div class="docs-grid">
-          <a class="docs-card" href="./features/">
-            <span>01</span>
-            <h3>Fonctionnalités</h3>
-            <p>Sessions, diffusion en continu, approbations, diffs, pièces jointes et push.</p>
-          </a>
-          <a class="docs-card" href="./guide/">
-            <span>02</span>
-            <h3>Guide</h3>
-            <p>Configuration, accès à distance et les commandes dont vous avez vraiment besoin.</p>
-          </a>
-          <a class="docs-card" href="./security/">
-            <span>03</span>
-            <h3>Sécurité</h3>
-            <p>Les limites de confiance, les contrôles et la liste de vérification du déploiement.</p>
-          </a>
-          <a class="docs-card" href="./faq/">
-            <span>04</span>
-            <h3>FAQ</h3>
-            <p>Des réponses courtes aux questions qui reviennent avant l’installation.</p>
-          </a>
-        </div>
-      </section>
     </main>
 
     <footer class="site-footer">
@@ -433,6 +418,20 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
           </div>
         </div>
       </nav>
+      <dl class="hero-facts">
+            <div>
+              <dt>Transport</dt>
+              <dd>Loopback + lien temporaire</dd>
+            </div>
+            <div>
+              <dt>Licence</dt>
+              <dd>MIT</dd>
+            </div>
+            <div>
+              <dt>Télémétrie</dt>
+              <dd>Aucune dans l’application</dd>
+            </div>
+      </dl>
       <p class="footer-legal">
         Sous licence MIT. Non affilié à l’équipe OpenCode ni approuvé par elle.
         <span id="year">2026</span>.

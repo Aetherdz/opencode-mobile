@@ -96,47 +96,6 @@
 
     <main id="main">
       <section class="hero">
-        <div class="hero-copy">
-          <p class="eyebrow">عميل غير رسمي <span aria-hidden="true">·</span> نسخة تجريبية عامة</p>
-          <h1 class="display">
-            وكيلك.<br />
-            جهازك.<br />
-            <em>في جيبك.</em>
-          </h1>
-          <p class="lede">
-            ثبّت الجسر مرة واحدة على جهاز OpenCode، ثم أنشئ رابطًا مؤقتًا لهاتفك
-            عند الحاجة. بلا حساب أو خادم وسيط، وبلا تتبّع في التطبيق.
-          </p>
-          <div class="hero-release">
-            <div class="hero-release-copy">
-              <span class="hero-release-kicker">Android · نسخة تجريبية عامة</span>
-              <strong>OpenCode Mobile <span>1.0.0-beta.3</span></strong>
-              <small>Android 7+ · arm64 · ملف الإصدار</small>
-            </div>
-            <a class="hero-release-button" href="https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.3/opencode-mobile-1.0.0-beta.3.apk" aria-label="تنزيل OpenCode Mobile لأندرويد، النسخة 1.0.0-beta.3">
-              <span>تنزيل APK</span><b aria-hidden="true">↓</b>
-            </a>
-          </div>
-          <div class="actions">
-            <a class="button button-primary" href="#install">ثبّت الجسر</a>
-            <a class="button button-quiet" href="https://github.com/Aetherdz/opencode-mobile/releases" rel="noreferrer">كل الإصدارات</a>
-          </div>
-          <dl class="hero-facts">
-            <div>
-              <dt>النقل</dt>
-              <dd>Loopback + رابط مؤقت</dd>
-            </div>
-            <div>
-              <dt>الترخيص</dt>
-              <dd>MIT</dd>
-            </div>
-            <div>
-              <dt>التتبّع</dt>
-              <dd>لا يوجد في التطبيق</dd>
-            </div>
-          </dl>
-        </div>
-
         <div class="hero-art" aria-hidden="true">
           <div class="orbit orbit-one"></div>
           <div class="orbit orbit-two"></div>
@@ -181,6 +140,32 @@
               <span>اسأل الوكيل…</span>
               <span class="phone-send">↑</span>
             </div>
+          </div>
+        </div>
+        <div class="hero-copy">
+          <p class="eyebrow">عميل غير رسمي <span aria-hidden="true">·</span> نسخة تجريبية عامة</p>
+          <h1 class="display">
+            وكيلك.<br />
+            جهازك.<br />
+            <em>في جيبك.</em>
+          </h1>
+          <p class="lede">
+            ثبّت الجسر مرة واحدة على جهاز OpenCode، ثم أنشئ رابطًا مؤقتًا لهاتفك
+            عند الحاجة. بلا حساب أو خادم وسيط، وبلا تتبّع في التطبيق.
+          </p>
+          <div class="hero-release">
+            <div class="hero-release-copy">
+              <span class="hero-release-kicker">Android · نسخة تجريبية عامة</span>
+              <strong>OpenCode Mobile <span>1.0.0-beta.3</span></strong>
+              <small>Android 7+ · arm64 · ملف الإصدار</small>
+            </div>
+            <a class="hero-release-button" href="https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.3/opencode-mobile-1.0.0-beta.3.apk" aria-label="تنزيل OpenCode Mobile لأندرويد، النسخة 1.0.0-beta.3">
+              <span>تنزيل APK</span><b aria-hidden="true">↓</b>
+            </a>
+          </div>
+          <div class="actions">
+            <a class="button button-primary" href="#install">ثبّت الجسر</a>
+            <a class="button button-quiet" href="https://github.com/Aetherdz/opencode-mobile/releases" rel="noreferrer">كل الإصدارات</a>
           </div>
         </div>
       </section>
@@ -321,10 +306,40 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
         </div>
       </section>
 
+      <section class="section" id="next">
+        <div class="section-head">
+          <p class="eyebrow">03 / الباقي</p>
+          <h2 class="display">اقرأ ما تحتاجه.</h2>
+          <p>كل صفحة قصيرة عمدًا.</p>
+        </div>
+        <div class="docs-grid">
+          <a class="docs-card" href="./features/">
+            <span>01</span>
+            <h3>الميزات</h3>
+            <p>الجلسات، والبث المباشر، والموافقات، والفروقات، والمرفقات، والإشعارات.</p>
+          </a>
+          <a class="docs-card" href="./guide/">
+            <span>02</span>
+            <h3>الدليل</h3>
+            <p>الإعداد، والوصول عن بُعد، والأوامر التي تحتاجها فعلًا.</p>
+          </a>
+          <a class="docs-card" href="./security/">
+            <span>03</span>
+            <h3>الأمان</h3>
+            <p>حدود الثقة، والضوابط، وقائمة التحقق قبل النشر.</p>
+          </a>
+          <a class="docs-card" href="./faq/">
+            <span>04</span>
+            <h3>الأسئلة الشائعة</h3>
+            <p>أجوبة قصيرة عن الأسئلة التي تظهر قبل التثبيت.</p>
+          </a>
+        </div>
+      </section>
+
       <section class="section section-download" id="download">
         <div class="download-inner">
           <div>
-            <p class="eyebrow">03 / الإصدار</p>
+            <p class="eyebrow">04 / الإصدار</p>
             <h2 class="display">جرّب النسخة التجريبية بنفسك.</h2>
             <p>
               تصل النسخة التجريبية على شكل مصدر، وبناء Android موقّع للإصدار،
@@ -368,36 +383,6 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
           </div>
         </div>
       </section>
-
-      <section class="section" id="next">
-        <div class="section-head">
-          <p class="eyebrow">04 / الباقي</p>
-          <h2 class="display">اقرأ ما تحتاجه.</h2>
-          <p>كل صفحة قصيرة عمدًا.</p>
-        </div>
-        <div class="docs-grid">
-          <a class="docs-card" href="./features/">
-            <span>01</span>
-            <h3>الميزات</h3>
-            <p>الجلسات، والبث المباشر، والموافقات، والفروقات، والمرفقات، والإشعارات.</p>
-          </a>
-          <a class="docs-card" href="./guide/">
-            <span>02</span>
-            <h3>الدليل</h3>
-            <p>الإعداد، والوصول عن بُعد، والأوامر التي تحتاجها فعلًا.</p>
-          </a>
-          <a class="docs-card" href="./security/">
-            <span>03</span>
-            <h3>الأمان</h3>
-            <p>حدود الثقة، والضوابط، وقائمة التحقق قبل النشر.</p>
-          </a>
-          <a class="docs-card" href="./faq/">
-            <span>04</span>
-            <h3>الأسئلة الشائعة</h3>
-            <p>أجوبة قصيرة عن الأسئلة التي تظهر قبل التثبيت.</p>
-          </a>
-        </div>
-      </section>
     </main>
 
     <footer class="site-footer">
@@ -432,6 +417,20 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
           </div>
         </div>
       </nav>
+      <dl class="hero-facts">
+            <div>
+              <dt>النقل</dt>
+              <dd>Loopback + رابط مؤقت</dd>
+            </div>
+            <div>
+              <dt>الترخيص</dt>
+              <dd>MIT</dd>
+            </div>
+            <div>
+              <dt>التتبّع</dt>
+              <dd>لا يوجد في التطبيق</dd>
+            </div>
+      </dl>
       <p class="footer-legal">
         مرخّص بموجب MIT. غير مرتبط بفريق OpenCode ولا معتمد منه.
         <span id="year">2026</span>.

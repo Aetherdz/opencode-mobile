@@ -88,14 +88,44 @@ for (const relative of homePages) {
   const file = path.join(root, relative);
   const html = fs.readFileSync(file, "utf8");
   const heroStart = html.indexOf('<section class="hero">');
-  const heroEnd = html.indexOf("</section>", heroStart);
-  if (heroStart < 0 || heroEnd < 0) {
+  if (heroStart < 0) {
     errors.push(`${relative}: homepage hero section is missing`);
     continue;
   }
-  const hero = html.slice(heroStart, heroEnd);
-  for (const selector of ['class="eyebrow"', "<h1", 'class="lede"', 'class="actions"']) {
+  const heroEndTag = html.indexOf('<section class="ticker"', heroStart);
+  if (heroStart < 0 || heroEndTag < 0) {
+    errors.push(`${relative}: homepage hero section is missing`);
+    continue;
+  }
+  const hero = html.slice(heroStart, heroEndTag);
+  for (const selector of ['class="eyebrow"', "<h1", 'class="lede"', 'class="hero-release"']) {
     if (!hero.includes(selector)) errors.push(`${relative}: homepage hero is missing ${selector}`);
+  }
+  const artIndex = hero.indexOf('class="hero-art"');
+  const copyIndex = hero.indexOf('class="hero-copy"');
+  const introIndex = hero.indexOf('class="lede"');
+  const releaseIndex = hero.indexOf('class="hero-release"');
+  if (!(artIndex >= 0 && artIndex < copyIndex && copyIndex < introIndex && introIndex < releaseIndex)) {
+    errors.push(`${relative}: homepage hero order must be phone art, intro copy, then Android release card`);
+  }
+  for (const id of ["install", "download", "next"]) {
+    if ((html.match(new RegExp(`id="${id}"`, "g")) ?? []).length !== 1) {
+      errors.push(`${relative}: expected exactly one #${id} section`);
+    }
+  }
+  const sectionOrder = ["install", "requirements", "next", "download"].map((id) => html.indexOf(`id="${id}"`));
+  if (sectionOrder.some((index) => index < 0) || !sectionOrder.every((index, i) => i === 0 || sectionOrder[i - 1] < index)) {
+    errors.push(`${relative}: install, prerequisites, remaining sections, and download sections are out of order`);
+  }
+  const installIndex = html.indexOf('id="install"');
+  const nextIndex = html.indexOf('id="next"');
+  const downloadIndex = html.indexOf('id="download"');
+  const footerIndex = html.indexOf('<footer class="site-footer">');
+  if (!(installIndex >= 0 && installIndex < nextIndex && nextIndex < downloadIndex && downloadIndex < footerIndex)) {
+    errors.push(`${relative}: download section must follow the remaining sections and precede the footer`);
+  }
+  if ((html.match(/class="hero-facts"/g) ?? []).length !== 1 || html.indexOf('class="hero-facts"') < footerIndex) {
+    errors.push(`${relative}: transport, license, and telemetry facts must appear once in the footer`);
   }
   const command = html.match(/<pre id="cmd-bridge"><code>([\s\S]*?)<\/code><\/pre>/)?.[1] ?? "";
   const copyTarget = html.includes('data-copy-target="cmd-bridge"');
@@ -109,7 +139,6 @@ for (const relative of homePages) {
   if (hero.includes('aria-haspopup="true"')) errors.push(`${relative}: non-popup hero content declares aria-haspopup`);
   if (!html.includes('rel="icon"') || !html.includes("assets/favicon.svg")) errors.push(`${relative}: favicon link is missing`);
   if (relative !== "index.html" && !hero.includes('class="hero-release"')) errors.push(`${relative}: localized Android release panel is missing`);
-  if (relative === "index.html" && !hero.includes("Install the bridge")) errors.push(`${relative}: primary setup command is not promoted in the hero`);
 }
 
 if (errors.length > 0) {

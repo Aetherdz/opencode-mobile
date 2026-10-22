@@ -96,47 +96,6 @@
 
     <main id="main">
       <section class="hero">
-        <div class="hero-copy">
-          <p class="eyebrow">Unofficial client <span aria-hidden="true">·</span> Public beta</p>
-          <h1 class="display">
-            Your agent.<br />
-            Your machine.<br />
-            <em>Your pocket.</em>
-          </h1>
-          <p class="lede">
-            Install a small bridge on the machine that already runs OpenCode,
-            then connect from your phone. No account or relay, and no app telemetry.
-          </p>
-          <div class="hero-release">
-            <div class="hero-release-copy">
-              <span class="hero-release-kicker">Android · Public beta</span>
-              <strong>OpenCode Mobile <span>1.0.0-beta.3</span></strong>
-              <small>Android 7+ · arm64 · Release APK</small>
-            </div>
-            <a class="hero-release-button" href="https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.3/opencode-mobile-1.0.0-beta.3.apk" aria-label="Download OpenCode Mobile Android beta 1.0.0-beta.3">
-              <span>Download APK</span><b aria-hidden="true">↓</b>
-            </a>
-          </div>
-          <div class="actions">
-            <a class="button button-primary" href="#install">Install the bridge</a>
-            <a class="button button-quiet" href="https://github.com/Aetherdz/opencode-mobile/releases" rel="noreferrer">All releases</a>
-          </div>
-          <dl class="hero-facts">
-            <div>
-              <dt>Transport</dt>
-              <dd>Loopback + temporary link</dd>
-            </div>
-            <div>
-              <dt>License</dt>
-              <dd>MIT</dd>
-            </div>
-            <div>
-              <dt>Telemetry</dt>
-              <dd>None in the app</dd>
-            </div>
-          </dl>
-        </div>
-
         <div class="hero-art" aria-hidden="true">
           <div class="orbit orbit-one"></div>
           <div class="orbit orbit-two"></div>
@@ -181,6 +140,32 @@
               <span>Ask the agent…</span>
               <span class="phone-send">↑</span>
             </div>
+          </div>
+        </div>
+        <div class="hero-copy">
+          <p class="eyebrow">Unofficial client <span aria-hidden="true">·</span> Public beta</p>
+          <h1 class="display">
+            Your agent.<br />
+            Your machine.<br />
+            <em>Your pocket.</em>
+          </h1>
+          <p class="lede">
+            Install a small bridge on the machine that already runs OpenCode,
+            then connect from your phone. No account or relay, and no app telemetry.
+          </p>
+          <div class="hero-release">
+            <div class="hero-release-copy">
+              <span class="hero-release-kicker">Android · Public beta</span>
+              <strong>OpenCode Mobile <span>1.0.0-beta.3</span></strong>
+              <small>Android 7+ · arm64 · Release APK</small>
+            </div>
+            <a class="hero-release-button" href="https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.3/opencode-mobile-1.0.0-beta.3.apk" aria-label="Download OpenCode Mobile Android beta 1.0.0-beta.3">
+              <span>Download APK</span><b aria-hidden="true">↓</b>
+            </a>
+          </div>
+          <div class="actions">
+            <a class="button button-primary" href="#install">Install the bridge</a>
+            <a class="button button-quiet" href="https://github.com/Aetherdz/opencode-mobile/releases" rel="noreferrer">All releases</a>
           </div>
         </div>
       </section>
@@ -322,10 +307,40 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
         </div>
       </section>
 
+      <section class="section" id="next">
+        <div class="section-head">
+          <p class="eyebrow">03 / The rest</p>
+          <h2 class="display">Read what you need.</h2>
+          <p>Each page is short on purpose.</p>
+        </div>
+        <div class="docs-grid">
+          <a class="docs-card" href="./features/">
+            <span>01</span>
+            <h3>Features</h3>
+            <p>Sessions, streaming, approvals, diffs, attachments, and push.</p>
+          </a>
+          <a class="docs-card" href="./guide/">
+            <span>02</span>
+            <h3>Guide</h3>
+            <p>Configuration, remote access, and the commands you actually need.</p>
+          </a>
+          <a class="docs-card" href="./security/">
+            <span>03</span>
+            <h3>Security</h3>
+            <p>The trust boundaries, the controls, and the deployment checklist.</p>
+          </a>
+          <a class="docs-card" href="./faq/">
+            <span>04</span>
+            <h3>FAQ</h3>
+            <p>Short answers to the questions that come up before installing.</p>
+          </a>
+        </div>
+      </section>
+
       <section class="section section-download" id="download">
         <div class="download-inner">
           <div>
-            <p class="eyebrow">03 / The build</p>
+            <p class="eyebrow">04 / The build</p>
             <h2 class="display">Take the beta for a walk.</h2>
             <p>
               The beta ships as source, a release-signed Android build, and
@@ -369,36 +384,6 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
           </div>
         </div>
       </section>
-
-      <section class="section" id="next">
-        <div class="section-head">
-          <p class="eyebrow">04 / The rest</p>
-          <h2 class="display">Read what you need.</h2>
-          <p>Each page is short on purpose.</p>
-        </div>
-        <div class="docs-grid">
-          <a class="docs-card" href="./features/">
-            <span>01</span>
-            <h3>Features</h3>
-            <p>Sessions, streaming, approvals, diffs, attachments, and push.</p>
-          </a>
-          <a class="docs-card" href="./guide/">
-            <span>02</span>
-            <h3>Guide</h3>
-            <p>Configuration, remote access, and the commands you actually need.</p>
-          </a>
-          <a class="docs-card" href="./security/">
-            <span>03</span>
-            <h3>Security</h3>
-            <p>The trust boundaries, the controls, and the deployment checklist.</p>
-          </a>
-          <a class="docs-card" href="./faq/">
-            <span>04</span>
-            <h3>FAQ</h3>
-            <p>Short answers to the questions that come up before installing.</p>
-          </a>
-        </div>
-      </section>
     </main>
 
     <footer class="site-footer">
@@ -433,6 +418,20 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
           </div>
         </div>
       </nav>
+      <dl class="hero-facts">
+            <div>
+              <dt>Transport</dt>
+              <dd>Loopback + temporary link</dd>
+            </div>
+            <div>
+              <dt>License</dt>
+              <dd>MIT</dd>
+            </div>
+            <div>
+              <dt>Telemetry</dt>
+              <dd>None in the app</dd>
+            </div>
+      </dl>
       <p class="footer-legal">
         MIT licensed. Not affiliated with or endorsed by the OpenCode team.
         <span id="year">2026</span>.

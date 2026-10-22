@@ -96,48 +96,6 @@
 
     <main id="main">
       <section class="hero">
-        <div class="hero-copy">
-          <p class="eyebrow">Cliente no oficial <span aria-hidden="true">·</span> Beta pública</p>
-          <h1 class="display">
-            Tu agente.<br />
-            Tu equipo.<br />
-            <em>Tu bolsillo.</em>
-          </h1>
-          <p class="lede">
-            Instala el bridge una vez en el equipo de OpenCode y crea un enlace
-            temporal al móvil cuando lo necesites. Sin cuenta ni relay, y sin
-            telemetría en la app.
-          </p>
-          <div class="hero-release">
-            <div class="hero-release-copy">
-              <span class="hero-release-kicker">Android · Beta pública</span>
-              <strong>OpenCode Mobile <span>1.0.0-beta.3</span></strong>
-              <small>Android 7+ · arm64 · APK de versión</small>
-            </div>
-            <a class="hero-release-button" href="https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.3/opencode-mobile-1.0.0-beta.3.apk" aria-label="Descargar OpenCode Mobile Android beta 1.0.0-beta.3">
-              <span>Descargar APK</span><b aria-hidden="true">↓</b>
-            </a>
-          </div>
-          <div class="actions">
-            <a class="button button-primary" href="#install">Instalar el puente</a>
-            <a class="button button-quiet" href="https://github.com/Aetherdz/opencode-mobile/releases" rel="noreferrer">Todas las versiones</a>
-          </div>
-          <dl class="hero-facts">
-            <div>
-              <dt>Transporte</dt>
-              <dd>Loopback + enlace temporal</dd>
-            </div>
-            <div>
-              <dt>Licencia</dt>
-              <dd>MIT</dd>
-            </div>
-            <div>
-              <dt>Telemetría</dt>
-              <dd>Ninguna en la app</dd>
-            </div>
-          </dl>
-        </div>
-
         <div class="hero-art" aria-hidden="true">
           <div class="orbit orbit-one"></div>
           <div class="orbit orbit-two"></div>
@@ -182,6 +140,33 @@
               <span>Escribe al agente…</span>
               <span class="phone-send">↑</span>
             </div>
+          </div>
+        </div>
+        <div class="hero-copy">
+          <p class="eyebrow">Cliente no oficial <span aria-hidden="true">·</span> Beta pública</p>
+          <h1 class="display">
+            Tu agente.<br />
+            Tu equipo.<br />
+            <em>Tu bolsillo.</em>
+          </h1>
+          <p class="lede">
+            Instala el bridge una vez en el equipo de OpenCode y crea un enlace
+            temporal al móvil cuando lo necesites. Sin cuenta ni relay, y sin
+            telemetría en la app.
+          </p>
+          <div class="hero-release">
+            <div class="hero-release-copy">
+              <span class="hero-release-kicker">Android · Beta pública</span>
+              <strong>OpenCode Mobile <span>1.0.0-beta.3</span></strong>
+              <small>Android 7+ · arm64 · APK de versión</small>
+            </div>
+            <a class="hero-release-button" href="https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.3/opencode-mobile-1.0.0-beta.3.apk" aria-label="Descargar OpenCode Mobile Android beta 1.0.0-beta.3">
+              <span>Descargar APK</span><b aria-hidden="true">↓</b>
+            </a>
+          </div>
+          <div class="actions">
+            <a class="button button-primary" href="#install">Instalar el puente</a>
+            <a class="button button-quiet" href="https://github.com/Aetherdz/opencode-mobile/releases" rel="noreferrer">Todas las versiones</a>
           </div>
         </div>
       </section>
@@ -322,10 +307,40 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
         </div>
       </section>
 
+      <section class="section" id="next">
+        <div class="section-head">
+          <p class="eyebrow">03 / El resto</p>
+          <h2 class="display">Lee lo que necesites.</h2>
+          <p>Cada página es breve a propósito.</p>
+        </div>
+        <div class="docs-grid">
+          <a class="docs-card" href="./features/">
+            <span>01</span>
+            <h3>Funciones</h3>
+            <p>Sesiones, transmisión en vivo, aprobaciones, diferencias, adjuntos y push.</p>
+          </a>
+          <a class="docs-card" href="./guide/">
+            <span>02</span>
+            <h3>Guía</h3>
+            <p>Configuración, acceso remoto y los comandos que de verdad necesitas.</p>
+          </a>
+          <a class="docs-card" href="./security/">
+            <span>03</span>
+            <h3>Seguridad</h3>
+            <p>Los límites de confianza, los controles y la lista de verificación del despliegue.</p>
+          </a>
+          <a class="docs-card" href="./faq/">
+            <span>04</span>
+            <h3>Preguntas frecuentes</h3>
+            <p>Respuestas breves a las preguntas que surgen antes de instalar.</p>
+          </a>
+        </div>
+      </section>
+
       <section class="section section-download" id="download">
         <div class="download-inner">
           <div>
-            <p class="eyebrow">03 / La compilación</p>
+            <p class="eyebrow">04 / La compilación</p>
             <h2 class="display">Pon a prueba la beta.</h2>
             <p>
               La beta se distribuye como código fuente, una compilación de Android
@@ -369,36 +384,6 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
           </div>
         </div>
       </section>
-
-      <section class="section" id="next">
-        <div class="section-head">
-          <p class="eyebrow">04 / El resto</p>
-          <h2 class="display">Lee lo que necesites.</h2>
-          <p>Cada página es breve a propósito.</p>
-        </div>
-        <div class="docs-grid">
-          <a class="docs-card" href="./features/">
-            <span>01</span>
-            <h3>Funciones</h3>
-            <p>Sesiones, transmisión en vivo, aprobaciones, diferencias, adjuntos y push.</p>
-          </a>
-          <a class="docs-card" href="./guide/">
-            <span>02</span>
-            <h3>Guía</h3>
-            <p>Configuración, acceso remoto y los comandos que de verdad necesitas.</p>
-          </a>
-          <a class="docs-card" href="./security/">
-            <span>03</span>
-            <h3>Seguridad</h3>
-            <p>Los límites de confianza, los controles y la lista de verificación del despliegue.</p>
-          </a>
-          <a class="docs-card" href="./faq/">
-            <span>04</span>
-            <h3>Preguntas frecuentes</h3>
-            <p>Respuestas breves a las preguntas que surgen antes de instalar.</p>
-          </a>
-        </div>
-      </section>
     </main>
 
     <footer class="site-footer">
@@ -433,6 +418,20 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
           </div>
         </div>
       </nav>
+      <dl class="hero-facts">
+            <div>
+              <dt>Transporte</dt>
+              <dd>Loopback + enlace temporal</dd>
+            </div>
+            <div>
+              <dt>Licencia</dt>
+              <dd>MIT</dd>
+            </div>
+            <div>
+              <dt>Telemetría</dt>
+              <dd>Ninguna en la app</dd>
+            </div>
+      </dl>
       <p class="footer-legal">
         Con licencia MIT. Sin afiliación ni respaldo del equipo de OpenCode.
         <span id="year">2026</span>.
