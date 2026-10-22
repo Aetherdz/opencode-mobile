@@ -53,6 +53,32 @@
     });
   }
 
+  const root = document.documentElement;
+  const themeToggle = document.querySelector(".theme-toggle");
+  const savedTheme = localStorage.getItem("ocm.theme");
+
+  if (savedTheme) {
+    root.setAttribute("data-theme", savedTheme);
+    themeToggle?.setAttribute("aria-pressed", savedTheme === "dark");
+  } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    root.setAttribute("data-theme", "dark");
+    themeToggle?.setAttribute("aria-pressed", "true");
+  }
+
+  if (themeToggle) {
+    themeToggle.addEventListener("click", () => {
+      const isDark = themeToggle.getAttribute("aria-pressed") === "true";
+      const next = isDark ? "light" : "dark";
+      root.setAttribute("data-theme", next);
+      themeToggle.setAttribute("aria-pressed", next === "dark");
+      try {
+        localStorage.setItem("ocm.theme", next);
+      } catch {
+        // localStorage unavailable in private contexts
+      }
+    });
+  }
+
   document.querySelectorAll(".lang-switch").forEach((switcher) => {
     const summary = switcher.querySelector("summary");
     if (!summary) return;
