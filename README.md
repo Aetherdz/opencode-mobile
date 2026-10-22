@@ -157,6 +157,11 @@ use a reachable private address such as a Tailscale address, not
 
 ## Download
 
+The current public release remains **`1.0.0-beta.3`**. The homepage has a direct
+Android APK download card; release notes, bridge/web bundles, and checksums are
+available from the release page. The Android APK supports arm64-v8a on Android
+7.0 and newer.
+
 | Artifact | Notes |
 | --- | --- |
 | [Android APK](https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.3/opencode-mobile-1.0.0-beta.3.apk) | `1.0.0-beta.3`, release-signed, arm64-v8a, Android 7.0+ |
