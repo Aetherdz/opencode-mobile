@@ -45,7 +45,7 @@ paths, or personal session titles are shown.
 | --- | --- | --- | --- |
 | <img src="docs/images/connect.png" alt="Connect screen" width="190" /> | <img src="docs/images/sessions.png" alt="Sessions screen" width="190" /> | <img src="docs/images/chat.png" alt="Chat screen" width="190" /> | <img src="docs/images/question.png" alt="Agent question card" width="190" /> |
 
-The connection screen also accepts the QR payload printed by `opencode-mobile up`;
+The connection screen also accepts the QR payload printed by `opencode-mobile`;
 manual URL and token entry remain available.
 
 | Light theme | Français | العربية |
@@ -81,11 +81,11 @@ built-in Telegram bot, and a native desktop wrapper. The app does receive a
 
 ### One-time host setup (Linux/macOS)
 
-For an automated install, see the [distribution installer](https://github.com/Aetherdz/opencode-mobile-dist). Review the script before running it; the website bootstrap fetches `main` and therefore trusts that branch:
+For an automated install, this one-line command fetches `main` from the [distribution installer](https://github.com/Aetherdz/opencode-mobile-dist) and therefore trusts that branch:
 
 ```bash
-mkdir -p "$HOME/.local/share/opencode-mobile-installer" && cp install.sh "$HOME/.local/share/opencode-mobile-installer/install.sh" && chmod 700 "$HOME/.local/share/opencode-mobile-installer/install.sh" && bash "$HOME/.local/share/opencode-mobile-installer/install.sh" setup --workdir "$HOME/projects"
-opencode-mobile up
+curl -fsSL https://raw.githubusercontent.com/Aetherdz/opencode-mobile-dist/main/install.sh | bash -s -- setup
+opencode-mobile
 ```
 
 The command above fetches the latest installer from GitHub `main`; this is
@@ -94,7 +94,7 @@ convenient but trusts that branch. Bridge release assets are verified against
 
 `setup` verifies the bridge release against `SHA256SUMS`, prompts for a
 project directory, preserves an existing token/config, and keeps the bridge on
-`127.0.0.1`. `up` checks OpenCode and bridge health, then creates a public
+`127.0.0.1`. `opencode-mobile` checks OpenCode and bridge health, then creates a public
 temporary Cloudflare tunnel after explicit confirmation each time. It installs
 the verified `cloudflared` user binary without sudo on supported systems. The
 URL changes each run and is not saved. `down`, `status`, `doctor`, and `apk` are available. The current

@@ -72,16 +72,18 @@ flowchart LR
 
 ### إعداد الجهاز مرة واحدة (Linux/macOS)
 
-راجع [مثبّت التوزيعة](https://github.com/Aetherdz/opencode-mobile-dist) قبل تشغيله؛ أمر الموقع يجلب نسخة `main` ولذلك يثق بذلك الفرع:
+الأمر التالي يجلب نسخة `main` من [مثبّت التوزيعة](https://github.com/Aetherdz/opencode-mobile-dist)، ولذلك فهو يثق بذلك الفرع:
 
 ```bash
-mkdir -p "$HOME/.local/share/opencode-mobile-installer" && cp install.sh "$HOME/.local/share/opencode-mobile-installer/install.sh" && chmod 700 "$HOME/.local/share/opencode-mobile-installer/install.sh" && bash "$HOME/.local/share/opencode-mobile-installer/install.sh" setup --workdir "$HOME/projects"
-opencode-mobile up
+curl -fsSL https://raw.githubusercontent.com/Aetherdz/opencode-mobile-dist/main/install.sh | bash -s -- setup
+opencode-mobile
 ```
+
+بعد الإعداد، للتشغيل اكتب `opencode-mobile` فقط، دون `up`.
 
 يجلب الأمر المثبّت من فرع `main` في GitHub؛ هذا أسهل لكنه يثق بالفرع. يتم التحقق من ملفات إصدار الجسر عبر `SHA256SUMS` بعد تنزيلها.
 
-يتحقق `setup` من إصدار الجسر عبر `SHA256SUMS`، ويستخدم مجلد مشاريع محددًا، ويحافظ على الرمز والإعدادات الموجودة، ويبقي الجسر على `127.0.0.1`. يبدأ `up` OpenCode والجسر ويفحص الصحة، ثم ينشئ نفق Cloudflare عامًا مؤقتًا بعد موافقة صريحة في كل مرة. يُنزّل `cloudflared` الرسمي ويتحقق من SHA-256 ويضعه في مجلد المستخدم دون sudo على الأنظمة المدعومة. من يملك الرابط والرمز يستطيع التحكم بالوكيل؛ الرابط يتغير ولا يُحفظ. تتوفر أوامر `down` و`status` و`doctor` و`apk`. ملف APK الحالي لمعمارية arm64-v8a فقط. يبدأ التطبيق بالإنجليزية، ويمكن اختيار العربية أو الفرنسية من الإعدادات.
+يتحقق `setup` من إصدار الجسر عبر `SHA256SUMS`، ويستخدم مجلد مشاريع محددًا، ويحافظ على الرمز والإعدادات الموجودة، ويبقي الجسر على `127.0.0.1`. شغّل `opencode-mobile` لبدء OpenCode والجسر وفحص الصحة، ثم إنشاء نفق Cloudflare عام مؤقت بعد موافقة صريحة في كل مرة. يُنزّل `cloudflared` الرسمي ويتحقق من SHA-256 ويضعه في مجلد المستخدم دون sudo على الأنظمة المدعومة. من يملك الرابط والرمز يستطيع التحكم بالوكيل؛ الرابط يتغير ولا يُحفظ. تتوفر أوامر `down` و`status` و`doctor` و`apk`. ملف APK الحالي لمعمارية arm64-v8a فقط. يبدأ التطبيق بالإنجليزية، ويمكن اختيار العربية أو الفرنسية من الإعدادات.
 
 ### 1. تشغيل OpenCode
 
