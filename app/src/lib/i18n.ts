@@ -114,6 +114,22 @@ const strings: Record<string, Entry> = {
 
   'sessions.title': { en: 'Sessions', ar: 'الجلسات' },
   'sessions.recent': { en: 'Recent', ar: 'الأخيرة' },
+  'home.greeting': { en: 'Good morning', ar: 'صباح الخير' },
+  'home.greetingAfternoon': { en: 'Good afternoon', ar: 'طاب يومك' },
+  'home.greetingEvening': { en: 'Good evening', ar: 'مساء الخير' },
+  'home.subtitle': {
+    en: 'Pick up where you left off, or start a new session.',
+    ar: 'تابع من حيث توقفت أو ابدأ جلسة جديدة.',
+  },
+  'home.placeholder': {
+    en: 'Start a new session…',
+    ar: 'ابدأ جلسة جديدة…',
+  },
+  'home.menu': { en: 'Open navigation', ar: 'فتح قائمة التنقل' },
+  'home.newChat': { en: 'New session', ar: 'جلسة جديدة' },
+  'home.theme': { en: 'Toggle light and dark theme', ar: 'تبديل المظهر الفاتح والداكن' },
+  'home.search': { en: 'Search sessions', ar: 'ابحث في الجلسات' },
+  'chat.addTitle': { en: 'Add to chat', ar: 'إضافة إلى المحادثة' },
   'sessions.today': { en: 'Today', ar: 'اليوم' },
   'sessions.yesterday': { en: 'Yesterday', ar: 'أمس' },
   'sessions.earlier': { en: 'Earlier', ar: 'سابقاً' },

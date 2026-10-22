@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://api.github.com; font-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'"
+    />
+    <meta name="referrer" content="no-referrer" />
+    <link rel="canonical" href="https://aetherdz.github.io/opencode-mobile/ar/docs/" />
+    <link rel="alternate" hreflang="en" href="https://aetherdz.github.io/opencode-mobile/docs/" />
+    <link rel="alternate" hreflang="ar" href="https://aetherdz.github.io/opencode-mobile/ar/docs/" />
+    <link rel="alternate" hreflang="fr" href="https://aetherdz.github.io/opencode-mobile/fr/docs/" />
+    <link rel="alternate" hreflang="es" href="https://aetherdz.github.io/opencode-mobile/es/docs/" />
+    <link rel="alternate" hreflang="x-default" href="https://aetherdz.github.io/opencode-mobile/docs/" />
+    <title>التوثيق — OpenCode Mobile</title>
+    <meta
+      name="description"
+      content="كل وثائق OpenCode Mobile في مكان واحد: التثبيت والدليل والميزات والأمان واستكشاف الأخطاء والمعمارية والنشر وملاحظات الإصدار."
+    />
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="OpenCode Mobile — التوثيق" />
+    <meta
+      property="og:description"
+      content="كل مستند في مكان واحد: التثبيت والدليل والميزات والأمان ووثائق المستودع."
+    />
+    <meta
+      property="og:url"
+      content="https://aetherdz.github.io/opencode-mobile/ar/docs/"
+    />
+    <meta
+      property="og:image"
+      content="https://aetherdz.github.io/opencode-mobile/assets/og.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:image"
+      content="https://aetherdz.github.io/opencode-mobile/assets/og.png"
+    />
+    <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../../styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">الانتقال إلى المحتوى</a>
+
+<header class="site-header">
+      <a class="brand" href="../../ar/" aria-label="الصفحة الرئيسية لـ OpenCode Mobile">
+        <span class="brand-mark" aria-hidden="true">OC</span>
+        <span class="brand-name">OpenCode Mobile</span>
+      </a>
+      <nav class="site-nav" id="site-nav" aria-label="التنقل الرئيسي">
+        <a href="../../ar/">التثبيت</a>
+        <a href="../../ar/features/">الميزات</a>
+        <a href="../../ar/guide/">الدليل</a>
+        <a href="../../ar/security/">الأمان</a>
+        <a href="../../ar/faq/">الأسئلة الشائعة</a>
+        <a href="./" aria-current="page">التوثيق</a>
+        <a class="nav-cta" href="../../ar/#download">تنزيل</a>
+      </nav>
+      <div class="header-tools">
+        <a class="nav-github" href="https://github.com/Aetherdz/opencode-mobile" rel="noreferrer" aria-label="أضف نجمة إلى OpenCode Mobile على GitHub">
+          <span class="nav-github-icon" aria-hidden="true">
+            <svg class="nav-github-mark" viewBox="0 0 16 16" width="19" height="19" fill="currentColor" focusable="false">
+              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z" />
+            </svg>
+            <span class="nav-github-count" data-github-stars aria-hidden="true"></span>
+          </span>
+        </a>
+        <details class="lang-switch">
+          <summary aria-label="اللغة: العربية">
+            <span class="lang-code">AR</span>
+            <svg class="lang-chevron" viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false">
+              <path d="M2.5 4.5 6 8l3.5-3.5" />
+            </svg>
+          </summary>
+          <ul class="lang-menu">
+            <li><a href="../../docs/" hreflang="en" lang="en">English</a></li>
+            <li><a href="./" hreflang="ar" lang="ar" dir="rtl" aria-current="true">العربية</a></li>
+            <li><a href="../../fr/docs/" hreflang="fr" lang="fr">Français</a></li>
+            <li><a href="../../es/docs/" hreflang="es" lang="es">Español</a></li>
+          </ul>
+        </details>
+        <button
+          class="menu-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="site-nav"
+          aria-label="فتح القائمة"
+        >
+          <span class="menu-toggle-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+        </button>
+      </div>
+    </header>
+
+    <main id="main" class="docs">
+      <aside class="docs-sidebar">
+        <p class="sidebar-title">الموقع</p>
+        <nav>
+          <ul class="sidebar-list">
+            <li><a href="../../ar/">التثبيت</a></li>
+            <li><a href="../../ar/features/">الميزات</a></li>
+            <li><a href="../../ar/guide/">الدليل</a></li>
+            <li><a href="../../ar/security/">الأمان</a></li>
+            <li><a href="../../ar/faq/">الأسئلة الشائعة</a></li>
+            <li><a href="./" aria-current="page">التوثيق</a></li>
+          </ul>
+        </nav>
+        <p class="sidebar-title">المستودع</p>
+        <nav>
+          <ul class="sidebar-list">
+            <li>
+              <a
+                href="https://github.com/Aetherdz/opencode-mobile/blob/main/README.md"
+                rel="noreferrer"
+                >الملف التعريفي</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://github.com/Aetherdz/opencode-mobile/blob/main/CHANGELOG.md"
+                rel="noreferrer"
+                >سجل التغييرات</a
+              >
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+      <div class="docs-body">
+        <article class="docs-article">
+          <header>
+            <p class="eyebrow">التوثيق</p>
+            <h1>كل شيء في فهرس واحد.</h1>
+            <p class="docs-lede">
+              الموقع يحمل النسخة القصيرة، والمستودع يحمل النسخة الطويلة، وهذه
+              الصفحة تشير إلى كليهما.
+            </p>
+          </header>
+
+          <h2 id="site">على هذا الموقع</h2>
+          <div class="docs-grid">
+            <a class="docs-card" href="../../ar/">
+              <span>التثبيت</span>
+              <h3>شغّله</h3>
+              <p>مثبّت الجسر، والمتطلبات المسبقة، وAPK الموقّع للإصدار.</p>
+            </a>
+            <a class="docs-card" href="../../ar/features/">
+              <span>الميزات</span>
+              <h3>ما الذي يقدمه</h3>
+              <p>الجلسات والبث المباشر والموافقات والفروقات والمرفقات والإشعارات الفورية.</p>
+            </a>
+            <a class="docs-card" href="../../ar/guide/">
+              <span>الدليل</span>
+              <h3>شغّله من البداية إلى النهاية</h3>
+              <p>الأوامر والإعدادات والوصول عن بُعد عبر Tailscale.</p>
+            </a>
+            <a class="docs-card" href="../../ar/security/">
+              <span>الأمان</span>
+              <h3>حدود الثقة</h3>
+              <p>الضوابط وقائمة التحقق قبل النشر ونموذج التهديد.</p>
+            </a>
+            <a class="docs-card" href="../../ar/faq/">
+              <span>الأسئلة الشائعة</span>
+              <h3>أجوبة قصيرة</h3>
+              <p>الأسئلة التي تظهر قبل التثبيت.</p>
+            </a>
+          </div>
+
+          <h2 id="repository">في المستودع</h2>
+          <table class="docs-table">
+            <thead>
+              <tr>
+                <th>المستند</th>
+                <th>ما يغطيه</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>README.md</code></td>
+                <td>الإعداد الكامل وجدول الإعدادات وقائمة التنزيل.</td>
+              </tr>
+              <tr>
+                <td><code>README.ar.md</code></td>
+                <td>الدليل نفسه باللغة العربية.</td>
+              </tr>
+              <tr>
+                <td><code>docs/architecture.md</code></td>
+                <td>كيف يترابط الجسر والتطبيق وOpenCode.</td>
+              </tr>
+              <tr>
+                <td><code>docs/security.md</code></td>
+                <td>نموذج التهديد والضوابط والفجوات المعروفة وحالة التدقيق.</td>
+              </tr>
+              <tr>
+                <td><code>docs/development.md</code></td>
+                <td>التطوير المحلي والاختبارات وخط بناء الإصدارات.</td>
+              </tr>
+              <tr>
+                <td><code>docs/troubleshooting.md</code></td>
+                <td>حلول خطأ بخطأ للأعطال الشائعة.</td>
+              </tr>
+              <tr>
+                <td><code>docs/release.md</code></td>
+                <td>الوسم والتوقيع ونشر إصدار.</td>
+              </tr>
+              <tr>
+                <td><code>deploy/README.md</code></td>
+                <td>وصفات Systemd وDocker وCaddy.</td>
+              </tr>
+              <tr>
+                <td><code>ROADMAP.md</code></td>
+                <td>ما أُنجز وما يأتي بعد ذلك عن قصد.</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="docs-next">
+            <a
+              class="button button-primary"
+              href="https://github.com/Aetherdz/opencode-mobile/tree/main/docs"
+              rel="noreferrer"
+              >تصفح مجلد التوثيق</a
+            >
+            <a class="button button-outline" href="../../ar/">التثبيت</a>
+          </div>
+        </article>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-brand">
+        <span class="brand-mark" aria-hidden="true">OC</span>
+        <div>
+          <strong>OpenCode Mobile</strong>
+          <p>عميل غير رسمي لوكيل محلي.</p>
+        </div>
+      </div>
+      <nav class="footer-links" aria-label="روابط التذييل">
+        <div class="footer-link-group">
+          <p class="footer-group-title">المنتج</p>
+          <div class="footer-group-items">
+            <a href="../">التثبيت</a>
+            <a href="../features/">الميزات</a>
+          </div>
+        </div>
+        <div class="footer-link-group">
+          <p class="footer-group-title">الأدلة</p>
+          <div class="footer-group-items">
+            <a href="../guide/">الدليل</a>
+            <a href="../security/">الأمان</a>
+            <a href="../faq/">الأسئلة الشائعة</a>
+            <a href="../docs/">التوثيق</a>
+          </div>
+        </div>
+        <div class="footer-link-group">
+          <p class="footer-group-title">المجتمع</p>
+          <div class="footer-group-items">
+            <a href="https://github.com/Aetherdz/opencode-mobile" rel="noreferrer">GitHub</a>
+          </div>
+        </div>
+      </nav>
+      <p class="footer-legal">
+        مرخّص بموجب MIT. غير تابع لفريق OpenCode ولا معتمد منه.
+        <span id="year">2026</span>.
+      </p>
+    </footer>
+
+    <script src="../../app.js" defer></script>
+  </body>
+</html>

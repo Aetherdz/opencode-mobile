@@ -1,4 +1,13 @@
 (() => {
+  const language = document.documentElement.lang;
+  const copy = {
+    en: { open: "Open menu", close: "Close menu", copy: "Copy", copied: "Copied", failed: "Press Ctrl+C", stars: "stars" },
+    ar: { open: "فتح القائمة", close: "إغلاق القائمة", copy: "نسخ", copied: "تم النسخ", failed: "اضغط Ctrl+C", stars: "نجمة" },
+    fr: { open: "Ouvrir le menu", close: "Fermer le menu", copy: "Copier", copied: "Copié", failed: "Appuyez sur Ctrl+C", stars: "étoiles" },
+    es: { open: "Abrir menú", close: "Cerrar menú", copy: "Copiar", copied: "Copiado", failed: "Pulsa Ctrl+C", stars: "estrellas" },
+  }[language] ?? {
+    open: "Open menu", close: "Close menu", copy: "Copy", copied: "Copied", failed: "Press Ctrl+C", stars: "stars",
+  };
   const menuButton = document.querySelector(".menu-toggle");
   const nav = document.querySelector("#site-nav");
 
@@ -6,13 +15,13 @@
     const closeMenu = () => {
       nav.classList.remove("is-open");
       menuButton.setAttribute("aria-expanded", "false");
-      menuButton.textContent = "Menu";
+      menuButton.setAttribute("aria-label", copy.open);
     };
 
     menuButton.addEventListener("click", () => {
       const open = nav.classList.toggle("is-open");
       menuButton.setAttribute("aria-expanded", String(open));
-      menuButton.textContent = open ? "Close" : "Menu";
+      menuButton.setAttribute("aria-label", open ? copy.close : copy.open);
     });
 
     nav.addEventListener("click", (event) => {
@@ -48,12 +57,20 @@
         copied = document.execCommand("copy");
         area.remove();
       }
-      copyButton.textContent = copied ? "Copied" : "Press Ctrl+C";
+      // The control may hold an icon plus a label; never replace its children.
+      const label = copyButton.querySelector("[data-copy-label]");
+      const setLabel = (text, state) => {
+        if (label) label.textContent = text;
+        else copyButton.textContent = text;
+        if (state) copyButton.dataset.state = state;
+        else delete copyButton.dataset.state;
+      };
+      setLabel(copied ? copy.copied : copy.failed, copied ? "copied" : "failed");
       // One shared timer per button: a second click must not be reset early
       // by the timer left over from the first one.
       window.clearTimeout(resetTimer);
       resetTimer = window.setTimeout(() => {
-        copyButton.textContent = "Copy";
+        setLabel(copy.copy, "");
       }, 1800);
     });
   });
@@ -74,6 +91,13 @@
       starNodes.forEach((node) => {
         node.textContent = compact;
         node.title = `${safe.toLocaleString("en-US")} GitHub stars`;
+        const link = node.closest("a");
+        if (link) {
+          link.setAttribute(
+            "aria-label",
+            `Star OpenCode Mobile on GitHub, ${safe.toLocaleString("en-US")} ${copy.stars}`,
+          );
+        }
       });
     };
     const readCache = () => {

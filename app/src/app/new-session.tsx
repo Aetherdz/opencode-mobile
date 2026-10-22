@@ -1,5 +1,5 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import { createSession, getConfig } from '@/api/client';
@@ -19,6 +19,7 @@ import { useTheme } from '@/theme/ThemeProvider';
 export default function NewSessionScreen() {
   const theme = useTheme();
   const { t } = useI18n();
+  const params = useLocalSearchParams<{ seed?: string | string[] }>();
   const queryClient = useQueryClient();
   const config = useQuery({ queryKey: ['config'], queryFn: getConfig, staleTime: 300_000 });
   const [selected, setSelected] = useState<string | null>(null);
@@ -44,7 +45,8 @@ export default function NewSessionScreen() {
       hapticSuccess();
       void queryClient.invalidateQueries({ queryKey: ['sessions'] });
       queryClient.setQueryData(['session', session.id], session);
-      router.replace({ pathname: '/chat/[id]', params: { id: session.id } } as never);
+      const seed = Array.isArray(params.seed) ? params.seed[0] : params.seed;
+      router.replace({ pathname: '/chat/[id]', params: { id: session.id, ...(seed ? { seed } : {}) } } as never);
     } catch (createError) {
       setError(createError instanceof Error ? createError.message : t('new.failed'));
     } finally {

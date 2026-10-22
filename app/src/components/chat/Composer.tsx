@@ -509,12 +509,17 @@ export function Composer({
         </View>
       </View>
 
-      <Sheet visible={menuOpen} onClose={() => setMenuOpen(false)}>
+      <Sheet
+        visible={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        title={t('chat.addTitle')}
+        titleAlign="center"
+      >
         <View style={styles.menu}>
           {[
+            { icon: 'document-outline' as const, label: t('chat.document'), action: onPickDocument },
             { icon: 'images-outline' as const, label: t('chat.photo'), action: onPickPhotos },
             { icon: 'camera-outline' as const, label: t('chat.camera'), action: onTakePhoto },
-            { icon: 'document-outline' as const, label: t('chat.document'), action: onPickDocument },
           ].map((item) => (
             <Pressable
               key={item.label}
@@ -526,12 +531,14 @@ export function Composer({
               accessibilityRole="button"
               accessibilityLabel={item.label}
               style={({ pressed }) => [
-                styles.menuItem,
-                { backgroundColor: pressed ? theme.colors.raised : 'transparent' },
+                styles.menuTile,
+                { backgroundColor: pressed ? theme.colors.raised : theme.colors.surface2 },
               ]}
             >
-              <Icon name={item.icon} size={layout.icon} color="secondary" />
-              <AppText variant="body15">{item.label}</AppText>
+              <View style={[styles.menuIconDisc, { backgroundColor: theme.colors.surface1 }]}>
+                <Icon name={item.icon} size={22} color="textStrong" />
+              </View>
+              <AppText variant="helper" align="center" numberOfLines={2}>{item.label}</AppText>
             </Pressable>
           ))}
         </View>
@@ -649,16 +656,27 @@ const styles = StyleSheet.create({
   },
   flex: { flex: 1 },
   menu: {
-    paddingHorizontal: 20,
-    paddingBottom: 20,
-    gap: 4,
-  },
-  menuItem: {
-    minHeight: 48,
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'stretch',
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    paddingBottom: 24,
     gap: 12,
-    paddingHorizontal: 12,
-    borderRadius: layout.radiusS,
+  },
+  menuTile: {
+    flex: 1,
+    aspectRatio: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+    paddingHorizontal: 6,
+    borderRadius: 20,
+  },
+  menuIconDisc: {
+    width: 46,
+    height: 46,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 23,
   },
 });

@@ -19,9 +19,10 @@ export interface SheetProps {
   children: ReactNode;
   footer?: ReactNode;
   title?: string;
+  titleAlign?: 'left' | 'center';
 }
 
-export function Sheet({ visible, onClose, children, footer, title }: SheetProps) {
+export function Sheet({ visible, onClose, children, footer, title, titleAlign = 'left' }: SheetProps) {
   const theme = useTheme();
   const { t } = useI18n();
   const insets = useSafeAreaInsets();
@@ -59,8 +60,8 @@ export function Sheet({ visible, onClose, children, footer, title }: SheetProps)
                 backgroundColor: theme.colors.surface1,
                 borderColor: theme.colors.line,
                 borderTopWidth: StyleSheet.hairlineWidth,
-                borderTopLeftRadius: theme.radii.composer + 4,
-                borderTopRightRadius: theme.radii.composer + 4,
+                 borderTopLeftRadius: theme.radii.sheet,
+                 borderTopRightRadius: theme.radii.sheet,
                 paddingBottom: Math.max(insets.bottom, theme.spacing.lg),
                 maxHeight: '90%',
               },
@@ -76,7 +77,7 @@ export function Sheet({ visible, onClose, children, footer, title }: SheetProps)
                   paddingBottom: theme.spacing.sm,
                 }}
               >
-                <AppText variant="title" accessibilityRole="header">
+                <AppText variant="title" align={titleAlign} accessibilityRole="header">
                   {title}
                 </AppText>
               </View>

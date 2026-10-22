@@ -1,33 +1,267 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://aetherdz.github.io/opencode-mobile/</loc>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aetherdz.github.io/opencode-mobile/" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://aetherdz.github.io/opencode-mobile/ar/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://aetherdz.github.io/opencode-mobile/fr/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://aetherdz.github.io/opencode-mobile/es/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aetherdz.github.io/opencode-mobile/" />
+  </url>
+  <url>
+    <loc>https://aetherdz.github.io/opencode-mobile/ar/</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aetherdz.github.io/opencode-mobile/" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://aetherdz.github.io/opencode-mobile/ar/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://aetherdz.github.io/opencode-mobile/fr/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://aetherdz.github.io/opencode-mobile/es/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aetherdz.github.io/opencode-mobile/" />
+  </url>
+  <url>
+    <loc>https://aetherdz.github.io/opencode-mobile/fr/</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aetherdz.github.io/opencode-mobile/" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://aetherdz.github.io/opencode-mobile/ar/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://aetherdz.github.io/opencode-mobile/fr/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://aetherdz.github.io/opencode-mobile/es/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aetherdz.github.io/opencode-mobile/" />
+  </url>
+  <url>
+    <loc>https://aetherdz.github.io/opencode-mobile/es/</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aetherdz.github.io/opencode-mobile/" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://aetherdz.github.io/opencode-mobile/ar/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://aetherdz.github.io/opencode-mobile/fr/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://aetherdz.github.io/opencode-mobile/es/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aetherdz.github.io/opencode-mobile/" />
   </url>
   <url>
     <loc>https://aetherdz.github.io/opencode-mobile/features/</loc>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aetherdz.github.io/opencode-mobile/features/" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://aetherdz.github.io/opencode-mobile/ar/features/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://aetherdz.github.io/opencode-mobile/fr/features/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://aetherdz.github.io/opencode-mobile/es/features/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aetherdz.github.io/opencode-mobile/features/" />
+  </url>
+  <url>
+    <loc>https://aetherdz.github.io/opencode-mobile/ar/features/</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aetherdz.github.io/opencode-mobile/features/" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://aetherdz.github.io/opencode-mobile/ar/features/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://aetherdz.github.io/opencode-mobile/fr/features/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://aetherdz.github.io/opencode-mobile/es/features/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aetherdz.github.io/opencode-mobile/features/" />
+  </url>
+  <url>
+    <loc>https://aetherdz.github.io/opencode-mobile/fr/features/</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aetherdz.github.io/opencode-mobile/features/" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://aetherdz.github.io/opencode-mobile/ar/features/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://aetherdz.github.io/opencode-mobile/fr/features/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://aetherdz.github.io/opencode-mobile/es/features/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aetherdz.github.io/opencode-mobile/features/" />
+  </url>
+  <url>
+    <loc>https://aetherdz.github.io/opencode-mobile/es/features/</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aetherdz.github.io/opencode-mobile/features/" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://aetherdz.github.io/opencode-mobile/ar/features/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://aetherdz.github.io/opencode-mobile/fr/features/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://aetherdz.github.io/opencode-mobile/es/features/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aetherdz.github.io/opencode-mobile/features/" />
   </url>
   <url>
     <loc>https://aetherdz.github.io/opencode-mobile/guide/</loc>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aetherdz.github.io/opencode-mobile/guide/" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://aetherdz.github.io/opencode-mobile/ar/guide/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://aetherdz.github.io/opencode-mobile/fr/guide/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://aetherdz.github.io/opencode-mobile/es/guide/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aetherdz.github.io/opencode-mobile/guide/" />
+  </url>
+  <url>
+    <loc>https://aetherdz.github.io/opencode-mobile/ar/guide/</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aetherdz.github.io/opencode-mobile/guide/" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://aetherdz.github.io/opencode-mobile/ar/guide/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://aetherdz.github.io/opencode-mobile/fr/guide/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://aetherdz.github.io/opencode-mobile/es/guide/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aetherdz.github.io/opencode-mobile/guide/" />
+  </url>
+  <url>
+    <loc>https://aetherdz.github.io/opencode-mobile/fr/guide/</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aetherdz.github.io/opencode-mobile/guide/" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://aetherdz.github.io/opencode-mobile/ar/guide/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://aetherdz.github.io/opencode-mobile/fr/guide/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://aetherdz.github.io/opencode-mobile/es/guide/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aetherdz.github.io/opencode-mobile/guide/" />
+  </url>
+  <url>
+    <loc>https://aetherdz.github.io/opencode-mobile/es/guide/</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aetherdz.github.io/opencode-mobile/guide/" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://aetherdz.github.io/opencode-mobile/ar/guide/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://aetherdz.github.io/opencode-mobile/fr/guide/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://aetherdz.github.io/opencode-mobile/es/guide/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aetherdz.github.io/opencode-mobile/guide/" />
   </url>
   <url>
     <loc>https://aetherdz.github.io/opencode-mobile/security/</loc>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aetherdz.github.io/opencode-mobile/security/" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://aetherdz.github.io/opencode-mobile/ar/security/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://aetherdz.github.io/opencode-mobile/fr/security/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://aetherdz.github.io/opencode-mobile/es/security/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aetherdz.github.io/opencode-mobile/security/" />
+  </url>
+  <url>
+    <loc>https://aetherdz.github.io/opencode-mobile/ar/security/</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aetherdz.github.io/opencode-mobile/security/" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://aetherdz.github.io/opencode-mobile/ar/security/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://aetherdz.github.io/opencode-mobile/fr/security/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://aetherdz.github.io/opencode-mobile/es/security/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aetherdz.github.io/opencode-mobile/security/" />
+  </url>
+  <url>
+    <loc>https://aetherdz.github.io/opencode-mobile/fr/security/</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aetherdz.github.io/opencode-mobile/security/" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://aetherdz.github.io/opencode-mobile/ar/security/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://aetherdz.github.io/opencode-mobile/fr/security/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://aetherdz.github.io/opencode-mobile/es/security/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aetherdz.github.io/opencode-mobile/security/" />
+  </url>
+  <url>
+    <loc>https://aetherdz.github.io/opencode-mobile/es/security/</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aetherdz.github.io/opencode-mobile/security/" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://aetherdz.github.io/opencode-mobile/ar/security/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://aetherdz.github.io/opencode-mobile/fr/security/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://aetherdz.github.io/opencode-mobile/es/security/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aetherdz.github.io/opencode-mobile/security/" />
   </url>
   <url>
     <loc>https://aetherdz.github.io/opencode-mobile/faq/</loc>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aetherdz.github.io/opencode-mobile/faq/" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://aetherdz.github.io/opencode-mobile/ar/faq/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://aetherdz.github.io/opencode-mobile/fr/faq/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://aetherdz.github.io/opencode-mobile/es/faq/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aetherdz.github.io/opencode-mobile/faq/" />
+  </url>
+  <url>
+    <loc>https://aetherdz.github.io/opencode-mobile/ar/faq/</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aetherdz.github.io/opencode-mobile/faq/" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://aetherdz.github.io/opencode-mobile/ar/faq/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://aetherdz.github.io/opencode-mobile/fr/faq/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://aetherdz.github.io/opencode-mobile/es/faq/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aetherdz.github.io/opencode-mobile/faq/" />
+  </url>
+  <url>
+    <loc>https://aetherdz.github.io/opencode-mobile/fr/faq/</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aetherdz.github.io/opencode-mobile/faq/" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://aetherdz.github.io/opencode-mobile/ar/faq/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://aetherdz.github.io/opencode-mobile/fr/faq/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://aetherdz.github.io/opencode-mobile/es/faq/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aetherdz.github.io/opencode-mobile/faq/" />
+  </url>
+  <url>
+    <loc>https://aetherdz.github.io/opencode-mobile/es/faq/</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aetherdz.github.io/opencode-mobile/faq/" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://aetherdz.github.io/opencode-mobile/ar/faq/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://aetherdz.github.io/opencode-mobile/fr/faq/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://aetherdz.github.io/opencode-mobile/es/faq/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aetherdz.github.io/opencode-mobile/faq/" />
   </url>
   <url>
     <loc>https://aetherdz.github.io/opencode-mobile/docs/</loc>
+    <lastmod>2026-10-22</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aetherdz.github.io/opencode-mobile/docs/" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://aetherdz.github.io/opencode-mobile/ar/docs/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://aetherdz.github.io/opencode-mobile/fr/docs/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://aetherdz.github.io/opencode-mobile/es/docs/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aetherdz.github.io/opencode-mobile/docs/" />
+  </url>
+  <url>
+    <loc>https://aetherdz.github.io/opencode-mobile/ar/docs/</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aetherdz.github.io/opencode-mobile/docs/" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://aetherdz.github.io/opencode-mobile/ar/docs/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://aetherdz.github.io/opencode-mobile/fr/docs/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://aetherdz.github.io/opencode-mobile/es/docs/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aetherdz.github.io/opencode-mobile/docs/" />
+  </url>
+  <url>
+    <loc>https://aetherdz.github.io/opencode-mobile/fr/docs/</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aetherdz.github.io/opencode-mobile/docs/" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://aetherdz.github.io/opencode-mobile/ar/docs/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://aetherdz.github.io/opencode-mobile/fr/docs/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://aetherdz.github.io/opencode-mobile/es/docs/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aetherdz.github.io/opencode-mobile/docs/" />
+  </url>
+  <url>
+    <loc>https://aetherdz.github.io/opencode-mobile/es/docs/</loc>
+    <lastmod>2026-10-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://aetherdz.github.io/opencode-mobile/docs/" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://aetherdz.github.io/opencode-mobile/ar/docs/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://aetherdz.github.io/opencode-mobile/fr/docs/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://aetherdz.github.io/opencode-mobile/es/docs/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://aetherdz.github.io/opencode-mobile/docs/" />
   </url>
 </urlset>

@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://api.github.com; font-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'"
+    />
+    <meta name="referrer" content="no-referrer" />
+    <link rel="canonical" href="https://aetherdz.github.io/opencode-mobile/fr/security/" />
+    <link rel="alternate" hreflang="en" href="https://aetherdz.github.io/opencode-mobile/security/" />
+    <link rel="alternate" hreflang="ar" href="https://aetherdz.github.io/opencode-mobile/ar/security/" />
+    <link rel="alternate" hreflang="fr" href="https://aetherdz.github.io/opencode-mobile/fr/security/" />
+    <link rel="alternate" hreflang="es" href="https://aetherdz.github.io/opencode-mobile/es/security/" />
+    <link rel="alternate" hreflang="x-default" href="https://aetherdz.github.io/opencode-mobile/security/" />
+    <title>Sécurité — OpenCode Mobile</title>
+    <meta
+      name="description"
+      content="Les limites de confiance d’OpenCode Mobile : un seul jeton bearer, une liste blanche de répertoires de travail, la validation des pièces jointes, un accès OpenCode en loopback uniquement et aucun relais hébergé."
+    />
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="OpenCode Mobile — sécurité" />
+    <meta
+      property="og:description"
+      content="Un jeton. Un propriétaire. Un rayon d’impact volontairement réduit."
+    />
+    <meta
+      property="og:url"
+      content="https://aetherdz.github.io/opencode-mobile/fr/security/"
+    />
+    <meta
+      property="og:image"
+      content="https://aetherdz.github.io/opencode-mobile/assets/og.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:image"
+      content="https://aetherdz.github.io/opencode-mobile/assets/og.png"
+    />
+    <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../../styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Aller au contenu</a>
+
+<header class="site-header">
+      <a class="brand" href="../../fr/" aria-label="Accueil d’OpenCode Mobile">
+        <span class="brand-mark" aria-hidden="true">OC</span>
+        <span class="brand-name">OpenCode Mobile</span>
+      </a>
+      <nav class="site-nav" id="site-nav" aria-label="Principale">
+        <a href="../../fr/">Installer</a>
+        <a href="../../fr/features/">Fonctionnalités</a>
+        <a href="../../fr/guide/">Guide</a>
+        <a href="./" aria-current="page">Sécurité</a>
+        <a href="../../fr/faq/">FAQ</a>
+        <a href="../../fr/docs/">Documentation</a>
+        <a class="nav-cta" href="../../fr/#download">Télécharger</a>
+      </nav>
+      <div class="header-tools">
+        <a class="nav-github" href="https://github.com/Aetherdz/opencode-mobile" rel="noreferrer" aria-label="Ajouter une étoile à OpenCode Mobile sur GitHub">
+          <span class="nav-github-icon" aria-hidden="true">
+            <svg class="nav-github-mark" viewBox="0 0 16 16" width="19" height="19" fill="currentColor" focusable="false">
+              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z" />
+            </svg>
+            <span class="nav-github-count" data-github-stars aria-hidden="true"></span>
+          </span>
+        </a>
+        <details class="lang-switch">
+          <summary aria-label="Langue : français">
+            <span class="lang-code">FR</span>
+            <svg class="lang-chevron" viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false">
+              <path d="M2.5 4.5 6 8l3.5-3.5" />
+            </svg>
+          </summary>
+          <ul class="lang-menu">
+            <li><a href="../../security/" hreflang="en" lang="en">English</a></li>
+            <li><a href="../../ar/security/" hreflang="ar" lang="ar" dir="rtl">العربية</a></li>
+            <li><a href="./" hreflang="fr" lang="fr" aria-current="true">Français</a></li>
+            <li><a href="../../es/security/" hreflang="es" lang="es">Español</a></li>
+          </ul>
+        </details>
+        <button
+          class="menu-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="site-nav"
+          aria-label="Ouvrir le menu"
+        >
+          <span class="menu-toggle-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+        </button>
+      </div>
+    </header>
+
+    <main id="main" class="docs">
+      <aside class="docs-sidebar">
+        <p class="sidebar-title">Site</p>
+        <nav>
+          <ul class="sidebar-list">
+            <li><a href="../../fr/">Installer</a></li>
+            <li><a href="../../fr/features/">Fonctionnalités</a></li>
+            <li><a href="../../fr/guide/">Guide</a></li>
+            <li><a href="./" aria-current="page">Sécurité</a></li>
+            <li><a href="../../fr/faq/">FAQ</a></li>
+          </ul>
+        </nav>
+        <p class="sidebar-title">Sur cette page</p>
+        <nav>
+          <ul class="sidebar-list">
+            <li><a href="#boundary">La limite de confiance</a></li>
+            <li><a href="#controls">Contrôles</a></li>
+            <li><a href="#checklist">Liste de vérification du déploiement</a></li>
+          </ul>
+        </nav>
+        <p class="sidebar-title">Dépôt</p>
+        <nav>
+          <ul class="sidebar-list">
+            <li>
+              <a
+                href="https://github.com/Aetherdz/opencode-mobile/blob/main/docs/security.md"
+                rel="noreferrer"
+                >Modèle de menace</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://github.com/Aetherdz/opencode-mobile/blob/main/deploy/README.md"
+                rel="noreferrer"
+                >Déploiement</a
+              >
+            </li>
+          </ul>
+        </nav>
+      </aside>
+
+      <div class="docs-body">
+        <article class="docs-article">
+          <header>
+            <p class="eyebrow">Sécurité</p>
+            <h1>Tout se joue à la frontière du réseau.</h1>
+            <p class="docs-lede">
+              L’application dialogue avec une passerelle locale. La passerelle
+              dialogue avec OpenCode en loopback. Rien ne transite par un compte
+              hébergé.
+            </p>
+          </header>
+
+          <h2 id="boundary">La limite de confiance</h2>
+          <div class="security-diagram">
+            <div class="diagram-node">
+              <span class="diagram-label">Appareil</span>
+              <strong>Mobile / Web</strong>
+              <small>Votre jeton</small>
+            </div>
+            <div class="diagram-line"><span>réseau privé</span></div>
+            <div class="diagram-node">
+              <span class="diagram-label">Hôte</span>
+              <strong>Passerelle</strong>
+              <small>127.0.0.1:8787</small>
+            </div>
+            <div class="diagram-line"><span>loopback</span></div>
+            <div class="diagram-node">
+              <span class="diagram-label">Agent</span>
+              <strong>OpenCode</strong>
+              <small>Votre machine</small>
+            </div>
+          </div>
+          <div class="docs-note">
+            <strong>Un seul jeton</strong>
+            Le jeton de la passerelle équivaut à un accès shell sur votre machine.
+            Quiconque le détient peut demander à l’agent de lire des fichiers,
+            d’exécuter des commandes et de modifier du code dans les répertoires
+            de travail autorisés.
+          </div>
+
+          <h2 id="controls">Contrôles</h2>
+          <ul>
+            <li>Jeton bearer comparé en temps constant, avec bannissement après des échecs d’authentification.</li>
+            <li>Tickets WebSocket à usage unique, pour que le justificatif n’apparaisse jamais dans une URL ni dans un journal d’accès.</li>
+            <li>Liste blanche de répertoires de travail pour les sessions, les envois et les téléchargements.</li>
+            <li>Vérifications du type, de l’extension, des octets magiques, de la taille et du nom de fichier à l’envoi.</li>
+            <li>URL OpenCode en loopback uniquement ; Tailscale ou un proxy inverse pour l’accès à distance.</li>
+            <li>Aucune télémétrie, aucun relais hébergé, aucun système de compte.</li>
+            <li>CORS activé sur demande, avec des origines exactes. Les jokers sont refusés.</li>
+          </ul>
+          <p>
+            Le modèle de menace complet, les règles de caviardage et les lacunes
+            connues figurent dans
+            <a
+              href="https://github.com/Aetherdz/opencode-mobile/blob/main/docs/security.md"
+              rel="noreferrer"
+              >docs/security.md</a
+            >.
+          </p>
+
+          <h2 id="checklist">Liste de vérification du déploiement</h2>
+          <ul>
+            <li><code>AUTH_TOKEN</code> compte au moins 32 caractères aléatoires et est propre à cette passerelle.</li>
+            <li><code>HOST</code> reste sur <code>127.0.0.1</code> ; l’accès à distance passe par Tailscale ou un tunnel.</li>
+            <li><code>ALLOWED_WORKDIRS</code> ne liste que les racines que vous voulez exposer.</li>
+            <li><code>CORS_ORIGINS</code> reste vide, sauf si une version navigateur en a besoin.</li>
+            <li>Les fichiers de version sont vérifiés par rapport au fichier <code>SHA256SUMS</code> publié.</li>
+            <li>Le jeton est renouvelé lorsqu’un appareil est perdu ou que la machine est partagée.</li>
+          </ul>
+          <div class="docs-next">
+            <a class="button button-primary" href="../../fr/guide/">Lire le guide</a>
+            <a class="button button-outline" href="../../fr/faq/">FAQ</a>
+          </div>
+        </article>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-brand">
+        <span class="brand-mark" aria-hidden="true">OC</span>
+        <div>
+          <strong>OpenCode Mobile</strong>
+          <p>Client non officiel pour un agent local.</p>
+        </div>
+      </div>
+      <nav class="footer-links" aria-label="Navigation de pied de page">
+        <div class="footer-link-group">
+          <p class="footer-group-title">Produit</p>
+          <div class="footer-group-items">
+            <a href="../">Installer</a>
+            <a href="../features/">Fonctionnalités</a>
+          </div>
+        </div>
+        <div class="footer-link-group">
+          <p class="footer-group-title">Documentation</p>
+          <div class="footer-group-items">
+            <a href="../guide/">Guide</a>
+            <a href="../security/">Sécurité</a>
+            <a href="../faq/">FAQ</a>
+            <a href="../docs/">Documentation</a>
+          </div>
+        </div>
+        <div class="footer-link-group">
+          <p class="footer-group-title">Communauté</p>
+          <div class="footer-group-items">
+            <a href="https://github.com/Aetherdz/opencode-mobile" rel="noreferrer">GitHub</a>
+          </div>
+        </div>
+      </nav>
+      <p class="footer-legal">
+        Sous licence MIT. Non affilié à l’équipe OpenCode et non approuvé par elle.
+        <span id="year">2026</span>.
+      </p>
+    </footer>
+
+    <script src="../../app.js" defer></script>
+  </body>
+</html>

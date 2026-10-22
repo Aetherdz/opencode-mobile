@@ -143,7 +143,7 @@ export default function ChatScreen() {
   const theme = useTheme();
   const { t, locale } = useI18n();
   const { showDialog } = useDialog();
-  const params = useLocalSearchParams<{ id: string | string[] }>();
+  const params = useLocalSearchParams<{ id: string | string[]; seed?: string | string[] }>();
   const id = Array.isArray(params.id) ? params.id[0] : params.id;
   const queryClient = useQueryClient();
   const connection = useConnection((state) => state.state);
@@ -175,6 +175,11 @@ export default function ChatScreen() {
   const lastScrollAt = useRef(0);
   const previousStatus = useRef(status);
   const autoOpenedInput = useRef<string | null>(null);
+
+  useEffect(() => {
+    const initialSeed = Array.isArray(params.seed) ? params.seed[0] : params.seed;
+    if (initialSeed) setSeed(initialSeed);
+  }, [params.seed]);
 
   const sessionQuery = useQuery({
     queryKey: ['session', id],

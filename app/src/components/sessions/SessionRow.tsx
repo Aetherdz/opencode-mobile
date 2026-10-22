@@ -59,30 +59,10 @@ export const SessionRow = memo(function SessionRow({
         <AppText variant="body15" weight="500" numberOfLines={1} style={styles.title}>
           {title}
         </AppText>
+        {status ? <StatusIndicator status={session.status} /> : null}
         <AppText variant="helper" color="secondary" style={styles.time}>
           {time}
         </AppText>
-      </View>
-      <View style={[styles.line, styles.secondLine]}>
-        <View style={styles.folderWrap}>
-          <AppText
-            variant="mono13"
-            color="secondary"
-            mono
-            numberOfLines={1}
-            style={styles.folder}
-          >
-            {folder}
-          </AppText>
-        </View>
-        {status ? (
-          <View style={styles.status}>
-            <StatusIndicator status={session.status} />
-            <AppText variant="helper" color="textStrong" numberOfLines={1}>
-              {status.label}
-            </AppText>
-          </View>
-        ) : null}
       </View>
     </Pressable>
   );
@@ -90,7 +70,7 @@ export const SessionRow = memo(function SessionRow({
 
 const styles = StyleSheet.create({
   row: {
-    minHeight: 68,
+    minHeight: 58,
     paddingHorizontal: layout.padX,
     paddingVertical: layout.rowPadY,
     borderBottomWidth: layout.border,
@@ -101,17 +81,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 10,
   },
-  secondLine: {
-    marginTop: 4,
-  },
   title: { flex: 1 },
   time: { fontVariant: ['tabular-nums'] },
-  folderWrap: { flex: 1, alignItems: 'flex-start' },
-  folder: { flexShrink: 1 },
-  status: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    flexShrink: 0,
-  },
 });

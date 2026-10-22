@@ -5,6 +5,8 @@ import { hasArabic, isolateMixed, textDirection } from '@/lib/textDirection';
 import { useRtl } from './Rtl';
 
 type Variant =
+  | 'greeting'
+  | 'wordmark'
   | 'display'
   | 'title'
   | 'label'
@@ -100,6 +102,8 @@ export function AppText({
         : resolvedWeight === '500'
           ? theme.fonts.sansMedium
           : theme.fonts.sans;
+  const family =
+    variant === 'greeting' && !useArabicFace ? theme.fonts.serif : sansFamily;
   const arabicTracking =
     arabicContent && 'letterSpacing' in typography ? { letterSpacing: 0 } : null;
   const arabicLineHeight = isBodyArabic
@@ -115,7 +119,7 @@ export function AppText({
           color: theme.colors[color],
           textAlign: resolvedAlign,
           writingDirection: direction,
-          ...(!mono ? { fontFamily: sansFamily, fontWeight: '400' as const } : null),
+          ...(!mono ? { fontFamily: family, fontWeight: '400' as const } : null),
           ...arabicLineHeight,
           ...(mono
             ? {

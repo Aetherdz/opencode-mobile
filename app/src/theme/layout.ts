@@ -17,7 +17,7 @@ export const layout = {
   rowPadY: 12,
   radiusS: 12,
   radiusM: 18,
-  radiusL: 22,
+  radiusL: 26,
   border: 1,
   focus: 2,
   topBar: 48,

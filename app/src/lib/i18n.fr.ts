@@ -4,6 +4,16 @@
  */
 export const frStrings: Record<string, string> = {
   appName: 'OpenCode Mobile',
+  'home.greeting': 'Bonjour',
+  'home.greetingAfternoon': 'Bon après-midi',
+  'home.greetingEvening': 'Bonsoir',
+  'home.subtitle': 'Reprenez là où vous en étiez ou démarrez une nouvelle session.',
+  'home.placeholder': 'Démarrer une nouvelle session…',
+  'home.menu': 'Ouvrir la navigation',
+  'home.newChat': 'Nouvelle session',
+  'home.theme': 'Basculer entre le thème clair et sombre',
+  'home.search': 'Rechercher des sessions',
+  'chat.addTitle': 'Ajouter à la conversation',
   'common.back': 'Retour',
   'common.close': 'Fermer',
   'common.cancel': 'Annuler',

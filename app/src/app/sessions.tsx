@@ -2,12 +2,14 @@ import { FlashList } from '@shopify/flash-list';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { router } from 'expo-router';
 import { useCallback, useMemo, useState } from 'react';
-import { RefreshControl, StyleSheet, View } from 'react-native';
+import { Pressable, RefreshControl, StyleSheet, TextInput, View } from 'react-native';
 import { deleteSession, listSessions, renameSession } from '@/api/client';
 import type { SessionSummary } from '@/api/types';
 import { RenameSheet } from '@/components/sessions/RenameSheet';
 import { SessionRow } from '@/components/sessions/SessionRow';
+import { AppDrawer } from '@/components/nav/AppDrawer';
 import { AppText } from '@/components/ui/AppText';
+import { KeyboardAvoider } from '@/components/ui/KeyboardAvoider';
 import { Button } from '@/components/ui/Button';
 import { ConnectionBanner } from '@/components/ui/ConnectionBanner';
 import { useDialog } from '@/components/ui/DialogProvider';
@@ -24,6 +26,7 @@ import { hapticMedium } from '@/lib/haptics';
 import { useI18n } from '@/lib/i18n';
 import { layout } from '@/theme/layout';
 import { useTheme } from '@/theme/ThemeProvider';
+import { useSettings } from '@/state/settings';
 
 type SessionListItem =
   | { type: 'header'; key: string; label: string; count: number }
@@ -63,6 +66,9 @@ export default function SessionsScreen() {
   const [search, setSearch] = useState('');
   const [renameTarget, setRenameTarget] = useState<SessionSummary | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [homePrompt, setHomePrompt] = useState('');
+  const setThemeMode = useSettings((state) => state.setThemeMode);
 
   const query = useQuery({
     queryKey: ['sessions'],
@@ -188,20 +194,42 @@ export default function SessionsScreen() {
   const openNewSession = useCallback(() => {
     router.push('/new-session' as never);
   }, []);
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? t('home.greeting') : hour < 18 ? t('home.greetingAfternoon') : t('home.greetingEvening');
 
   return (
     <Screen>
+      <KeyboardAvoider style={styles.flex}>
       <Rtl style={styles.flex}>
-        <View style={styles.header}>
-          <AppText variant="eyebrow12" color="secondary">
-            {t('appName')}
-          </AppText>
+        <View style={styles.topBar}>
+          <IconButton
+            label={t('home.menu')}
+            onPress={() => setDrawerOpen(true)}
+            size="md"
+            variant="borderless"
+            icon={<Icon name="menu-outline" size={24} color="textStrong" />}
+          />
+          <AppText variant="eyebrow12" color="secondary">{t('appName')}</AppText>
+          <IconButton
+            label={t('home.theme')}
+            onPress={() => setThemeMode(theme.scheme === 'dark' ? 'light' : 'dark')}
+            size="md"
+            variant="borderless"
+            icon={<Icon name={theme.scheme === 'dark' ? 'sunny-outline' : 'moon-outline'} size={21} color="textStrong" />}
+          />
+        </View>
+
+        <View style={styles.greeting}>
           <AppText
-            variant="sessionsTitle"
-            style={{ marginTop: 6 }}
+            variant="greeting"
+            style={{ fontFamily: theme.isRTL ? undefined : theme.fonts.serif }}
+            align="center"
             accessibilityRole="header"
           >
-            {t('sessions.title')}
+            {greeting}
+          </AppText>
+          <AppText variant="helper" color="secondary" align="center" style={styles.greetingSub}>
+            {t('home.subtitle')}
           </AppText>
         </View>
 
@@ -274,7 +302,7 @@ export default function SessionsScreen() {
               />
             );
           }}
-          contentContainerStyle={{ paddingBottom: 20 }}
+          contentContainerStyle={{ paddingBottom: 28 }}
           showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl
@@ -340,39 +368,62 @@ export default function SessionsScreen() {
           }
         />
 
-        <View
-          style={[
-            styles.bar,
-            {
-              backgroundColor: theme.colors.bg,
-              borderTopColor: theme.colors.divider,
-            },
-          ]}
-        >
+        <View style={[styles.composerDock, { borderTopColor: theme.colors.divider }]}>
+          <View style={[styles.composerCard, { backgroundColor: theme.colors.surface2, borderColor: theme.colors.border }]}>
+            <IconButton
+              label={t('sessions.new')}
+              onPress={openNewSession}
+              size="md"
+              variant="borderless"
+              icon={<Icon name="add" size={24} color="textStrong" />}
+            />
+            <TextInput
+              value={homePrompt}
+              onChangeText={setHomePrompt}
+              placeholder={t('home.placeholder')}
+              placeholderTextColor={theme.colors.placeholder}
+              selectionColor={theme.colors.primary}
+              accessibilityLabel={t('home.placeholder')}
+              returnKeyType="send"
+              onSubmitEditing={() => {
+                const seed = homePrompt.trim();
+                router.push({ pathname: '/new-session', params: seed ? { seed } : {} } as never);
+              }}
+              style={[styles.homeInput, { color: theme.colors.textStrong, textAlign: theme.isRTL ? 'right' : 'left' }]}
+            />
+            <Pressable
+              onPress={() => {
+                const seed = homePrompt.trim();
+                router.push({ pathname: '/new-session', params: seed ? { seed } : {} } as never);
+              }}
+              accessibilityRole="button"
+              accessibilityLabel={t('chat.send')}
+              style={({ pressed }) => [styles.sendButton, { backgroundColor: homePrompt.trim() ? theme.colors.primary : theme.colors.surface3, opacity: pressed ? 0.78 : 1 }]}
+            >
+              <Icon name="arrow-up" size={20} color={homePrompt.trim() ? 'onPrimary' : 'text3'} />
+            </Pressable>
+          </View>
           <IconButton
             label={t('sessions.settings')}
             onPress={openSettings}
-            size="lg"
-            variant="surface"
-            hitSlop={layout.hitSlop}
-            icon={<Icon name="settings-outline" size={layout.icon} color="textStrong" />}
-          />
-          <Button
-            design="new"
-            size="sm"
-            shape="pill"
-            label={t('sessions.new')}
-            onPress={openNewSession}
-            icon={<Icon name="add" size={layout.icon} color="onPrimary" />}
+            size="md"
+            variant="borderless"
+            icon={<Icon name="settings-outline" size={22} color="secondary" />}
           />
         </View>
       </Rtl>
+      </KeyboardAvoider>
 
       <RenameSheet
         visible={Boolean(renameTarget)}
         initial={renameTarget?.title ?? ''}
         onClose={() => setRenameTarget(null)}
         onSave={saveRename}
+      />
+      <AppDrawer
+        visible={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+        sessions={query.data ?? []}
       />
     </Screen>
   );
@@ -383,6 +434,25 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: layout.padX,
     paddingTop: 12,
+  },
+  topBar: {
+    minHeight: 48,
+    paddingHorizontal: layout.padX,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  greeting: {
+    minHeight: 176,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: layout.padX,
+    paddingTop: 8,
+    paddingBottom: 18,
+  },
+  greetingSub: {
+    maxWidth: 300,
+    marginTop: 10,
   },
   searchWrap: {
     paddingHorizontal: layout.padX,
@@ -415,5 +485,37 @@ const styles = StyleSheet.create({
     borderTopWidth: layout.border,
     paddingHorizontal: layout.padX,
     paddingVertical: 12,
+  },
+  composerDock: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingHorizontal: 16,
+    paddingTop: 10,
+    paddingBottom: 8,
+    borderTopWidth: StyleSheet.hairlineWidth,
+  },
+  composerCard: {
+    flex: 1,
+    minHeight: 58,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingHorizontal: 7,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: 26,
+  },
+  homeInput: {
+    flex: 1,
+    minHeight: 44,
+    paddingVertical: 8,
+    fontSize: 16,
+  },
+  sendButton: {
+    width: 40,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 20,
   },
 });

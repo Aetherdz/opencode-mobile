@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://api.github.com; font-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'"
+    />
+    <meta name="referrer" content="no-referrer" />
+    <link rel="canonical" href="https://aetherdz.github.io/opencode-mobile/ar/guide/" />
+    <link rel="alternate" hreflang="en" href="https://aetherdz.github.io/opencode-mobile/guide/" />
+    <link rel="alternate" hreflang="ar" href="https://aetherdz.github.io/opencode-mobile/ar/guide/" />
+    <link rel="alternate" hreflang="fr" href="https://aetherdz.github.io/opencode-mobile/fr/guide/" />
+    <link rel="alternate" hreflang="es" href="https://aetherdz.github.io/opencode-mobile/es/guide/" />
+    <link rel="alternate" hreflang="x-default" href="https://aetherdz.github.io/opencode-mobile/guide/" />
+    <title>الدليل — OpenCode Mobile</title>
+    <meta
+      name="description"
+      content="شغّل OpenCode Mobile من البداية إلى النهاية: ابدأ OpenCode، وشغّل الجسر، واتصل من هاتف، واضبط الإعدادات، واعرض الجسر عبر Tailscale."
+    />
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="OpenCode Mobile — الدليل" />
+    <meta
+      property="og:description"
+      content="ابدأ OpenCode، وشغّل الجسر، واتصل من هاتف، واعرضه عبر شبكة خاصة."
+    />
+    <meta
+      property="og:url"
+      content="https://aetherdz.github.io/opencode-mobile/ar/guide/"
+    />
+    <meta
+      property="og:image"
+      content="https://aetherdz.github.io/opencode-mobile/assets/og.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:image"
+      content="https://aetherdz.github.io/opencode-mobile/assets/og.png"
+    />
+    <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../../styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">تجاوز إلى المحتوى</a>
+
+<header class="site-header">
+      <a class="brand" href="../../ar/" aria-label="الصفحة الرئيسية لـ OpenCode Mobile">
+        <span class="brand-mark" aria-hidden="true">OC</span>
+        <span class="brand-name">OpenCode Mobile</span>
+      </a>
+      <nav class="site-nav" id="site-nav" aria-label="التنقل الرئيسي">
+        <a href="../../ar/">التثبيت</a>
+        <a href="../../ar/features/">الميزات</a>
+        <a href="./" aria-current="page">الدليل</a>
+        <a href="../../ar/security/">الأمان</a>
+        <a href="../../ar/faq/">الأسئلة الشائعة</a>
+        <a href="../../ar/docs/">التوثيق</a>
+        <a class="nav-cta" href="../../ar/#download">تنزيل</a>
+      </nav>
+      <div class="header-tools">
+        <a class="nav-github" href="https://github.com/Aetherdz/opencode-mobile" rel="noreferrer" aria-label="أضف نجمة إلى OpenCode Mobile على GitHub">
+          <span class="nav-github-icon" aria-hidden="true">
+            <svg class="nav-github-mark" viewBox="0 0 16 16" width="19" height="19" fill="currentColor" focusable="false">
+              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z" />
+            </svg>
+            <span class="nav-github-count" data-github-stars aria-hidden="true"></span>
+          </span>
+        </a>
+        <details class="lang-switch">
+          <summary aria-label="اللغة: العربية">
+            <span class="lang-code">AR</span>
+            <svg class="lang-chevron" viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false">
+              <path d="M2.5 4.5 6 8l3.5-3.5" />
+            </svg>
+          </summary>
+          <ul class="lang-menu">
+            <li><a href="../../guide/" hreflang="en" lang="en">English</a></li>
+            <li><a href="./" hreflang="ar" lang="ar" dir="rtl" aria-current="true">العربية</a></li>
+            <li><a href="../../fr/guide/" hreflang="fr" lang="fr">Français</a></li>
+            <li><a href="../../es/guide/" hreflang="es" lang="es">Español</a></li>
+          </ul>
+        </details>
+        <button
+          class="menu-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="site-nav"
+          aria-label="فتح القائمة"
+        >
+          <span class="menu-toggle-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+        </button>
+      </div>
+    </header>
+
+    <main id="main" class="docs">
+      <aside class="docs-sidebar">
+        <p class="sidebar-title">الموقع</p>
+        <nav>
+          <ul class="sidebar-list">
+            <li><a href="../../ar/">التثبيت</a></li>
+            <li><a href="../../ar/features/">الميزات</a></li>
+            <li><a href="./" aria-current="page">الدليل</a></li>
+            <li><a href="../../ar/security/">الأمان</a></li>
+            <li><a href="../../ar/faq/">الأسئلة الشائعة</a></li>
+          </ul>
+        </nav>
+        <p class="sidebar-title">في هذه الصفحة</p>
+        <nav>
+          <ul class="sidebar-list">
+            <li><a href="#start">ابدأ OpenCode</a></li>
+            <li><a href="#bridge">شغّل الجسر</a></li>
+            <li><a href="#app">شغّل التطبيق</a></li>
+            <li><a href="#config">الإعدادات</a></li>
+            <li><a href="#remote">الوصول عن بُعد</a></li>
+          </ul>
+        </nav>
+      </aside>
+
+      <div class="docs-body">
+        <article class="docs-article">
+          <header>
+            <p class="eyebrow">الدليل</p>
+            <h1>شغّله من البداية إلى النهاية.</h1>
+            <p class="docs-lede">
+              الجسر خدمة Node عادية. كل ما يلي جاهز للنسخ واللصق، دون حاجة إلى
+              محرّر.
+            </p>
+          </header>
+
+          <h2 id="start">ابدأ OpenCode</h2>
+          <p>
+            يكتشف الجسر الخدمة المحلية عبر
+            <code>~/.local/state/opencode/service.json</code>. ويمكنك أيضًا تعيين
+            <code>OPENCODE_URL</code> و<code>OPENCODE_PASSWORD</code> صراحةً؛ ويجب
+            أن يكون العنوان على loopback.
+          </p>
+          <div class="terminal">
+            <div class="terminal-bar">
+              <span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span>bash</span>
+              <button class="copy-button" type="button" data-copy-target="cmd-opencode">
+                نسخ
+              </button>
+            </div>
+            <pre id="cmd-opencode"><code>opencode service start</code></pre>
+          </div>
+
+          <h2 id="bridge">شغّل الجسر</h2>
+          <p>
+            المثبّت يفعل ذلك نيابةً عنك. شغّله يدويًا حين تريد قراءة الإعدادات
+            أولًا.
+          </p>
+          <div class="terminal">
+            <div class="terminal-bar">
+              <span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span>bash</span>
+              <button class="copy-button" type="button" data-copy-target="cmd-bridge-manual">
+                نسخ
+              </button>
+            </div>
+            <pre id="cmd-bridge-manual"><code>cd bridge
+npm ci
+cp .env.example .env
+openssl rand -hex 32   <span class="term-comment"># put this in AUTH_TOKEN</span>
+npm run build
+npm start</code></pre>
+          </div>
+          <p>
+            عيّن <code>ALLOWED_WORKDIRS</code> إلى جذور المشاريع التي تريد كشفها،
+            ثم تحقق من أن الخدمة تستجيب:
+          </p>
+          <div class="terminal">
+            <div class="terminal-bar">
+              <span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span>bash</span>
+              <button class="copy-button" type="button" data-copy-target="cmd-health">
+                نسخ
+              </button>
+            </div>
+            <pre id="cmd-health"><code>curl http://127.0.0.1:8787/health
+<span class="term-ok">{"ok":true}</span></code></pre>
+          </div>
+
+          <h2 id="app">شغّل التطبيق</h2>
+          <p>
+            لبناء محلي في المتصفح، اسمح بأصل Expo داخل
+            <code>bridge/.env</code>. تتحكم CORS في قراءات المتصفح؛ وهي ليست
+            مصادقة، ولا يزال الرمز الحامل مطلوبًا.
+          </p>
+          <div class="terminal">
+            <div class="terminal-bar">
+              <span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span>bash</span>
+              <button class="copy-button" type="button" data-copy-target="cmd-app">
+                نسخ
+              </button>
+            </div>
+            <pre id="cmd-app"><code>cd app
+npm ci
+npx expo start</code></pre>
+          </div>
+          <div class="docs-note">
+            <strong>CORS</strong>
+            <code>CORS_ORIGINS=http://localhost:8081,http://127.0.0.1:8081</code>
+            — أصول محددة فقط. تُرفض أحرف البدل.
+          </div>
+
+          <h2 id="config">الإعدادات</h2>
+          <table class="docs-table">
+            <thead>
+              <tr>
+                <th>المتغير</th>
+                <th>القيمة الافتراضية</th>
+                <th>الوصف</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>AUTH_TOKEN</code></td>
+                <td>مطلوب</td>
+                <td>رمز حامل مشترك، لا يقل عن 32 حرفًا.</td>
+              </tr>
+              <tr>
+                <td><code>HOST</code></td>
+                <td><code>127.0.0.1</code></td>
+                <td>عنوان الربط. أبقِه على loopback.</td>
+              </tr>
+              <tr>
+                <td><code>PORT</code></td>
+                <td><code>8787</code></td>
+                <td>منفذ HTTP للجسر.</td>
+              </tr>
+              <tr>
+                <td><code>ALLOWED_WORKDIRS</code></td>
+                <td>المجلد الرئيسي</td>
+                <td>الجذور المسموح بها للجلسات والرفوعات. أبقِها ضيقة.</td>
+              </tr>
+              <tr>
+                <td><code>CORS_ORIGINS</code></td>
+                <td>فارغ</td>
+                <td>أصول المتصفح المحددة المسموح لها باستدعاء الجسر.</td>
+              </tr>
+              <tr>
+                <td><code>MAX_UPLOAD_MB</code></td>
+                <td><code>25</code></td>
+                <td>الحد لكل ملف.</td>
+              </tr>
+              <tr>
+                <td><code>MAX_SESSION_UPLOAD_MB</code></td>
+                <td><code>1024</code></td>
+                <td>الحد التراكمي للرفع في الجلسة الواحدة.</td>
+              </tr>
+              <tr>
+                <td><code>RATE_LIMIT_PER_MINUTE</code></td>
+                <td><code>180</code></td>
+                <td>حصّة الطلبات غير المصادق عليها لكل IP.</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2 id="remote">الوصول عن بُعد</h2>
+          <p>
+            الافتراضي الآمن هو loopback مع Tailscale. لا تربط الجسر أبدًا بـ
+            <code>0.0.0.0</code> وتعرض المنفذ على الإنترنت.
+          </p>
+          <div class="terminal">
+            <div class="terminal-bar">
+              <span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              <span>bash</span>
+              <button class="copy-button" type="button" data-copy-target="cmd-tailscale">
+                نسخ
+              </button>
+            </div>
+            <pre id="cmd-tailscale"><code>tailscale serve --bg http://127.0.0.1:8787
+
+<span class="term-comment"># then enter this in the app</span>
+https://&lt;machine&gt;.&lt;tailnet&gt;.ts.net</code></pre>
+          </div>
+          <p>
+            يعمل نفق SSH أيضًا لاختبار سريع من حاسوب محمول. ويمكن استخدام
+            Cloudflare Tunnel لتجربة قصيرة، لكنه يضع الجسر خلف عنوان عام.
+          </p>
+          <div class="docs-next">
+            <a class="button button-primary" href="../../ar/security/">نموذج الأمان</a>
+            <a class="button button-outline" href="../../ar/faq/">الأسئلة الشائعة</a>
+          </div>
+        </article>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-brand">
+        <span class="brand-mark" aria-hidden="true">OC</span>
+        <div>
+          <strong>OpenCode Mobile</strong>
+          <p>عميل غير رسمي لوكيل محلي.</p>
+        </div>
+      </div>
+      <nav class="footer-links" aria-label="روابط التذييل">
+        <div class="footer-link-group">
+          <p class="footer-group-title">المنتج</p>
+          <div class="footer-group-items">
+            <a href="../">التثبيت</a>
+            <a href="../features/">الميزات</a>
+          </div>
+        </div>
+        <div class="footer-link-group">
+          <p class="footer-group-title">الأدلة</p>
+          <div class="footer-group-items">
+            <a href="../guide/">الدليل</a>
+            <a href="../security/">الأمان</a>
+            <a href="../faq/">الأسئلة الشائعة</a>
+            <a href="../docs/">التوثيق</a>
+          </div>
+        </div>
+        <div class="footer-link-group">
+          <p class="footer-group-title">المجتمع</p>
+          <div class="footer-group-items">
+            <a href="https://github.com/Aetherdz/opencode-mobile" rel="noreferrer">GitHub</a>
+          </div>
+        </div>
+      </nav>
+      <p class="footer-legal">
+        مرخّص بموجب MIT. غير مرتبط بفريق OpenCode ولا معتمد منه.
+        <span id="year">2026</span>.
+      </p>
+    </footer>
+
+    <script src="../../app.js" defer></script>
+  </body>
+</html>

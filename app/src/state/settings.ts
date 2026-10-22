@@ -60,7 +60,7 @@ function persist(state: SettingsState): void {
 
 export const useSettings = create<SettingsState>((set, get) => ({
   hydrated: false,
-  themeMode: 'dark',
+  themeMode: 'light',
   locale: detectLocale(),
   haptics: true,
   notifications: false,
@@ -73,7 +73,7 @@ export const useSettings = create<SettingsState>((set, get) => ({
           themeMode:
             parsed.themeMode === 'light' || parsed.themeMode === 'system'
               ? parsed.themeMode
-              : 'dark',
+              : 'light',
           locale: normalizeLocale(parsed.locale),
           haptics: parsed.haptics !== false,
           notifications: parsed.notifications === true,

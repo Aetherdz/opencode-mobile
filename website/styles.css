@@ -31,9 +31,7 @@ html {
 
 body {
   margin: 0;
-  background:
-    linear-gradient(var(--line-soft) 1px, transparent 1px) 0 0 / 100% 4.5rem,
-    var(--paper);
+  background: var(--paper);
   color: var(--ink);
   font-family: var(--sans);
   font-size: 16px;
@@ -1396,18 +1394,43 @@ main {
 }
 
 .footer-links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.7rem 1.2rem;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(6rem, auto));
+  gap: 1rem 2rem;
+  align-items: start;
   justify-content: flex-end;
-  font-size: 0.72rem;
+}
+
+.footer-link-group {
+  display: grid;
+  align-content: start;
+  gap: 0.35rem;
+}
+
+.footer-group-title {
+  margin: 0;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.62rem;
   font-weight: 600;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
+.footer-group-items {
+  display: grid;
+  align-content: start;
+  gap: 0.1rem;
+}
+
 .footer-links a {
+  display: inline-flex;
+  min-height: 2.2rem;
+  align-items: center;
+  padding: 0.1rem 0;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0;
   text-decoration: none;
 }
 
@@ -1618,7 +1641,17 @@ main {
   }
 
   .footer-links {
-    justify-content: flex-start;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    justify-content: stretch;
+    gap: 1.1rem 1.25rem;
+  }
+
+  .footer-link-group:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .footer-links a {
+    min-height: 2.75rem;
   }
 
   .footer-legal {
@@ -1637,5 +1670,362 @@ main {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------------------------------------------------------------- header tools
+   Language switch, star badge and the three-line menu button stay in the
+   header bar, so they are reachable on a phone without opening the menu. */
+
+.site-header {
+  gap: 1.25rem;
+}
+
+.site-nav {
+  margin-left: auto;
+}
+
+.header-tools {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.lang-switch {
+  position: relative;
+}
+
+.lang-switch summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 2.4rem;
+  padding: 0 0.55rem;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.55);
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  list-style: none;
+  cursor: pointer;
+  transition: border-color 160ms ease, background 160ms ease;
+}
+
+.lang-switch summary::-webkit-details-marker {
+  display: none;
+}
+
+.lang-switch summary:hover {
+  border-color: var(--ink);
+  background: var(--paper-strong);
+}
+
+.lang-chevron {
+  transition: transform 180ms ease;
+}
+
+.lang-switch[open] .lang-chevron {
+  transform: rotate(180deg);
+}
+
+.lang-menu {
+  position: absolute;
+  top: calc(100% + 0.4rem);
+  right: 0;
+  z-index: 30;
+  min-width: 9.5rem;
+  margin: 0;
+  padding: 0.3rem;
+  border: 1px solid var(--ink);
+  background: var(--paper-strong);
+  box-shadow: 0 12px 30px rgba(10, 10, 10, 0.12);
+  list-style: none;
+}
+
+.lang-menu a {
+  display: block;
+  padding: 0.5rem 0.6rem;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+
+.lang-menu a:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.lang-menu a[aria-current="true"] {
+  font-weight: 700;
+}
+
+.menu-toggle {
+  display: none;
+  width: 2.6rem;
+  height: 2.6rem;
+  padding: 0;
+  place-items: center;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+}
+
+.menu-toggle-bars {
+  display: grid;
+  gap: 4px;
+  width: 1.05rem;
+}
+
+.menu-toggle-bars i {
+  display: block;
+  height: 1.5px;
+  background: var(--ink);
+  transition: transform 200ms ease, opacity 200ms ease;
+}
+
+.menu-toggle[aria-expanded="true"] .menu-toggle-bars i:nth-child(1) {
+  transform: translateY(5.5px) rotate(45deg);
+}
+
+.menu-toggle[aria-expanded="true"] .menu-toggle-bars i:nth-child(2) {
+  opacity: 0;
+}
+
+.menu-toggle[aria-expanded="true"] .menu-toggle-bars i:nth-child(3) {
+  transform: translateY(-5.5px) rotate(-45deg);
+}
+
+/* ------------------------------------------------------------ install command
+   Tabs are native radio inputs: they work with JavaScript disabled and keep
+   the CSP at script-src 'self'. The panel is hidden only when the browser
+   supports :has(), so a fallback shows both commands instead of none. */
+
+.cmd-switcher {
+  margin-top: 0.5rem;
+}
+
+.cmd-radio {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.cmd-tabs {
+  display: flex;
+  gap: 1.5rem;
+  border-bottom: 1px solid var(--line);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.cmd-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.cmd-tabs label {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.9rem;
+  margin-bottom: -1px;
+  padding: 0 0.1rem;
+  border-bottom: 2px solid transparent;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+#cmd-os-posix:checked ~ .cmd-tabs label[for="cmd-os-posix"],
+#cmd-os-win:checked ~ .cmd-tabs label[for="cmd-os-win"] {
+  color: var(--ink);
+  border-bottom-color: var(--ink);
+}
+
+#cmd-os-posix:focus-visible ~ .cmd-tabs label[for="cmd-os-posix"],
+#cmd-os-win:focus-visible ~ .cmd-tabs label[for="cmd-os-win"] {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.cmd-panel {
+  border: 1px solid var(--ink);
+  border-top: 0;
+  background: var(--ink);
+  color: #e9e9e1;
+}
+
+.cmd-switcher:has(#cmd-os-posix:checked) #panel-win,
+.cmd-switcher:has(#cmd-os-win:checked) #panel-posix {
+  display: none;
+}
+
+.cmd-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.35rem 0.4rem 0.35rem 0.9rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.cmd-prompt {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: #8d8d84;
+}
+
+.cmd-panel pre {
+  margin: 0;
+  padding: 0.9rem 1rem 1.1rem;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  direction: ltr;
+  text-align: left;
+}
+
+.copy-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.2rem;
+  padding: 0.25rem 0.55rem;
+  border: 1px solid #4b4b45;
+  background: transparent;
+  color: #d8d8cf;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
+}
+
+.copy-button:hover,
+.copy-button[data-state="copied"] {
+  border-color: #e9e9e1;
+  background: #e9e9e1;
+  color: var(--ink);
+}
+
+.copy-button svg {
+  flex: 0 0 auto;
+}
+
+/* ------------------------------------------------------------- right to left */
+
+html[dir="rtl"] .lang-menu {
+  right: auto;
+  left: 0;
+}
+
+html[dir="rtl"] .nav-github-count {
+  right: auto;
+  left: -0.85rem;
+}
+
+html[dir="rtl"] .cmd-panel,
+html[dir="rtl"] .terminal {
+  direction: ltr;
+  text-align: left;
+}
+
+html[dir="rtl"] .download-hash {
+  direction: ltr;
+  text-align: left;
+}
+
+html[dir="rtl"] code {
+  unicode-bidi: isolate;
+}
+
+/* --------------------------------------------------------------- small phone */
+
+@media (max-width: 980px) {
+  .site-nav {
+    display: flex;
+    max-height: calc(100dvh - 4.5rem);
+    overflow-y: auto;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(-8px);
+    transition: opacity 180ms ease, transform 180ms ease, visibility 180ms;
+    box-shadow: 0 22px 40px rgba(10, 10, 10, 0.1);
+  }
+
+  .site-nav.is-open {
+    display: flex;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: none;
+  }
+
+  .site-nav a {
+    display: flex;
+    align-items: center;
+    min-height: 2.75rem;
+  }
+
+  .menu-toggle {
+    display: inline-grid;
+  }
+
+  .header-tools {
+    margin-left: auto;
+  }
+
+  .nav-cta {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 430px) {
+  .site-header {
+    padding: 0 0.75rem;
+    gap: 0.6rem;
+  }
+
+  .brand-mark {
+    width: 1.9rem;
+    height: 1.9rem;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.9rem, 14vw, 3.6rem);
+  }
+
+  .cmd-tabs label {
+    min-height: 3rem;
+  }
+
+  .cmd-panel pre {
+    font-size: 0.7rem;
+  }
+
+  .copy-button {
+    min-height: 2.6rem;
+  }
+
+  .download-hash {
+    word-break: break-all;
+  }
+
+  .docs-table {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
   }
 }

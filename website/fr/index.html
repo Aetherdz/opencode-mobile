@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://api.github.com; font-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'"
+    />
+    <meta name="referrer" content="no-referrer" />
+    <link rel="canonical" href="https://aetherdz.github.io/opencode-mobile/fr/" />
+    <link rel="alternate" hreflang="en" href="https://aetherdz.github.io/opencode-mobile/" />
+    <link rel="alternate" hreflang="ar" href="https://aetherdz.github.io/opencode-mobile/ar/" />
+    <link rel="alternate" hreflang="fr" href="https://aetherdz.github.io/opencode-mobile/fr/" />
+    <link rel="alternate" hreflang="es" href="https://aetherdz.github.io/opencode-mobile/es/" />
+    <link rel="alternate" hreflang="x-default" href="https://aetherdz.github.io/opencode-mobile/" />
+    <title>Installer — OpenCode Mobile</title>
+    <meta
+      name="description"
+      content="Installez la passerelle OpenCode Mobile sur la machine qui exécute OpenCode, puis connectez-vous depuis votre téléphone. APK Android signé pour la version, version web et paquets de la passerelle."
+    />
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="OpenCode Mobile — installation" />
+    <meta
+      property="og:description"
+      content="Votre agent. Votre machine. Votre poche. Installez la passerelle, puis connectez-vous depuis votre téléphone."
+    />
+    <meta property="og:url" content="https://aetherdz.github.io/opencode-mobile/fr/" />
+    <meta
+      property="og:image"
+      content="https://aetherdz.github.io/opencode-mobile/assets/og.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="OpenCode Mobile" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:image"
+      content="https://aetherdz.github.io/opencode-mobile/assets/og.png"
+    />
+    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Aller au contenu</a>
+
+<header class="site-header">
+      <a class="brand" href="./" aria-label="Accueil OpenCode Mobile">
+        <span class="brand-mark" aria-hidden="true">OC</span>
+        <span class="brand-name">OpenCode Mobile</span>
+      </a>
+      <nav class="site-nav" id="site-nav" aria-label="Navigation principale">
+        <a href="./" aria-current="page">Installer</a>
+        <a href="./features/">Fonctionnalités</a>
+        <a href="./guide/">Guide</a>
+        <a href="./security/">Sécurité</a>
+        <a href="./faq/">FAQ</a>
+        <a href="./docs/">Documentation</a>
+        <a class="nav-cta" href="#download">Télécharger</a>
+      </nav>
+      <div class="header-tools">
+        <a class="nav-github" href="https://github.com/Aetherdz/opencode-mobile" rel="noreferrer" aria-label="Ajouter une étoile à OpenCode Mobile sur GitHub">
+          <span class="nav-github-icon" aria-hidden="true">
+            <svg class="nav-github-mark" viewBox="0 0 16 16" width="19" height="19" fill="currentColor" focusable="false">
+              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z" />
+            </svg>
+            <span class="nav-github-count" data-github-stars aria-hidden="true"></span>
+          </span>
+        </a>
+        <details class="lang-switch">
+          <summary aria-label="Langue : français">
+            <span class="lang-code">FR</span>
+            <svg class="lang-chevron" viewBox="0 0 12 12" width="10" height="10" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false">
+              <path d="M2.5 4.5 6 8l3.5-3.5" />
+            </svg>
+          </summary>
+          <ul class="lang-menu">
+            <li><a href="../" hreflang="en" lang="en">English</a></li>
+            <li><a href="../ar/" hreflang="ar" lang="ar" dir="rtl">العربية</a></li>
+            <li><a href="./" hreflang="fr" lang="fr" aria-current="true">Français</a></li>
+            <li><a href="../es/" hreflang="es" lang="es">Español</a></li>
+          </ul>
+        </details>
+        <button
+          class="menu-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="site-nav"
+          aria-label="Ouvrir le menu"
+        >
+          <span class="menu-toggle-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+        </button>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Client non officiel · Bêta publique</p>
+          <h1 class="display">
+            Votre agent.<br />
+            Votre machine.<br />
+            <em>Votre poche.</em>
+          </h1>
+          <p class="lede">
+            Installez une petite passerelle sur la machine qui exécute déjà
+            OpenCode, puis connectez-vous depuis votre téléphone. Aucun compte,
+            aucun relais, aucune télémétrie.
+          </p>
+          <div class="actions">
+            <a class="button button-primary" href="#install">Installer la passerelle</a>
+            <a class="button button-quiet" href="#download">Télécharger l’application</a>
+          </div>
+          <dl class="hero-facts">
+            <div>
+              <dt>Transport</dt>
+              <dd>Loopback + Tailscale</dd>
+            </div>
+            <div>
+              <dt>Licence</dt>
+              <dd>MIT</dd>
+            </div>
+            <div>
+              <dt>Télémétrie</dt>
+              <dd>Aucune dans l’application</dd>
+            </div>
+          </dl>
+        </div>
+
+        <div class="hero-art" aria-hidden="true">
+          <div class="orbit orbit-one"></div>
+          <div class="orbit orbit-two"></div>
+          <div class="phone">
+            <div class="phone-bar">
+              <span>9:41</span>
+              <span class="phone-notch"></span>
+              <span>Local</span>
+            </div>
+            <div class="phone-screen">
+              <div class="phone-head">
+                <span class="phone-kicker">Session 04</span>
+                <span class="phone-status">En cours</span>
+              </div>
+              <div class="bubble bubble-user">
+                Renforce la validation des fichiers envoyés et montre-moi le diff.
+              </div>
+              <div class="bubble bubble-agent">
+                Je refuse les SVG par défaut, je vérifie les octets magiques et je
+                garde le nom du fichier dans le répertoire de travail.
+              </div>
+              <div class="tool-card">
+                <div class="tool-top">
+                  <span>edit</span>
+                  <span class="tool-state">approbation</span>
+                </div>
+                <code>src/uploads.ts</code>
+                <div class="diff-lines">
+                  <span class="diff-del">- allowSvg: true</span>
+                  <span class="diff-add">+ allowSvg: false</span>
+                </div>
+                <div class="tool-actions">
+                  <span class="tool-deny">Refuser</span>
+                  <span class="tool-allow">Autoriser</span>
+                </div>
+              </div>
+              <div class="bubble bubble-agent bubble-short">
+                Le diff est prêt. Deux fichiers modifiés.
+              </div>
+            </div>
+            <div class="phone-input">
+              <span>Demandez à l’agent…</span>
+              <span class="phone-send">↑</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="ticker" aria-hidden="true">
+        <span>Sessions</span><span>Diffusion en continu</span><span>Approbations</span
+        ><span>Diffs</span><span>Pièces jointes</span><span>Push</span
+        ><span>Arabe + anglais + français</span><span>Sombre + clair</span>
+      </div>
+
+      <section class="section section-install" id="install">
+        <div class="section-head">
+          <p class="eyebrow">01 / L’installation</p>
+          <h2 class="display">Trois étapes. Aucun compte.</h2>
+          <p>
+            Lancez la passerelle, démarrez OpenCode et indiquez à l’application
+            votre adresse privée. Le programme d’installation écrit le jeton ; il
+            ne l’affiche jamais.
+          </p>
+        </div>
+        <div class="install-grid">
+          <ol class="steps">
+            <li>
+              <span class="step-number">01</span>
+              <div>
+                <h3>Installer la passerelle</h3>
+                <p>Téléchargez, vérifiez la somme de contrôle et créez une configuration privée.</p>
+              </div>
+            </li>
+            <li>
+              <span class="step-number">02</span>
+              <div>
+                <h3>Démarrer l’agent</h3>
+                <p>Gardez OpenCode sur loopback. Utilisez Tailscale pour le téléphone.</p>
+              </div>
+            </li>
+            <li>
+              <span class="step-number">03</span>
+              <div>
+                <h3>Se connecter une seule fois</h3>
+                <p>Saisissez l’URL de la passerelle et le jeton. Le jeton reste sur l’appareil.</p>
+              </div>
+            </li>
+          </ol>
+          <div class="cmd-switcher">
+            <input class="cmd-radio" type="radio" name="cmd-os" id="cmd-os-posix" checked autocomplete="off" />
+            <input class="cmd-radio" type="radio" name="cmd-os" id="cmd-os-win" autocomplete="off" />
+
+            <div class="cmd-tabs">
+              <label for="cmd-os-posix">Linux · macOS</label>
+              <label for="cmd-os-win">Windows</label>
+            </div>
+
+            <div class="cmd-panel" id="panel-posix">
+              <div class="cmd-bar">
+                <span class="cmd-prompt" aria-hidden="true">$</span>
+                <button
+                  class="copy-button"
+                  type="button"
+                  data-copy-target="cmd-bridge"
+                  aria-label="Copier la commande d’installation pour Linux et macOS"
+                >
+                  <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                    <rect x="5.6" y="4.6" width="8" height="9.2" rx="1.2" />
+                    <path d="M10.4 4.6V3.2A1.2 1.2 0 0 0 9.2 2H2.6A1.2 1.2 0 0 0 1.4 3.2v7.6A1.2 1.2 0 0 0 2.6 12h3" />
+                  </svg>
+                  <span class="copy-label" data-copy-label aria-live="polite">Copier</span>
+                </button>
+              </div>
+              <pre id="cmd-bridge"><code><span class="term-comment"># installer pinned to a commit, verified before it runs</span>
+d=$(mktemp -d) &amp;&amp; cd "$d"
+curl -fsSLO https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>7c4ec38b7de7d87e88d7f215721a11bc338e128f/<wbr>install.sh
+echo "d140292ee5f26172a5ff140c693bc38e65bf244c184f4f9e9af7c2a260b596cb  install.sh" | sha256sum -c -
+bash install.sh install --workdir "$HOME/projects"</code></pre>
+            </div>
+
+            <div class="cmd-panel" id="panel-win">
+              <div class="cmd-bar">
+                <span class="cmd-prompt" aria-hidden="true">&gt;</span>
+                <button
+                  class="copy-button"
+                  type="button"
+                  data-copy-target="cmd-bridge-win"
+                  aria-label="Copier la commande d’installation pour Windows"
+                >
+                  <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                    <rect x="5.6" y="4.6" width="8" height="9.2" rx="1.2" />
+                    <path d="M10.4 4.6V3.2A1.2 1.2 0 0 0 9.2 2H2.6A1.2 1.2 0 0 0 1.4 3.2v7.6A1.2 1.2 0 0 0 2.6 12h3" />
+                  </svg>
+                  <span class="copy-label" data-copy-label aria-live="polite">Copier</span>
+                </button>
+              </div>
+              <pre id="cmd-bridge-win"><code><span class="term-comment"># installer pinned to a commit, verified before it runs</span>
+$h = "3a493282e252468ed96012cd0019f5252314bfb5c7b810be34476602616a14aa"
+irm https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>7c4ec38b7de7d87e88d7f215721a11bc338e128f/<wbr>install.ps1 -OutFile install.ps1
+if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksum mismatch" }
+.\install.ps1 -Command install -WorkDir "$env:USERPROFILE\projects"</code></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="requirements">
+        <div class="section-head">
+          <p class="eyebrow">02 / Les prérequis</p>
+          <h2 class="display">Ce qui doit être en place avant de commencer.</h2>
+        </div>
+        <div class="docs-grid">
+          <article class="docs-card">
+            <span>Hôte</span>
+            <h3>Node.js 22.13 ou plus récent</h3>
+            <p>La passerelle est un simple service Node. Pas de base de données, pas de démon, pas de root.</p>
+          </article>
+          <article class="docs-card">
+            <span>Hôte</span>
+            <h3>OpenCode déjà en cours d’exécution</h3>
+            <p>La passerelle dialogue avec votre OpenCode local sur loopback. Elle ne le remplace pas.</p>
+          </article>
+          <article class="docs-card">
+            <span>Téléphone</span>
+            <h3>Une adresse privée</h3>
+            <p>Loopback pour la même machine, Tailscale ou un tunnel pour tout le reste.</p>
+          </article>
+          <article class="docs-card">
+            <span>Jeton</span>
+            <h3>Un secret partagé</h3>
+            <p>Le programme d’installation le génère et l’écrit dans un fichier de configuration en mode 600.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section section-download" id="download">
+        <div class="download-inner">
+          <div>
+            <p class="eyebrow">03 / La version</p>
+            <h2 class="display">Emmenez la bêta faire un tour.</h2>
+            <p>
+              La bêta est livrée sous forme de code source, d’une version Android
+              signée pour la version et de paquets pour la passerelle et le web.
+              Gardez la passerelle privée et attendez-vous à quelques aspérités.
+            </p>
+            <p class="download-note">
+              Android 7.0+ sur arm64. L’APK n’est pas distribué via Google Play.
+              Vérifiez-le avant de l’installer :
+            </p>
+            <p class="download-note download-hash">
+              sha256&nbsp;14eacd032ec5be69c4758032b2108e2a0f37dfd6aa6df2a85535c8d294d8234f
+            </p>
+          </div>
+          <div class="download-actions">
+            <a
+              class="button button-primary"
+              href="https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.2/opencode-mobile-1.0.0-beta.2.apk"
+              rel="noreferrer"
+              >Télécharger l’APK</a
+            >
+            <a
+              class="button button-outline"
+              href="https://github.com/Aetherdz/opencode-mobile/releases"
+              rel="noreferrer"
+              >Ressources de la bêta</a
+            >
+            <a
+              class="button button-outline"
+              href="https://github.com/Aetherdz/opencode-mobile-dist"
+              rel="noreferrer"
+              >Programmes d’installation</a
+            >
+            <a
+              class="text-link"
+              href="https://github.com/Aetherdz/opencode-mobile/releases"
+              rel="noreferrer"
+              >SHA256SUMS et notes de version</a
+            >
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="next">
+        <div class="section-head">
+          <p class="eyebrow">04 / La suite</p>
+          <h2 class="display">Lisez ce dont vous avez besoin.</h2>
+          <p>Chaque page est volontairement courte.</p>
+        </div>
+        <div class="docs-grid">
+          <a class="docs-card" href="./features/">
+            <span>01</span>
+            <h3>Fonctionnalités</h3>
+            <p>Sessions, diffusion en continu, approbations, diffs, pièces jointes et push.</p>
+          </a>
+          <a class="docs-card" href="./guide/">
+            <span>02</span>
+            <h3>Guide</h3>
+            <p>Configuration, accès à distance et les commandes dont vous avez vraiment besoin.</p>
+          </a>
+          <a class="docs-card" href="./security/">
+            <span>03</span>
+            <h3>Sécurité</h3>
+            <p>Les limites de confiance, les contrôles et la liste de vérification du déploiement.</p>
+          </a>
+          <a class="docs-card" href="./faq/">
+            <span>04</span>
+            <h3>FAQ</h3>
+            <p>Des réponses courtes aux questions qui reviennent avant l’installation.</p>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-brand">
+        <span class="brand-mark" aria-hidden="true">OC</span>
+        <div>
+          <strong>OpenCode Mobile</strong>
+          <p>Client non officiel pour un agent local.</p>
+        </div>
+      </div>
+      <nav class="footer-links" aria-label="Navigation de pied de page">
+        <div class="footer-link-group">
+          <p class="footer-group-title">Produit</p>
+          <div class="footer-group-items">
+            <a href="./">Installer</a>
+            <a href="./features/">Fonctionnalités</a>
+          </div>
+        </div>
+        <div class="footer-link-group">
+          <p class="footer-group-title">Documentation</p>
+          <div class="footer-group-items">
+            <a href="./guide/">Guide</a>
+            <a href="./security/">Sécurité</a>
+            <a href="./faq/">FAQ</a>
+            <a href="./docs/">Documentation</a>
+          </div>
+        </div>
+        <div class="footer-link-group">
+          <p class="footer-group-title">Communauté</p>
+          <div class="footer-group-items">
+            <a href="https://github.com/Aetherdz/opencode-mobile" rel="noreferrer">GitHub</a>
+          </div>
+        </div>
+      </nav>
+      <p class="footer-legal">
+        Sous licence MIT. Non affilié à l’équipe OpenCode ni approuvé par elle.
+        <span id="year">2026</span>.
+      </p>
+    </footer>
+
+    <script src="../app.js" defer></script>
+  </body>
+</html>
