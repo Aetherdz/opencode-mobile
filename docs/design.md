@@ -55,6 +55,17 @@ There is no red/green success or error color in the redesign palette. Errors use
 the `danger` role (`#FFFFFF` dark, `#0A0A0A` light), an icon, and explicit text.
 Do not add a new accent color without updating the tokens and both themes.
 
+## Brand assets
+
+- The icon is a black field with the mark centered at roughly 40% of the icon
+  width. No gradients, shadows, or wordmark inside the icon.
+- The splash uses the same mark on a pure black field, centered with generous
+  clear space. It should read as a quiet title card, not a large poster.
+- PWA and Apple touch icons are generated from `app/assets/images/icon.png`.
+  Keep the maskable variant inside the central safe zone.
+- The mark belongs to the upstream OpenCode project. The app is unofficial and
+  must not imply endorsement.
+
 ## Layout
 
 - Spacing follows a 4 pt scale: `2, 4, 8, 12, 16, 24, 32, 48, 64`.
