@@ -11,6 +11,7 @@
   --amber: #8a5a00;
   --radius: 2px;
   --max: 1240px;
+  --control-h: 2.6rem;
 
   /* Drop-shadows and surface tones used across light and dark themes */
   --shadow: rgba(10, 10, 10, 0.12);
@@ -140,12 +141,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.6rem;
-  height: 2.6rem;
-  min-width: 2.6rem;
+  width: var(--control-h);
+  height: var(--control-h);
+  min-width: var(--control-h);
   padding: 0;
   border: 1px solid var(--line);
-  border-radius: 0.7rem;
+  border-radius: 999px;
   background: transparent;
   color: var(--ink);
   cursor: pointer;
@@ -445,6 +446,7 @@
 [data-theme="dark"] .theme-toggle[aria-pressed="true"] svg .sun { display: none; }
 [data-theme="dark"] .theme-toggle:not([aria-pressed="true"]) svg .moon { display: none; }
 
+:root {
   --sans: "Inter", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI",
     Roboto, Helvetica, Arial, sans-serif;
   --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
@@ -659,10 +661,10 @@ button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 3rem;
-  height: 2.75rem;
-  padding: 0.25rem;
-  border: 1px solid transparent;
+  gap: 0.35rem;
+  height: var(--control-h);
+  padding: 0 0.7rem;
+  border: 1px solid var(--line);
   border-radius: 999px;
   background: transparent;
   text-decoration: none !important;
@@ -670,15 +672,16 @@ button {
 }
 
 .nav-github:hover {
-  border-color: var(--line);
-  background: rgba(255, 255, 255, 0.75);
+  border-color: var(--ink);
+  background: var(--paper-strong);
   transform: translateY(-1px);
 }
 
 .nav-github-icon {
-  position: relative;
-  display: inline-grid;
-  place-items: center;
+  position: static;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
   color: var(--ink);
 }
 
@@ -701,23 +704,19 @@ button {
 }
 
 .nav-github-count {
-  position: absolute;
-  top: -0.45rem;
-  right: -0.7rem;
-  min-width: 1.25rem;
-  min-height: 1.25rem;
-  display: grid;
-  place-items: center;
-  padding: 0 0.28rem;
-  border: 2px solid var(--paper);
-  border-radius: 999px;
-  background: var(--green);
-  color: #fff;
+  position: static;
+  min-width: 0;
+  min-height: 0;
+  display: inline-block;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--muted);
   font-family: var(--mono);
-  font-size: 0.58rem;
+  font-size: 0.62rem;
   font-weight: 700;
-  letter-spacing: 0;
-  line-height: 1.3;
+  letter-spacing: 0.04em;
+  line-height: 1;
   text-align: center;
   white-space: nowrap;
 }
@@ -2594,10 +2593,10 @@ section[id] {
   .brand { gap: 0.4rem; }
   .brand-mark { flex: 0 0 2.15rem; width: 2.15rem; height: 2.15rem; }
   .brand-name { max-width: none; overflow: visible; font-size: 0.66rem; letter-spacing: -0.02em; }
-  .header-tools { flex: 0 0 auto; margin-left: auto; gap: 0.05rem; }
-  .nav-github { width: 2.4rem; }
-  .lang-switch summary { min-height: 2.4rem; padding-inline: 0.5rem; }
-  .menu-toggle { width: 2.4rem; height: 2.4rem; }
+  .header-tools { --control-h: 2.35rem; flex: 0 0 auto; margin-left: auto; gap: 0.3rem; }
+  .nav-github { padding-inline: 0.55rem; }
+  .lang-switch summary { padding-inline: 0.55rem; }
+  .menu-toggle { width: var(--control-h); height: var(--control-h); }
 
   .footer-links {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
@@ -2609,6 +2608,12 @@ section[id] {
   .footer-link-group:nth-child(2) { grid-area: documentation; }
   .footer-link-group:nth-child(3) { grid-area: community; }
   .footer-links a { min-height: 2.75rem; font-size: 0.84rem; }
+}
+
+@media (max-width: 365px) {
+  .brand-name {
+    display: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -2640,7 +2645,11 @@ section[id] {
 .header-tools {
   display: flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.4rem;
+}
+
+.header-tools > * {
+  flex: 0 0 auto;
 }
 
 .lang-switch {
@@ -2657,12 +2666,14 @@ section[id] {
 .lang-switch summary {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  min-height: 2.75rem;
+  justify-content: center;
+  gap: 0.32rem;
+  height: var(--control-h);
+  min-height: var(--control-h);
   padding: 0 0.8rem;
   border: 1px solid var(--line);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.52);
+  background: transparent;
   font-family: var(--mono);
   font-size: 0.65rem;
   font-weight: 700;
@@ -2729,12 +2740,14 @@ section[id] {
 
 .menu-toggle {
   display: none;
-  width: 2.75rem;
-  height: 2.75rem;
+  width: var(--control-h);
+  height: var(--control-h);
   padding: 0;
+  align-items: center;
+  justify-content: center;
   place-items: center;
   border: 1px solid var(--ink);
-  border-radius: 50%;
+  border-radius: 999px;
   background: var(--ink);
   cursor: pointer;
   transition: background 180ms ease, transform 180ms ease;
@@ -3299,11 +3312,6 @@ html[dir="rtl"] .lang-menu {
   left: 0;
 }
 
-html[dir="rtl"] .nav-github-count {
-  right: auto;
-  left: -0.85rem;
-}
-
 html[dir="rtl"] .footer-links { direction: rtl; }
 html[dir="rtl"] .footer-legal { direction: rtl; text-align: right; }
 html[dir="rtl"] .site-header { direction: rtl; }
@@ -3401,7 +3409,7 @@ html[dir="rtl"] .page-meta span + span::before { order: 2; }
   }
 
   .menu-toggle {
-    display: inline-grid;
+    display: inline-flex;
   }
 
   .header-tools {
@@ -3424,10 +3432,10 @@ html[dir="rtl"] .page-meta span + span::before { order: 2; }
   .brand { gap: 0.4rem; }
   .brand-name { min-width: 0; font-size: clamp(0.58rem, 2.8vw, 0.68rem); letter-spacing: -0.02em; }
   .brand-build { display: none; }
-  .header-tools { gap: 0.05rem; }
-  .nav-github { width: 2.25rem; }
-  .lang-switch summary { min-height: 2.35rem; padding-inline: 0.45rem; }
-  .menu-toggle { width: 2.35rem; height: 2.35rem; }
+  .header-tools { --control-h: 2.35rem; gap: 0.3rem; }
+  .nav-github { width: auto; padding-inline: 0.5rem; }
+  .lang-switch summary { height: var(--control-h); min-height: var(--control-h); padding-inline: 0.5rem; }
+  .menu-toggle { width: var(--control-h); height: var(--control-h); }
 
   .hero .display { max-width: 100%; font-size: 2.53rem; line-height: 0.95; }
   .hero .lede { max-width: 100%; font-size: clamp(1.05rem, 4.4vw, 1.25rem); line-height: 1.55; }

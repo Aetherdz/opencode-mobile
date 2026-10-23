@@ -156,7 +156,7 @@
         maximumFractionDigits: 1,
       }).format(safe);
       starNodes.forEach((node) => {
-        node.textContent = compact;
+        node.textContent = safe > 0 ? compact : "";
         node.title = `${safe.toLocaleString("en-US")} GitHub stars`;
         const link = node.closest("a");
         if (link) {
