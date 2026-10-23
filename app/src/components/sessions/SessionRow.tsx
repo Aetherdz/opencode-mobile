@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import type { SessionSummary } from '@/api/types';
 import { AppText } from '@/components/ui/AppText';
 import { StatusIndicator } from '@/components/ui/StatusIndicator';
-import { basename, formatRelative } from '@/lib/format';
+import { basename, formatRelative, formatSessionTitle } from '@/lib/format';
 import { hapticSelection } from '@/lib/haptics';
 import { useI18n } from '@/lib/i18n';
 import { layout } from '@/theme/layout';
@@ -32,7 +32,7 @@ export const SessionRow = memo(function SessionRow({
           : session.status === 'error'
             ? { label: t('sessions.error') }
             : null;
-  const title = session.title || t('sessions.untitled');
+  const title = formatSessionTitle(session.title, session.createdAt, locale);
   const folder = basename(session.directory);
   const time = formatRelative(session.lastActivity, locale);
 

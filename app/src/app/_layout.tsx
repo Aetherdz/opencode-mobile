@@ -21,6 +21,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
 import { ThemeProvider, useTheme } from '@/theme/ThemeProvider';
+import { Rtl } from '@/components/ui/Rtl';
 import { DialogProvider } from '@/components/ui/DialogProvider';
 import { EventBridge } from '@/state/EventBridge';
 import { useAuth } from '@/state/auth';
@@ -50,21 +51,23 @@ function Navigator() {
   return (
     <>
       <StatusBar style={theme.scheme === 'dark' ? 'light' : 'dark'} />
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          animation: 'slide_from_right',
-          contentStyle: { backgroundColor: theme.colors.canvas },
-        }}
-      >
-        <Stack.Screen name="index" options={{ animation: 'none' }} />
-        <Stack.Screen name="connect" options={{ animation: 'fade' }} />
-        <Stack.Screen name="sessions" />
-        <Stack.Screen name="new-session" />
-        <Stack.Screen name="chat/[id]" />
-        <Stack.Screen name="diff/[id]" />
-        <Stack.Screen name="settings" />
-      </Stack>
+      <Rtl style={styles.root}>
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            animation: 'slide_from_right',
+            contentStyle: { backgroundColor: theme.colors.canvas },
+          }}
+        >
+          <Stack.Screen name="index" options={{ animation: 'none' }} />
+          <Stack.Screen name="connect" options={{ animation: 'fade' }} />
+          <Stack.Screen name="sessions" />
+          <Stack.Screen name="new-session" />
+          <Stack.Screen name="chat/[id]" />
+          <Stack.Screen name="diff/[id]" />
+          <Stack.Screen name="settings" />
+        </Stack>
+      </Rtl>
     </>
   );
 }

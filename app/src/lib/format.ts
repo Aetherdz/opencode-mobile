@@ -65,6 +65,23 @@ export function formatDay(timestamp: number, locale: Locale): string {
   }
 }
 
+export function formatSessionTitle(title: string, createdAt: number, locale: Locale): string {
+  const clean = title.trim();
+  const untitled = !clean || /^untitled(?:\s+session)?$/i.test(clean);
+  const smoke = /^smoke\s+(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,9})?Z)$/i.exec(clean);
+  if (!untitled && !smoke) return clean;
+
+  const rawDate = smoke?.[1];
+  const timestamp = rawDate ? Date.parse(rawDate) : createdAt;
+  if (!Number.isFinite(timestamp) || timestamp <= 0) {
+    return untitled ? translate(locale, 'sessions.untitled') : clean;
+  }
+  const languageTag = locale === 'ar' ? 'ar-EG-u-nu-latn' : locale === 'fr' ? 'fr-FR' : 'en-US';
+  const time = new Intl.DateTimeFormat(languageTag, { dateStyle: 'medium', timeStyle: 'short' })
+    .format(new Date(timestamp));
+  return translate(locale, smoke ? 'sessions.smokeAt' : 'sessions.untitledAt', { time });
+}
+
 export function basename(path: string): string {
   const clean = path.replace(/\/+$/, '');
   const index = clean.lastIndexOf('/');

@@ -37,7 +37,7 @@ import { KeyboardAvoider } from '@/components/ui/KeyboardAvoider';
 import { Rtl } from '@/components/ui/Rtl';
 import { Screen } from '@/components/ui/Screen';
 import { Skeleton } from '@/components/ui/Skeleton';
-import { basename, formatDay } from '@/lib/format';
+import { basename, formatDay, formatSessionTitle } from '@/lib/format';
 import type { Locale } from '@/state/settings';
 import {
   hapticError,
@@ -451,7 +451,9 @@ export default function ChatScreen() {
 
   const openActions = useCallback(() => {
     showDialog({
-      title: sessionQuery.data?.title || t('sessions.untitled'),
+      title: sessionQuery.data
+        ? formatSessionTitle(sessionQuery.data.title, sessionQuery.data.createdAt, locale)
+        : t('sessions.untitled'),
       actions: [
         ...(diff.length > 0
           ? [
@@ -469,7 +471,7 @@ export default function ChatScreen() {
         { label: t('common.cancel'), variant: 'cancel' as const },
       ],
     });
-  }, [confirmDelete, diff.length, id, sessionQuery.data?.title, showDialog, t]);
+  }, [confirmDelete, diff.length, id, locale, sessionQuery.data, showDialog, t]);
 
   const saveRename = useCallback(
     async (title: string) => {
@@ -505,12 +507,15 @@ export default function ChatScreen() {
           : ''
       }`
     : statusLabel;
+  const sessionTitle = sessionQuery.data
+    ? formatSessionTitle(sessionQuery.data.title, sessionQuery.data.createdAt, locale)
+    : t('sessions.untitled');
 
   return (
     <Screen>
       <Rtl style={styles.body}>
         <ChatTopBar
-          title={sessionQuery.data?.title || t('sessions.untitled')}
+          title={sessionTitle}
           subtitle={subtitle}
           onBack={() => router.back()}
           onActions={openActions}

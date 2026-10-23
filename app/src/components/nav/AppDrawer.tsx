@@ -5,6 +5,7 @@ import type { SessionSummary } from '@/api/types';
 import { AppText } from '@/components/ui/AppText';
 import { Icon } from '@/components/ui/Icon';
 import { useI18n } from '@/lib/i18n';
+import { formatSessionTitle } from '@/lib/format';
 import { layout } from '@/theme/layout';
 import { useTheme } from '@/theme/ThemeProvider';
 
@@ -18,7 +19,7 @@ export function AppDrawer({
   sessions: SessionSummary[];
 }) {
   const theme = useTheme();
-  const { t, isRTL } = useI18n();
+  const { t, locale, isRTL } = useI18n();
   const insets = useSafeAreaInsets();
 
   const open = (route: '/sessions' | '/settings' | '/new-session') => {
@@ -108,11 +109,11 @@ export function AppDrawer({
                   { backgroundColor: pressed ? theme.colors.surface1 : 'transparent' },
                 ]}
                 accessibilityRole="button"
-                accessibilityLabel={session.title || t('sessions.untitled')}
+                accessibilityLabel={formatSessionTitle(session.title, session.createdAt, locale)}
               >
                 <Icon name="chatbubble-outline" size={16} color="text3" />
                 <AppText variant="body15" numberOfLines={1} style={styles.recentTitle}>
-                  {session.title || t('sessions.untitled')}
+                  {formatSessionTitle(session.title, session.createdAt, locale)}
                 </AppText>
               </Pressable>
             ))}

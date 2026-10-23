@@ -24,6 +24,7 @@ import { Skeleton } from '@/components/ui/Skeleton';
 import { TextField } from '@/components/ui/TextField';
 import { hapticMedium } from '@/lib/haptics';
 import { useI18n } from '@/lib/i18n';
+import { formatSessionTitle } from '@/lib/format';
 import { layout } from '@/theme/layout';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useSettings } from '@/state/settings';
@@ -60,7 +61,7 @@ function startOfDay(value: Date): number {
 
 export default function SessionsScreen() {
   const theme = useTheme();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const { showDialog } = useDialog();
   const queryClient = useQueryClient();
   const [search, setSearch] = useState('');
@@ -154,7 +155,7 @@ export default function SessionsScreen() {
   const openActions = useCallback(
     (session: SessionSummary) => {
       showDialog({
-        title: session.title || t('sessions.untitled'),
+        title: formatSessionTitle(session.title, session.createdAt, locale),
         actions: [
           { label: t('sessions.rename'), onPress: () => setRenameTarget(session) },
           {
@@ -166,7 +167,7 @@ export default function SessionsScreen() {
         ],
       });
     },
-    [confirmDelete, showDialog, t],
+    [confirmDelete, showDialog, t, locale],
   );
 
   const saveRename = async (title: string) => {

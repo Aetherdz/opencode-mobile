@@ -155,6 +155,8 @@ const strings: Record<string, Entry> = {
   'sessions.settings': { en: 'Settings', ar: 'الإعدادات' },
   'sessions.loadError': { en: 'Could not load sessions', ar: 'تعذر تحميل الجلسات' },
   'sessions.untitled': { en: 'Untitled session', ar: 'جلسة بلا عنوان' },
+  'sessions.untitledAt': { en: 'Untitled · {time}', ar: 'بلا عنوان · {time}' },
+  'sessions.smokeAt': { en: 'Smoke test · {time}', ar: 'اختبار دخان · {time}' },
   'sessions.sourceApp': { en: 'App', ar: 'التطبيق' },
   'sessions.sourceTelegram': { en: 'Telegram', ar: 'تيليجرام' },
   'sessions.sourceBoth': { en: 'App + Telegram', ar: 'التطبيق وتيليجرام' },

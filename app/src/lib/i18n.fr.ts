@@ -87,6 +87,8 @@ export const frStrings: Record<string, string> = {
   'sessions.settings': 'Réglages',
   'sessions.loadError': 'Impossible de charger les sessions',
   'sessions.untitled': 'Session sans titre',
+  'sessions.untitledAt': 'Sans titre · {time}',
+  'sessions.smokeAt': 'Test smoke · {time}',
   'sessions.sourceApp': 'Application',
   'sessions.sourceTelegram': 'Telegram',
   'sessions.sourceBoth': 'Application + Telegram',

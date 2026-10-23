@@ -1,7 +1,7 @@
 import * as Clipboard from 'expo-clipboard';
 import { CameraView, useCameraPermissions } from 'expo-camera';
-import { router } from 'expo-router';
-import { useRef, useState, type ComponentRef } from 'react';
+import { router, useLocalSearchParams } from 'expo-router';
+import { useEffect, useRef, useState, type ComponentRef } from 'react';
 import {
   ActivityIndicator,
   Modal,
@@ -27,6 +27,7 @@ import {
   hapticSuccess,
 } from '@/lib/haptics';
 import { useI18n } from '@/lib/i18n';
+import { parsePairingLink } from '@/lib/pairingLink';
 import { normalizeBaseUrl, useAuth } from '@/state/auth';
 import { layout } from '@/theme/layout';
 import { useTheme } from '@/theme/ThemeProvider';
@@ -72,6 +73,7 @@ function isPrivateHost(host: string): boolean {
 export default function ConnectScreen() {
   const theme = useTheme();
   const { t } = useI18n();
+  const pairingParams = useLocalSearchParams<{ url?: string; token?: string }>();
   const save = useAuth((state) => state.save);
   const storedUrl = useAuth((state) => state.baseUrl);
   const storedToken = useAuth((state) => state.token);
@@ -87,6 +89,31 @@ export default function ConnectScreen() {
   const [scannerOpen, setScannerOpen] = useState(false);
   const [cameraPermission, requestCameraPermission] = useCameraPermissions();
   const tokenRef = useRef<ComponentRef<typeof TextInput>>(null);
+
+  useEffect(() => {
+    const rawUrl = pairingParams.url;
+    const rawToken = pairingParams.token;
+    if (rawUrl === undefined && rawToken === undefined) return;
+
+    // Reconstruct only the narrowly-supported payload, validate it, then clear
+    // credentials from navigation state. Connecting still requires a tap.
+    const payload = new URL('opencode-mobile://connect');
+    if (typeof rawUrl === 'string') payload.searchParams.set('url', rawUrl);
+    if (typeof rawToken === 'string') payload.searchParams.set('token', rawToken);
+    const pairing = parsePairingLink(payload.toString());
+    if (pairing) {
+      setUrl(pairing.url);
+      setToken(pairing.token);
+      setUrlTouched(true);
+      setTokenTouched(true);
+      setError(null);
+      hapticSuccess();
+    } else {
+      setError(t('connect.invalidQr'));
+      hapticError();
+    }
+    router.setParams({ url: undefined, token: undefined } as never);
+  }, [pairingParams.token, pairingParams.url, t]);
 
   const trimmedUrl = normalizedInputUrl(url);
   const trimmedToken = token.trim();
@@ -149,27 +176,19 @@ export default function ConnectScreen() {
   };
 
   const handleQr = (raw: string) => {
-    try {
-      const parsed = new URL(raw);
-      if (parsed.protocol !== 'opencode-mobile:' || parsed.hostname !== 'connect') {
-        throw new Error('Unsupported QR format');
-      }
-      const scannedUrl = parsed.searchParams.get('url') ?? '';
-      const scannedToken = parsed.searchParams.get('token') ?? '';
-      if (!HTTP_URL.test(scannedUrl) || scannedToken.length < TOKEN_MIN_LENGTH) {
-        throw new Error('Invalid QR payload');
-      }
-      setUrl(scannedUrl);
-      setToken(scannedToken);
-      setUrlTouched(true);
-      setTokenTouched(true);
-      setError(null);
-      setScannerOpen(false);
-      hapticSuccess();
-    } catch {
+    const pairing = parsePairingLink(raw);
+    if (!pairing) {
       setError(t('connect.invalidQr'));
       setScannerOpen(false);
+      return;
     }
+    setUrl(pairing.url);
+    setToken(pairing.token);
+    setUrlTouched(true);
+    setTokenTouched(true);
+    setError(null);
+    setScannerOpen(false);
+    hapticSuccess();
   };
 
   const messageForError = (connectionError: unknown): string => {

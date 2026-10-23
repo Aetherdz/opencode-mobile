@@ -50,52 +50,53 @@ export function ModelSheet({
           returnKeyType="search"
           design="new"
         />
-        {loading ? <AppText color="secondary">{t('model.loading')}</AppText> : null}
-        {failed ? (
-          <View style={{ gap: theme.spacing.sm }}>
-            <AppText color="danger">{t('model.loadError')}</AppText>
-            <Pressable onPress={onRetry} accessibilityRole="button">
-              <AppText color="accent">{t('common.retry')}</AppText>
-            </Pressable>
-          </View>
-        ) : null}
-        {!loading && !failed && filtered.length === 0 ? (
-          <AppText color="secondary">{t('model.empty')}</AppText>
-        ) : null}
-        {!failed && !loading ? (
-          <FlatList
-            data={filtered}
-            keyExtractor={(item) => `${item.providerId}:${item.modelId}`}
-            keyboardShouldPersistTaps="handled"
-            style={styles.list}
-            renderItem={({ item }) => {
-              const isSelected = selected?.providerID === item.providerId && selected.modelID === item.modelId;
-              return (
-                <Pressable
-                  onPress={() => onSelect({ providerID: item.providerId, modelID: item.modelId })}
-                  accessibilityRole="radio"
-                  accessibilityState={{ selected: isSelected }}
-                  accessibilityLabel={`${item.name}, ${item.providerName}`}
-                  style={({ pressed }) => [
-                    styles.row,
-                    {
-                      borderBottomColor: theme.colors.divider,
-                      backgroundColor: pressed ? theme.colors.surface2 : 'transparent',
-                    },
-                  ]}
-                >
-                  <View style={styles.labels}>
-                    <AppText variant="body" numberOfLines={1}>{item.name}</AppText>
-                    <AppText variant="caption" color="secondary" numberOfLines={1}>
-                      {item.providerName} · {item.modelId}
-                    </AppText>
-                  </View>
-                  {isSelected ? <Icon name="checkmark" size={layout.icon} color="accent" /> : null}
-                </Pressable>
-              );
-            }}
-          />
-        ) : null}
+        <View style={styles.results}>
+          {loading ? (
+            <AppText color="secondary">{t('model.loading')}</AppText>
+          ) : failed ? (
+            <View style={{ gap: theme.spacing.sm, alignItems: 'center' }}>
+              <AppText color="danger" align="center">{t('model.loadError')}</AppText>
+              <Pressable onPress={onRetry} accessibilityRole="button">
+                <AppText color="accent">{t('common.retry')}</AppText>
+              </Pressable>
+            </View>
+          ) : filtered.length === 0 ? (
+            <AppText color="secondary">{t('model.empty')}</AppText>
+          ) : (
+            <FlatList
+              data={filtered}
+              keyExtractor={(item) => `${item.providerId}:${item.modelId}`}
+              keyboardShouldPersistTaps="handled"
+              style={styles.list}
+              renderItem={({ item }) => {
+                const isSelected = selected?.providerID === item.providerId && selected.modelID === item.modelId;
+                return (
+                  <Pressable
+                    onPress={() => onSelect({ providerID: item.providerId, modelID: item.modelId })}
+                    accessibilityRole="radio"
+                    accessibilityState={{ selected: isSelected }}
+                    accessibilityLabel={`${item.name}, ${item.providerName}`}
+                    style={({ pressed }) => [
+                      styles.row,
+                      {
+                        borderBottomColor: theme.colors.divider,
+                        backgroundColor: pressed ? theme.colors.surface2 : 'transparent',
+                      },
+                    ]}
+                  >
+                    <View style={styles.labels}>
+                      <AppText variant="body" numberOfLines={1}>{item.name}</AppText>
+                      <AppText variant="caption" color="secondary" numberOfLines={1}>
+                        {item.providerName} · {item.modelId}
+                      </AppText>
+                    </View>
+                    {isSelected ? <Icon name="checkmark" size={layout.icon} color="accent" /> : null}
+                  </Pressable>
+                );
+              }}
+            />
+          )}
+        </View>
         <Pressable
           onPress={() => onSelect(null)}
           accessibilityRole="radio"
@@ -114,7 +115,10 @@ export function ModelSheet({
 }
 
 const styles = StyleSheet.create({
-  list: { maxHeight: 420 },
+  // Reserve the same space for loading, error, empty, and loaded states so the
+  // bottom sheet doesn't resize/jump when the model request settles.
+  results: { height: 280, alignItems: 'center', justifyContent: 'center' },
+  list: { width: '100%', flex: 1 },
   row: {
     minHeight: 58,
     borderBottomWidth: StyleSheet.hairlineWidth,
