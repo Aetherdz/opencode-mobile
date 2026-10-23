@@ -860,6 +860,7 @@ main {
 .hero {
   display: grid;
   grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  direction: ltr;
   gap: clamp(2rem, 5vw, 4.5rem);
   align-items: center;
   width: min(100% - 6vw, var(--max));
@@ -2683,22 +2684,22 @@ section[id] {
     grid-column: 1;
   }
 
-  .hero > .hero-copy { grid-row: 1; }
-  .hero > .hero-art { grid-row: 2; }
+  .hero > .hero-art { grid-row: 1; }
+  .hero > .hero-copy { grid-row: 2; }
   .hero-copy > * { min-width: 0; }
   .hero-copy .display { max-width: 100%; overflow-wrap: normal; }
 
   .hero .eyebrow { font-size: 0.75rem; letter-spacing: 0.04em; }
   .hero-art {
-    min-height: clamp(24rem, 82vw, 34rem);
+    min-height: clamp(31rem, 115vw, 38rem);
     padding: 2rem clamp(1.5rem, 7vw, 2.5rem);
     overflow: visible;
   }
 
   .phone {
-    width: clamp(250px, 78vw, 340px);
+    width: min(78vw, 320px);
     max-width: 100%;
-    transform: none;
+    transform: rotate(-3deg);
   }
 
   .phone-screen { min-height: 28rem; }
@@ -3709,6 +3710,7 @@ html[dir="rtl"] .hero .display {
   max-width: 100%;
   line-height: 1.55;
 }
+html[dir="rtl"] .hero-copy { direction: rtl; }
 html[dir="rtl"] .hero-release-copy strong span { margin-right: 0.25rem; margin-left: 0; }
 
 html[lang="en"],
@@ -3833,8 +3835,8 @@ html[dir="rtl"] .page-meta span + span::before { order: 2; }
   .hero-release { padding: 0.8rem; }
   .hero-release-copy strong { font-size: 0.8rem; }
   .hero-release-copy small { font-size: 0.8rem; }
-  .hero-art { min-height: clamp(25rem, 102vw, 30rem); padding-inline: 1rem; overflow: visible; }
-  .phone { width: min(88vw, 340px); max-width: 100%; }
+  .hero-art { min-height: clamp(31rem, 115vw, 38rem); padding-inline: 1rem; overflow: visible; }
+  .phone { width: min(78vw, 320px); max-width: 100%; transform: rotate(-3deg); }
   .phone-screen { min-height: 28rem; }
   .hero-command { padding: 0.65rem; }
   .hero-command pre { font-size: 0.58rem; }
@@ -3860,6 +3862,35 @@ html[dir="rtl"] .page-meta span + span::before { order: 2; }
     white-space: normal;
   }
 
+}
+
+@media (min-width: 721px) and (max-width: 980px) {
+  .hero {
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    gap: clamp(1rem, 3vw, 1.75rem);
+    direction: ltr;
+    align-items: center;
+  }
+
+  html[dir="rtl"] .hero-copy { direction: rtl; }
+
+  .hero > .hero-art {
+    grid-column: 1;
+    grid-row: 1;
+    min-height: clamp(28rem, 55vw, 34rem);
+    padding-inline: 0.5rem;
+  }
+
+  .hero > .hero-copy {
+    grid-column: 2;
+    grid-row: 1;
+    max-width: none;
+  }
+
+  .phone {
+    width: min(30vw, 285px);
+    transform: rotate(-3deg);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
