@@ -25,7 +25,7 @@ export function ModelSheet({
   selected: ModelSelection | null;
   loading: boolean;
   failed: boolean;
-  /** Message from the bridge itself, when the bridge answered but the request failed. */
+  /** Actionable non-transport diagnostic, when one is available. */
   errorDetail?: string;
   onClose: () => void;
   onSelect: (model: ModelSelection | null) => void;
@@ -58,7 +58,9 @@ export function ModelSheet({
             <AppText color="secondary">{t('model.loading')}</AppText>
           ) : failed ? (
             <View style={{ gap: theme.spacing.sm, alignItems: 'center' }}>
-              <AppText color="danger" align="center">{t('model.loadError')}</AppText>
+              <AppText color="danger" align="center">
+                {t(errorDetail ? 'model.loadError' : 'model.connectionError')}
+              </AppText>
               {errorDetail ? (
                 <AppText variant="helper" color="secondary" align="center">
                   {errorDetail}

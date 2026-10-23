@@ -3,6 +3,7 @@ import { Modal, Pressable, StyleSheet, View } from 'react-native';
 import Animated, {
   FadeIn,
   FadeOut,
+  Easing,
   SlideInDown,
   SlideOutDown,
   useReducedMotion,
@@ -39,7 +40,7 @@ export function Sheet({ visible, onClose, children, footer, title, titleAlign = 
     }
 
     setContentVisible(false);
-    const timeout = setTimeout(() => setMounted(false), reduced ? 120 : 180);
+    const timeout = setTimeout(() => setMounted(false), reduced ? 120 : 210);
     return () => clearTimeout(timeout);
   }, [visible, reduced]);
 
@@ -71,10 +72,13 @@ export function Sheet({ visible, onClose, children, footer, title, titleAlign = 
                 entering={
                   reduced
                     ? FadeIn.duration(120)
-                    // Reanimated 4.x types this builder param as number; runtime treats it as boolean.
-                    : SlideInDown.springify().damping(30).stiffness(220).overshootClamping(1)
+                    : SlideInDown.duration(240).easing(Easing.out(Easing.cubic))
                 }
-                exiting={reduced ? FadeOut.duration(100) : SlideOutDown.duration(160)}
+                exiting={
+                  reduced
+                    ? FadeOut.duration(100)
+                    : SlideOutDown.duration(190).easing(Easing.in(Easing.cubic))
+                }
                 style={[
                   styles.sheet,
                   {

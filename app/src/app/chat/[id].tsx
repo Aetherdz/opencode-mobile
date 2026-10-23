@@ -511,6 +511,23 @@ export default function ChatScreen() {
   const sessionTitle = sessionQuery.data
     ? formatSessionTitle(sessionQuery.data.title, sessionQuery.data.createdAt, locale)
     : t('sessions.untitled');
+  const modelLoadError = modelsQuery.error;
+  const modelErrorDetail =
+    modelLoadError instanceof ApiError &&
+    !['network', 'timeout', 'tls', 'secure_unreachable', 'unreachable'].some(
+      (code) => code === modelLoadError.code,
+    )
+      ? modelLoadError.message
+      : undefined;
+  const outsideWorkdir = chatError === 'outside_workdir';
+  const showWorkdirBanner = outsideWorkdir && messages.length > 0;
+  const handleInitialErrorAction = () => {
+    if (outsideWorkdir) {
+      router.push('/new-session' as never);
+      return;
+    }
+    void useChat.getState().load(id);
+  };
 
   return (
     <Screen>
@@ -522,6 +539,16 @@ export default function ChatScreen() {
           onActions={openActions}
         />
         <ConnectionBanner />
+        {showWorkdirBanner ? (
+          <View style={{ paddingHorizontal: layout.padX, paddingTop: theme.spacing.sm }}>
+            <ErrorBanner
+              message={t('chat.workdirError')}
+              onRetry={() => router.push('/new-session' as never)}
+              retryLabel={t('chat.chooseWorkdir')}
+              design="new"
+            />
+          </View>
+        ) : null}
 
       <KeyboardAvoider
         style={styles.body}
@@ -560,8 +587,8 @@ export default function ChatScreen() {
                     ? t('chat.workdirError')
                     : chatError
                 }
-                onRetry={() => void useChat.getState().load(id)}
-                retryLabel={t('common.retry')}
+                onRetry={handleInitialErrorAction}
+                retryLabel={outsideWorkdir ? t('chat.chooseWorkdir') : t('common.retry')}
                 design="new"
               />
             </View>
@@ -771,7 +798,7 @@ export default function ChatScreen() {
           attachmentError={attachments.error}
           uploading={attachments.uploading}
           maxFiles={attachments.maxFiles}
-          error={chatError}
+          error={outsideWorkdir ? null : chatError}
           modelName={selectedModelName}
           onModelSelect={() => setModelSheetOpen(true)}
           seed={seed}
@@ -810,11 +837,7 @@ export default function ChatScreen() {
         selected={selectedModel}
         loading={modelsQuery.isLoading}
         failed={modelsQuery.isError}
-        errorDetail={
-          modelsQuery.error instanceof ApiError && modelsQuery.error.status !== 0
-            ? modelsQuery.error.message
-            : undefined
-        }
+        errorDetail={modelErrorDetail}
         onClose={() => setModelSheetOpen(false)}
         onSelect={selectModel}
         onRetry={() => void modelsQuery.refetch()}

@@ -35,7 +35,8 @@ export const frStrings: Record<string, string> = {
   'model.search': 'Rechercher des modèles',
   'model.loading': 'Chargement des modèles…',
   'model.empty': 'Aucun modèle activé trouvé.',
-  'model.loadError': 'Impossible de charger les modèles. Vérifiez la connexion au bridge et réessayez.',
+  'model.loadError': 'Impossible de charger la liste des modèles disponibles.',
+  'model.connectionError': 'Impossible de joindre le bridge. Vérifiez la connexion et réessayez.',
 
   'connect.title': 'Connectez-vous à votre bridge',
   'connect.subtitle': "Utilisez l'adresse et le jeton du fichier .env de votre bridge.",
@@ -221,6 +222,7 @@ export const frStrings: Record<string, string> = {
     "Le répertoire de travail de cette session est en dehors de ALLOWED_WORKDIRS du bridge, son contenu ne peut pas être ouvert. Créez une session depuis un répertoire autorisé (Nouvelle session) ou demandez à l'administrateur du bridge d'ajouter ce répertoire.",
 
   'settings.title': 'Réglages',
+  'chat.chooseWorkdir': 'Choisir un répertoire de travail',
   'settings.appearance': 'Apparence',
   'settings.dark': 'Sombre',
   'settings.light': 'Clair',

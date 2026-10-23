@@ -6,6 +6,20 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and the project uses [Semantic Versioning](https://semver.org/). This is a
 pre-1.0 beta; minor versions may change the bridge protocol.
 
+## [1.0.0-beta.7] - 2026-10-23
+
+### Fixed
+
+- Anchored the sessions drawer to the physical left in LTR and right in RTL,
+  independent of the Android system language, and corrected its slide direction.
+- Removed duplicate outside-workdir errors and added a direct path to choose an
+  allowed work directory without changing `ALLOWED_WORKDIRS`.
+- Distinguished model-catalog/server failures from bridge connection failures.
+- Reworked the sessions composer into two clear rows and made the chosen model
+  persist, display by name, and apply to the first message of new chats.
+- Replaced springy sheet entrance with a restrained, reduced-motion-aware slide.
+- Matched Android navigation-button glyphs to the active app theme.
+
 ## [1.0.0-beta.6] - 2026-10-23
 
 ### Fixed

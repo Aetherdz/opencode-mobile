@@ -82,7 +82,8 @@ export default function SessionsScreen() {
   const modelsQuery = useQuery({
     queryKey: ['models'],
     queryFn: getModels,
-    enabled: modelSheetOpen,
+    // Also enabled once a model is persisted, so the chip can show its name.
+    enabled: modelSheetOpen || Boolean(selectedModel),
     staleTime: 60_000,
   });
 
@@ -113,6 +114,26 @@ export default function SessionsScreen() {
   const selectedModelName = modelsQuery.data?.find(
     (model) => model.providerId === selectedModel?.providerID && model.modelId === selectedModel?.modelID,
   )?.name;
+  const modelLoadError = modelsQuery.error;
+  const modelErrorDetail =
+    modelLoadError instanceof ApiError &&
+    !['network', 'timeout', 'tls', 'secure_unreachable', 'unreachable'].some(
+      (code) => code === modelLoadError.code,
+    )
+      ? modelLoadError.message
+      : undefined;
+
+  useEffect(() => {
+    if (!modelsQuery.isSuccess || !selectedModel) return;
+    const available = modelsQuery.data.some(
+      (model) =>
+        model.providerId === selectedModel.providerID && model.modelId === selectedModel.modelID,
+    );
+    if (!available) {
+      setSelectedModel(null);
+      void deleteStored(MODEL_STORAGE_KEY);
+    }
+  }, [modelsQuery.data, modelsQuery.isSuccess, selectedModel]);
 
   const selectModel = useCallback((model: ModelSelection | null) => {
     setSelectedModel(model);
@@ -263,7 +284,7 @@ export default function SessionsScreen() {
             onPress={() => setDrawerOpen(true)}
             size="md"
             variant="borderless"
-            icon={<Icon name="menu-outline" size={24} color="textStrong" />}
+            icon={<Icon name="menu-outline" size={22} color="textStrong" />}
           />
           <AppText variant="eyebrow12" color="secondary">{t('appName')}</AppText>
           <IconButton
@@ -271,7 +292,7 @@ export default function SessionsScreen() {
             onPress={() => setThemeMode(theme.scheme === 'dark' ? 'light' : 'dark')}
             size="md"
             variant="borderless"
-            icon={<Icon name={theme.scheme === 'dark' ? 'sunny-outline' : 'moon-outline'} size={21} color="textStrong" />}
+            icon={<Icon name={theme.scheme === 'dark' ? 'sunny-outline' : 'moon-outline'} size={22} color="textStrong" />}
           />
         </View>
 
@@ -424,23 +445,8 @@ export default function SessionsScreen() {
           }
         />
 
-        <View style={[styles.composerDock, { borderTopColor: theme.colors.divider }]}>
+        <View style={styles.composerDock}>
           <View style={[styles.composerCard, { backgroundColor: theme.colors.surface2, borderColor: theme.colors.border }]}>
-            <Pressable
-              onPress={openNewSession}
-              accessibilityRole="button"
-              accessibilityLabel={t('sessions.new')}
-              style={({ pressed }) => [
-                styles.newChatButton,
-                {
-                  backgroundColor: theme.colors.surface,
-                  borderColor: theme.colors.border,
-                  opacity: pressed ? 0.75 : 1,
-                },
-              ]}
-            >
-              <Icon name="add" size={22} color="primary" />
-            </Pressable>
             <TextInput
               value={homePrompt}
               onChangeText={setHomePrompt}
@@ -467,17 +473,44 @@ export default function SessionsScreen() {
               <Icon name="arrow-up" size={20} color={homePrompt.trim() ? 'onPrimary' : 'text3'} />
             </Pressable>
           </View>
-          <Pressable
-            onPress={() => setModelSheetOpen(true)}
-            accessibilityRole="button"
-            accessibilityLabel={t('model.selector')}
-            style={({ pressed }) => [styles.modelButton, { backgroundColor: theme.colors.surface2, borderColor: theme.colors.border, opacity: pressed ? 0.7 : 1 }]}
-          >
-            <Icon name="options-outline" size={20} color="primary" />
-            <AppText variant="caption" weight="600" numberOfLines={1} style={styles.modelButtonLabel}>
-              {selectedModelName ?? t('model.selector')}
-            </AppText>
-          </Pressable>
+          <View style={styles.dockActions}>
+            <Pressable
+              onPress={openNewSession}
+              accessibilityRole="button"
+              accessibilityLabel={t('sessions.new')}
+              style={({ pressed }) => [
+                styles.newChip,
+                {
+                  backgroundColor: theme.colors.surface,
+                  borderColor: theme.colors.border,
+                  opacity: pressed ? 0.75 : 1,
+                },
+              ]}
+            >
+              <Icon name="add" size={16} color="textStrong" />
+              <AppText variant="caption" weight="600" color="textStrong">
+                {t('sessions.new')}
+              </AppText>
+            </Pressable>
+            <Pressable
+              onPress={() => setModelSheetOpen(true)}
+              accessibilityRole="button"
+              accessibilityLabel={`${t('model.selector')}${selectedModelName ? `: ${selectedModelName}` : ''}`}
+              style={({ pressed }) => [
+                styles.modelChip,
+                {
+                  backgroundColor: theme.colors.surface,
+                  borderColor: theme.colors.border,
+                  opacity: pressed ? 0.75 : 1,
+                },
+              ]}
+            >
+              <AppText variant="caption" color="secondary" numberOfLines={1} style={styles.modelChipLabel}>
+                {selectedModelName ?? t('model.selector')}
+              </AppText>
+              <Icon name="chevron-down" size={14} color="secondary" />
+            </Pressable>
+          </View>
         </View>
       </Rtl>
       </KeyboardAvoider>
@@ -499,7 +532,7 @@ export default function SessionsScreen() {
         selected={selectedModel}
         loading={modelsQuery.isLoading}
         failed={modelsQuery.isError}
-        errorDetail={modelsQuery.error instanceof ApiError ? modelsQuery.error.message : undefined}
+        errorDetail={modelErrorDetail}
         onClose={() => setModelSheetOpen(false)}
         onSelect={selectModel}
         onRetry={() => void modelsQuery.refetch()}
@@ -510,10 +543,6 @@ export default function SessionsScreen() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  header: {
-    paddingHorizontal: layout.padX,
-    paddingTop: 12,
-  },
   topBar: {
     minHeight: 56,
     paddingHorizontal: layout.padX,
@@ -558,46 +587,52 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: 12,
   },
-  bar: {
+  composerDock: {
+    paddingHorizontal: 20,
+    paddingTop: 4,
+    paddingBottom: 8,
+    gap: 8,
+  },
+  dockActions: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderTopWidth: layout.border,
-    paddingHorizontal: layout.padX,
-    paddingVertical: 12,
-  },
-  composerDock: {
-    flexDirection: 'row',
-    alignItems: 'center',
     gap: 8,
-    paddingHorizontal: 20,
-    paddingTop: 8,
-    paddingBottom: 8,
   },
   composerCard: {
-    flex: 1,
-    minHeight: 56,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    paddingHorizontal: 7,
+    minHeight: 56,
+    paddingHorizontal: 16,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 26,
   },
-  newChatButton: {
-    width: 44,
-    minHeight: 44,
+  newChip: {
+    minHeight: layout.chip,
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 0,
+    gap: 6,
+    paddingHorizontal: 12,
     borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: 22,
+    borderRadius: 20,
   },
+  modelChip: {
+    minHeight: layout.chip,
+    flexShrink: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+    paddingHorizontal: 12,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: 20,
+  },
+  modelChipLabel: { flexShrink: 1 },
   homeInput: {
     flex: 1,
     minHeight: 44,
     paddingVertical: 6,
-    fontSize: 14,
+    fontSize: 15,
   },
   sendButton: {
     width: 40,
@@ -606,17 +641,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 20,
   },
-  modelButton: {
-    minWidth: 44,
-    maxWidth: 108,
-    minHeight: 44,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 5,
-    paddingHorizontal: 9,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: 22,
-  },
-  modelButtonLabel: { maxWidth: 64 },
 });

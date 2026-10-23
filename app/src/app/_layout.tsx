@@ -52,8 +52,9 @@ function Navigator() {
   return (
     <>
       <StatusBar style={theme.scheme === 'dark' ? 'light' : 'dark'} />
+      {/* `light` means light navigation-button glyphs on a dark surface. */}
       {Platform.OS === 'android' ? (
-        <NavigationBar style={theme.scheme === 'dark' ? 'dark' : 'light'} />
+        <NavigationBar style={theme.scheme === 'dark' ? 'light' : 'dark'} />
       ) : null}
       <Rtl style={styles.root}>
         <Stack

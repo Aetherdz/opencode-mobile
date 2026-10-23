@@ -27,7 +27,8 @@ const strings: Record<string, Entry> = {
   'model.search': { en: 'Search models', ar: 'ابحث عن نموذج' },
   'model.loading': { en: 'Loading models…', ar: 'جار تحميل النماذج…' },
   'model.empty': { en: 'No enabled models found.', ar: 'لم يتم العثور على نماذج مفعّلة.' },
-  'model.loadError': { en: 'Could not load models. Check the bridge connection and retry.', ar: 'تعذر تحميل النماذج. تحقق من اتصال الجسر وأعد المحاولة.' },
+  'model.loadError': { en: 'The available models could not be loaded.', ar: 'تعذر تحميل قائمة النماذج المتاحة.' },
+  'model.connectionError': { en: 'Could not reach the bridge. Check the connection and retry.', ar: 'تعذر الوصول إلى الجسر. تحقق من الاتصال وأعد المحاولة.' },
 
   'connect.title': { en: 'Connect to your bridge', ar: 'اتصل بالجسر' },
   'connect.subtitle': {
@@ -346,6 +347,7 @@ const strings: Record<string, Entry> = {
     en: "This session's work directory is outside the bridge's ALLOWED_WORKDIRS, so its content can't be opened. Create a session from an allowed work directory (New session) or ask the bridge admin to add this directory.",
     ar: "مجلد عمل هذه الجلسة خارج ALLOWED_WORKDIRS على الجسر، لذا لا يمكن فتح محتواها. أنشئ جلسة من مجلد عمل مسموح (جلسة جديدة) أو اطلب من مشرف الجسر إضافة هذا المجلد.",
   },
+  'chat.chooseWorkdir': { en: 'Choose a work directory', ar: 'اختر مجلد عمل' },
 
   'settings.title': { en: 'Settings', ar: 'الإعدادات' },
   'settings.appearance': { en: 'Appearance', ar: 'المظهر' },

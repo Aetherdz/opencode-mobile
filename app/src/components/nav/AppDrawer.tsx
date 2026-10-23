@@ -95,8 +95,8 @@ export function AppDrawer({
               style={[
                 styles.panel,
                 {
-                  marginLeft: isRTL ? 'auto' : 0,
-                  marginRight: isRTL ? 0 : 'auto',
+                  left: isRTL ? undefined : 0,
+                  right: isRTL ? 0 : undefined,
                   backgroundColor: theme.colors.canvas,
                   borderEndColor: theme.colors.line,
                   paddingTop: Math.max(insets.top, 16) + 12,
@@ -197,9 +197,11 @@ export function AppDrawer({
 const styles = StyleSheet.create({
   root: { flex: 1 },
   panel: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
     width: '84%',
     maxWidth: 340,
-    height: '100%',
     paddingHorizontal: layout.padX,
     borderEndWidth: StyleSheet.hairlineWidth,
   },
