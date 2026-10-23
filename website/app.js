@@ -13,15 +13,19 @@
 
   if (menuButton && nav) {
     const closeMenu = () => {
+      if (!nav.classList.contains("is-open")) return;
       nav.classList.remove("is-open");
       menuButton.setAttribute("aria-expanded", "false");
       menuButton.setAttribute("aria-label", copy.open);
+      document.body.classList.remove("menu-open");
     };
 
     menuButton.addEventListener("click", () => {
       const open = nav.classList.toggle("is-open");
       menuButton.setAttribute("aria-expanded", String(open));
       menuButton.setAttribute("aria-label", open ? copy.close : copy.open);
+      document.body.classList.toggle("menu-open", open);
+      if (open) nav.querySelector('a[href]')?.focus();
     });
 
     nav.addEventListener("click", (event) => {
@@ -51,6 +55,9 @@
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape") closeMenu();
     });
+
+    const desktop = window.matchMedia("(min-width: 981px)");
+    desktop.addEventListener("change", (event) => { if (event.matches) closeMenu(); });
   }
 
   const root = document.documentElement;
@@ -81,7 +88,9 @@
 
   document.querySelectorAll(".lang-switch").forEach((switcher) => {
     const summary = switcher.querySelector("summary");
-    if (!summary) return;
+    const menu = switcher.querySelector(".lang-menu");
+    if (!summary || !menu) return;
+    const items = [...menu.querySelectorAll('a[href]')];
     switcher.addEventListener("toggle", () => {
       summary.setAttribute("aria-expanded", String(switcher.open));
     });
@@ -95,6 +104,23 @@
         switcher.open = false;
         summary.focus();
       }
+    });
+    menu.addEventListener("keydown", (event) => {
+      const current = items.indexOf(document.activeElement);
+      if (current < 0) return;
+      let next = current;
+      if (event.key === "ArrowDown") next = (current + 1) % items.length;
+      else if (event.key === "ArrowUp") next = (current + items.length - 1) % items.length;
+      else if (event.key === "Home") next = 0;
+      else if (event.key === "End") next = items.length - 1;
+      else return;
+      event.preventDefault();
+      items[next]?.focus();
+    });
+    summary.addEventListener("keydown", (event) => {
+      if (!switcher.open || (event.key !== "ArrowDown" && event.key !== "ArrowUp")) return;
+      event.preventDefault();
+      (event.key === "ArrowDown" ? items[0] : items.at(-1))?.focus();
     });
   });
 
@@ -268,6 +294,35 @@
     );
     sections.forEach((section) => observer.observe(section));
   }
+
+  // Accessible keyboard support for the platform switcher in the Install section.
+  document.querySelectorAll(".cmd-switcher").forEach((switcher) => {
+    const radios = switcher.querySelectorAll('.cmd-radio');
+    const tabs = switcher.querySelectorAll('.cmd-tabs label');
+    radios.forEach((radio, index) => {
+      radio.addEventListener('change', () => {
+        tabs.forEach((tab, tabIndex) => {
+          tab.setAttribute('aria-selected', String(tabIndex === index));
+          tab.tabIndex = tabIndex === index ? 0 : -1;
+        });
+      });
+    });
+    tabs.forEach((tab, index) => {
+      tab.addEventListener('keydown', (event) => {
+        if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+        event.preventDefault();
+        const rtl = document.documentElement.dir === 'rtl';
+        const forward = (event.key === 'ArrowRight') !== rtl;
+        const nextIndex = (index + (forward ? 1 : tabs.length - 1)) % tabs.length;
+        const target = switcher.querySelector(`#${tabs[nextIndex].htmlFor}`);
+        if (target) {
+          target.checked = true;
+          target.dispatchEvent(new Event('change', { bubbles: true }));
+          tabs[nextIndex].focus();
+        }
+      });
+    });
+  });
 
   const year = document.querySelector("#year");
   if (year) year.textContent = String(new Date().getFullYear());

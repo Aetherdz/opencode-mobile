@@ -174,40 +174,9 @@
           </div>
           <div class="actions">
             <a class="button button-primary" href="#install">ثبّت الجسر</a>
-            <a class="button button-quiet" href="https://github.com/Aetherdz/opencode-mobile/releases" rel="noreferrer">كل الإصدارات</a>
+            <a class="button button-quiet" href="https://github.com/Aetherdz/opencode-mobile/releases" rel="noopener noreferrer">كل الإصدارات</a>
           </div>
-          <div class="cmd-switcher">
-            <input class="cmd-radio" type="radio" name="cmd-os" id="cmd-os-posix" checked autocomplete="off" />
-            <input class="cmd-radio" type="radio" name="cmd-os" id="cmd-os-win" autocomplete="off" />
-            <div class="cmd-tabs">
-              <label for="cmd-os-posix">Linux · macOS</label>
-              <label for="cmd-os-win">Windows</label>
-            </div>
-            <div class="cmd-panel" id="panel-posix">
-              <div class="cmd-bar">
-                <span class="cmd-prompt" aria-hidden="true">$</span>
-                <button class="copy-button" type="button" data-copy-target="cmd-bridge" aria-label="نسخ أمر التثبيت على Linux و macOS">
-                  <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5.6" y="4.6" width="8" height="9.2" rx="1.2" /><path d="M10.4 4.6V3.2A1.2 1.2 0 0 0 9.2 2H2.6A1.2 1.2 0 0 0 1.4 3.2v7.6A1.2 1.2 0 0 0 2.6 12h3" /></svg>
-                  <span class="copy-label" data-copy-label aria-live="polite">نسخ</span>
-                </button>
-              </div>
-              <pre id="cmd-bridge"><code>curl -fsSL https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>main/<wbr>install.sh | bash -s -- setup</code></pre>
-            </div>
-            <p class="cmd-note">بعد الإعداد، شغّل <code>opencode-mobile</code> كلما أردت بدء الرابط المؤقت.</p>
-            <div class="cmd-panel" id="panel-win">
-              <div class="cmd-bar">
-                <span class="cmd-prompt" aria-hidden="true">&gt;</span>
-                <button class="copy-button" type="button" data-copy-target="cmd-bridge-win" aria-label="نسخ أمر التثبيت على Windows">
-                  <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5.6" y="4.6" width="8" height="9.2" rx="1.2" /><path d="M10.4 4.6V3.2A1.2 1.2 0 0 0 9.2 2H2.6A1.2 1.2 0 0 0 1.4 3.2v7.6A1.2 1.2 0 0 0 2.6 12h3" /></svg>
-                  <span class="copy-label" data-copy-label aria-live="polite">نسخ</span>
-                </button>
-              </div>
-              <pre id="cmd-bridge-win"><code>$h = "3a493282e252468ed96012cd0019f5252314bfb5c7b810be34476602616a14aa"
-irm https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>7c4ec38b7de7d87e88d7f215721a11bc338e128f/<wbr>install.ps1 -OutFile install.ps1
-if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksum mismatch" }
-.\install.ps1 -Command install -WorkDir "$env:USERPROFILE\projects"</code></pre>
-            </div>
-          </div>
+
         </div>
       </section>
 
@@ -265,6 +234,41 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
               </div>
             </li>
           </ol>
+          <div class="install-command-slot">
+          <div class="cmd-switcher">
+            <input class="cmd-radio" type="radio" name="install-cmd-os" id="install-cmd-os-posix" checked autocomplete="off" />
+            <input class="cmd-radio" type="radio" name="install-cmd-os" id="install-cmd-os-win" autocomplete="off" />
+            <div class="cmd-tabs">
+              <label for="install-cmd-os-posix" role="tab" tabindex="0" aria-selected="true">Linux · macOS</label>
+              <label for="install-cmd-os-win" role="tab" tabindex="-1" aria-selected="false">Windows</label>
+            </div>
+            <div class="cmd-panel" id="install-panel-posix">
+              <div class="cmd-bar">
+                <span class="cmd-prompt" aria-hidden="true">$</span>
+                <button class="copy-button" type="button" data-copy-target="cmd-bridge" aria-label="نسخ أمر التثبيت على Linux و macOS">
+                  <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5.6" y="4.6" width="8" height="9.2" rx="1.2" /><path d="M10.4 4.6V3.2A1.2 1.2 0 0 0 9.2 2H2.6A1.2 1.2 0 0 0 1.4 3.2v7.6A1.2 1.2 0 0 0 2.6 12h3" /></svg>
+                  <span class="copy-label" data-copy-label aria-live="polite">نسخ</span>
+                </button>
+              </div>
+              <pre id="cmd-bridge"><code>curl -fsSL https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>main/<wbr>install.sh | bash -s -- setup</code></pre>
+            </div>
+            <p class="cmd-note">بعد الإعداد، شغّل <code>opencode-mobile</code> كلما أردت بدء الرابط المؤقت.</p>
+            <div class="cmd-panel" id="install-panel-win">
+              <div class="cmd-bar">
+                <span class="cmd-prompt" aria-hidden="true">&gt;</span>
+                <button class="copy-button" type="button" data-copy-target="cmd-bridge-win" aria-label="نسخ أمر التثبيت على Windows">
+                  <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5.6" y="4.6" width="8" height="9.2" rx="1.2" /><path d="M10.4 4.6V3.2A1.2 1.2 0 0 0 9.2 2H2.6A1.2 1.2 0 0 0 1.4 3.2v7.6A1.2 1.2 0 0 0 2.6 12h3" /></svg>
+                  <span class="copy-label" data-copy-label aria-live="polite">نسخ</span>
+                </button>
+              </div>
+              <pre id="cmd-bridge-win"><code>$h = "3a493282e252468ed96012cd0019f5252314bfb5c7b810be34476602616a14aa"
+irm https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>7c4ec38b7de7d87e88d7f215721a11bc338e128f/<wbr>install.ps1 -OutFile install.ps1
+if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksum mismatch" }
+.\install.ps1 -Command install -WorkDir "$env:USERPROFILE\projects"</code></pre>
+            </div>
+          </div>
+          </div>
+
         </div>
       </section>
 
@@ -349,11 +353,11 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
             <a
               class="button button-primary release-download"
               href="https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.3/opencode-mobile-1.0.0-beta.3.apk"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               >تنزيل APK</a
             >
             <div class="link-row">
-              <a href="https://github.com/Aetherdz/opencode-mobile" rel="noreferrer">البناء من المصدر</a>
+              <a href="https://github.com/Aetherdz/opencode-mobile" rel="noopener noreferrer">البناء من المصدر</a>
             </div>
           </div>
         </div>
@@ -368,47 +372,39 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
           <p>وكيلك قريب منك، وحدودك واضحة.</p>
         </div>
       </div>
-      <nav class="footer-links" aria-label="روابط التذييل">
-        <div class="footer-link-group">
-          <p class="footer-group-title">المنتج</p>
-          <div class="footer-group-items">
-            <a href="./">التثبيت</a>
-            <a href="./features/">الميزات</a>
-          </div>
-        </div>
-        <div class="footer-link-group">
-          <p class="footer-group-title">الأدلة</p>
-          <div class="footer-group-items">
-            <a href="./guide/">الدليل</a>
-            <a href="./security/">الأمان</a>
-            <a href="./faq/">الأسئلة الشائعة</a>
-            <a href="./docs/">التوثيق</a>
-          </div>
-        </div>
-        <div class="footer-link-group">
-          <p class="footer-group-title">المجتمع</p>
-          <div class="footer-group-items">
-            <a href="https://github.com/Aetherdz/opencode-mobile" rel="noreferrer">GitHub</a>
-          </div>
-        </div>
+      <div class="footer-links" aria-label="روابط التذييل">
+        <nav class="footer-link-group" aria-labelledby="footer-group-1-ar"><h2 id="footer-group-1-ar" class="footer-group-title">المنتج</h2><ul class="footer-group-items">
+              <li><a href="./">التثبيت</a></li>
+              <li><a href="./features/">الميزات</a></li>
+            </ul></nav>
+        <nav class="footer-link-group" aria-labelledby="footer-group-2-ar"><h2 id="footer-group-2-ar" class="footer-group-title">الأدلة</h2><ul class="footer-group-items">
+              <li><a href="./guide/">الدليل</a></li>
+              <li><a href="./security/">الأمان</a></li>
+              <li><a href="./faq/">الأسئلة الشائعة</a></li>
+              <li><a href="./docs/">التوثيق</a></li>
+            </ul></nav>
+        <nav class="footer-link-group" aria-labelledby="footer-group-3-ar"><h2 id="footer-group-3-ar" class="footer-group-title">المجتمع</h2><ul class="footer-group-items">
+              <li><a href="https://github.com/Aetherdz/opencode-mobile" rel="noopener noreferrer">GitHub</a></li>
+            </ul></nav>
       </nav>
-      <dl class="hero-facts">
-            <div>
-              <dt>النقل</dt>
-              <dd>Loopback + رابط مؤقت</dd>
-            </div>
-            <div>
-              <dt>الترخيص</dt>
-              <dd>MIT</dd>
-            </div>
-            <div>
-              <dt>التتبّع</dt>
-              <dd>لا يوجد في التطبيق</dd>
-            </div>
+      </div>
+      <dl class="footer-meta">
+        <div>
+          <dt>النقل</dt>
+          <dd>Loopback + رابط مؤقت</dd>
+        </div>
+        <div>
+          <dt>الترخيص</dt>
+          <dd>MIT</dd>
+        </div>
+        <div>
+          <dt>التتبّع</dt>
+          <dd>لا يوجد في التطبيق</dd>
+        </div>
       </dl>
       <div class="footer-legal">
-        <p class="footer-copyright">© <span id="year">2026</span> OpenCode Mobile</p>
-        <p class="footer-disclaimer">مرخّص بموجب MIT · غير مرتبط بفريق OpenCode ولا معتمد منه.</p>
+        <p class="footer-copyright">© <span id="year">2026</span> OpenCode Mobile <span class="footer-license">· مرخّص بموجب MIT</span></p>
+        <p class="footer-disclaimer">غير مرتبط بفريق OpenCode ولا معتمد منه.</p>
       </div>
     </footer>
 

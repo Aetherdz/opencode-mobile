@@ -37,6 +37,12 @@ for (const file of htmlFiles) {
     const footerEnd = html.indexOf("</footer>", footerStart);
     const footer = html.slice(footerStart, footerEnd < 0 ? html.length : footerEnd);
     if (!footer.includes("footer-brand-copy")) errors.push(`${path.relative(root, file)}: footer brand copy is missing`);
+    if (path.relative(root, file) !== "404.html" && [...footer.matchAll(/class="footer-link-group"/g)].length !== 3) errors.push(`${path.relative(root, file)}: expected three distinct footer navigation groups`);
+    if (path.relative(root, file) !== "404.html") {
+      for (const group of footer.matchAll(/<nav class="footer-link-group"[^>]*aria-labelledby="([^"]+)"[\s\S]*?<h2 id="([^"]+)"/g)) {
+        if (group[1] !== group[2]) errors.push(`${path.relative(root, file)}: footer group navigation label does not resolve`);
+      }
+    }
     const opens = [...footer.matchAll(/<div\b/g)].length;
     const closes = [...footer.matchAll(/<\/div>/g)].length;
     if (opens !== closes) errors.push(`${path.relative(root, file)}: unbalanced footer div markup (${opens} open, ${closes} close)`);
@@ -98,37 +104,38 @@ for (const relative of homePages) {
     continue;
   }
   const hero = html.slice(heroStart, heroEndTag);
-  for (const selector of ['class="eyebrow"', "<h1", 'class="lede"', 'class="hero-release"', 'class="cmd-switcher"', 'class="actions"']) {
+  for (const selector of ['class="eyebrow"', "<h1", 'class="lede"', 'class="hero-release"', 'class="actions"']) {
     if (!hero.includes(selector)) errors.push(`${relative}: homepage hero is missing ${selector}`);
   }
   const artIndex = hero.indexOf('class="hero-art"');
   const copyIndex = hero.indexOf('class="hero-copy"');
-  const switcherIndex = hero.indexOf('class="cmd-switcher"');
   const actionsIndex = hero.indexOf('class="actions"');
   const ledeIndex = hero.indexOf('class="lede"');
   const releaseIndex = hero.indexOf('class="hero-release"');
-  const commandIndex = hero.indexOf('class="cmd-switcher"');
   const releaseEndIndex = hero.indexOf('</div>', releaseIndex);
-  const commandEndIndex = hero.indexOf('</div>', hero.indexOf('id="panel-win"', commandIndex));
-  if (!(artIndex >= 0 && copyIndex > artIndex && ledeIndex > copyIndex && releaseIndex > ledeIndex && actionsIndex > releaseEndIndex && commandIndex > actionsIndex)) {
-    errors.push(`${relative}: hero must place APK, install/release actions, then the setup command`);
-  }
-  if (switcherIndex >= 0 && (switcherIndex < actionsIndex || !hero.slice(0, hero.indexOf('</section>')).includes('class="hero-art"'))) {
-    errors.push(`${relative}: command switcher must follow the actions and preserve the desktop phone artwork`);
-  }
-  const commandText = hero.slice(commandIndex, commandEndIndex);
-  if (!commandText.includes('curl -fsSL') || !commandText.includes('opencode-mobile-dist/') || !commandText.includes('install.sh | bash -s -- setup')) {
-    errors.push(`${relative}: hero setup command is missing or incorrect`);
+  if (!(artIndex >= 0 && copyIndex > artIndex && ledeIndex > copyIndex && releaseIndex > ledeIndex && actionsIndex > releaseEndIndex)) {
+    errors.push(`${relative}: hero must place APK and install/release actions after the intro`);
   }
   if ((html.match(/id="cmd-bridge"/g) ?? []).length !== 1 || (html.match(/id="cmd-bridge-win"/g) ?? []).length !== 1 || (html.match(/data-copy-target="cmd-bridge"/g) ?? []).length !== 1 || (html.match(/data-copy-target="cmd-bridge-win"/g) ?? []).length !== 1) {
     errors.push(`${relative}: the single moved command switcher must keep exactly one working copy control per OS`);
   }
-  if (!commandText.includes('data-copy-target="cmd-bridge"') || !commandText.includes('data-copy-target="cmd-bridge-win"')) {
-    errors.push(`${relative}: the moved command switcher is missing a copy control`);
-  }
   const installSwitcherCount = (html.match(/class="cmd-switcher"/g) ?? []).length;
-  if (installSwitcherCount !== 1 || html.includes('class="hero-command"')) {
-    errors.push(`${relative}: expected one moved, original command switcher and no duplicate command box`);
+  if (installSwitcherCount !== 1 || html.indexOf('class="cmd-switcher"') < html.indexOf('id="install"')) {
+    errors.push(`${relative}: expected one command switcher in the Install section`);
+  }
+  if ((html.match(/data-copy-target="cmd-bridge"/g) ?? []).length !== 1 || (html.match(/data-copy-target="cmd-bridge-win"/g) ?? []).length !== 1) {
+    errors.push(`${relative}: one install switcher must have one copy control for each platform`);
+  }
+  const stepsStart = html.indexOf('<ol class="steps"');
+  const stepsEnd = html.indexOf('</ol>', stepsStart);
+  const threeSteps = (html.slice(stepsStart, stepsEnd).match(/<li>/g) ?? []).length;
+  if (threeSteps !== 3 || html.indexOf('class="cmd-switcher"') < html.indexOf('</ol>', html.indexOf('<ol class="steps"'))) {
+    errors.push(`${relative}: setup commands must follow all three install steps`);
+  }
+  for (const [radio, panel] of [["install-cmd-os-posix", "install-panel-posix"], ["install-cmd-os-win", "install-panel-win"]]) {
+    if (!html.includes(`id="${radio}"`) || !html.includes(`for="${radio}"`) || !html.includes(`id="${panel}"`)) {
+      errors.push(`${relative}: platform tab references are broken for ${radio}`);
+    }
   }
   for (const id of ["install", "download", "next", "requirements"]) {
     if ((html.match(new RegExp(`id="${id}"`, "g")) ?? []).length !== 1) {
@@ -152,7 +159,7 @@ for (const relative of homePages) {
   if (!(apkHero >= 0 && apkHero < commandSection)) {
     errors.push(`${relative}: APK download card must appear before the install section`);
   }
-  if ((html.match(/class="hero-facts"/g) ?? []).length !== 1 || html.indexOf('class="hero-facts"') < footerIndex) {
+  if ((html.match(/class="footer-meta"/g) ?? []).length !== 1 || html.indexOf('class="footer-meta"') < footerIndex) {
     errors.push(`${relative}: transport, license, and telemetry facts must appear once in the footer`);
   }
   const command = html.match(/<pre id="cmd-bridge"><code>([\s\S]*?)<\/code><\/pre>/)?.[1] ?? "";
@@ -161,12 +168,25 @@ for (const relative of homePages) {
     errors.push(`${relative}: install panel must show only the single copyable setup command`);
   }
   if (!copyTarget) errors.push(`${relative}: install command copy button is missing`);
+  if ((html.match(/data-copy-target="cmd-bridge"/g) ?? []).length !== 1 || (html.match(/data-copy-target="cmd-bridge-win"/g) ?? []).length !== 1) {
+    errors.push(`${relative}: install switcher must have one copy target for each platform`);
+  }
   const setupNote = html.slice(html.indexOf('class="cmd-note"'), html.indexOf('</p>', html.indexOf('class="cmd-note"')));
   if (!setupNote.includes("opencode-mobile")) errors.push(`${relative}: follow-up pairing command note is missing`);
   if (relative === "index.html" && !hero.includes('class="hero-release"')) errors.push(`${relative}: Android release download panel is missing`);
   if (hero.includes('aria-haspopup="true"')) errors.push(`${relative}: non-popup hero content declares aria-haspopup`);
   if (!html.includes('rel="icon"') || !html.includes("assets/favicon.svg")) errors.push(`${relative}: favicon link is missing`);
   if (relative !== "index.html" && !hero.includes('class="hero-release"')) errors.push(`${relative}: localized Android release panel is missing`);
+}
+
+for (const relative of ["index.html", "ar/index.html", "fr/index.html", "es/index.html"]) {
+  const file = path.join(root, relative);
+  const html = fs.readFileSync(file, "utf8");
+  const command = html.match(/<pre id="cmd-bridge"><code>([\s\S]*?)<\/code><\/pre>/)?.[1] ?? "";
+  const win = html.match(/<pre id="cmd-bridge-win"><code>([\s\S]*?)<\/code><\/pre>/)?.[1] ?? "";
+  if (!command.includes("curl -fsSL") || !command.includes("install.sh | bash -s -- setup")) errors.push(`${relative}: POSIX install command changed`);
+  if (!win.includes("3a493282e252468ed96012cd0019f5252314bfb5c7b810be34476602616a14aa") || !win.includes("7c4ec38b7de7d87e88d7f215721a11bc338e128f") || !win.includes("install.ps1 -OutFile install.ps1")) errors.push(`${relative}: pinned Windows command/checksum changed`);
+  if ((html.match(/v1\.0\.0-beta\.3/g) ?? []).length < 2 || !html.includes("opencode-mobile-1.0.0-beta.3.apk")) errors.push(`${relative}: APK version/asset changed`);
 }
 
 if (errors.length > 0) {
