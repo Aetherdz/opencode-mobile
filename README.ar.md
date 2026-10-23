@@ -149,9 +149,9 @@ CORS_ORIGINS=http://localhost:8081,http://127.0.0.1:8081
 
 | الملف | ملاحظات |
 | --- | --- |
-| [APK أندرويد](https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.3/opencode-mobile-1.0.0-beta.3.apk) | `1.0.0-beta.3`، موقّع للإصدار، arm64-v8a، أندرويد 7.0+ |
-| [حزم Bridge](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.3) | `.tar.gz` و`.zip` مع `SHA256SUMS` |
-| [حزم الويب](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.3) | تصدير Expo ثابت مع `SHA256SUMS` |
+| APK أندرويد | قيد البناء؛ سيُرفع بعد التحقق من التوقيع والبصمة |
+| [حزم Bridge](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.4) | `.tar.gz` و`.zip` مع `SHA256SUMS` |
+| [حزم الويب](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.4) | تصدير Expo ثابت مع `SHA256SUMS` |
 | [المثبّتات](https://github.com/Aetherdz/opencode-mobile-dist) | مثبّت Bridge للينكس وماك وويندوز |
 
 تحقق من الـAPK قبل التثبيت:
@@ -317,7 +317,7 @@ npx expo export --platform web
 - مثبّتات الطرفية: <https://github.com/Aetherdz/opencode-mobile-dist>
 - الموقع: <https://aetherdz.github.io/opencode-mobile/>
 - حزم Bridge والويب لإصدار beta مع checksums في GitHub Releases.
-- APK أندرويد موقّع للإصدار: <https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.3>
+- صفحة إصدار beta.4 التجريبي: <https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.4>
 
 المتبقي:
 

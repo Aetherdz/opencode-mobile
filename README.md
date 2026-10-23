@@ -146,17 +146,17 @@ use a reachable private address such as a Tailscale address, not
 
 ## Download
 
-The current public release remains **`1.0.0-beta.3`** while beta.4 is being
-prepared. The homepage has a direct
-Android APK download card; release notes, bridge/web bundles, and checksums are
-available from the release page. The Android APK supports arm64-v8a on Android
-7.0 and newer.
+The current test release is **`1.0.0-beta.4`**. The website download card
+remains on beta.3 until owner testing is complete; release notes and current
+bridge/web bundles are available from the beta.4 release page. The Android APK
+is being built and will be attached after its signing and checksum checks. It
+supports arm64-v8a on Android 7.0 and newer.
 
 | Artifact | Notes |
 | --- | --- |
-| [Android APK](https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.3/opencode-mobile-1.0.0-beta.3.apk) | `1.0.0-beta.3`, release-signed, arm64-v8a, Android 7.0+ |
-| [Bridge bundles](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.3) | `.tar.gz` and `.zip`, with `SHA256SUMS` |
-| [Web bundles](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.3) | Static Expo export, with `SHA256SUMS` |
+| Android APK | Building; will be uploaded after signed-artifact verification |
+| [Bridge bundles](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.4) | `.tar.gz` and `.zip`, with `SHA256SUMS` |
+| [Web bundles](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.4) | Static Expo export, with `SHA256SUMS` |
 | [Installers](https://github.com/Aetherdz/opencode-mobile-dist) | Linux, macOS, and Windows bridge installer |
 
 Verify the APK before installing:
