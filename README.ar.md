@@ -152,20 +152,13 @@ CORS_ORIGINS=http://localhost:8081,http://127.0.0.1:8081
 
 ## التحميل
 
-النسخة التجريبية الحالية **`1.0.0-beta.5`**. بطاقة التحميل في الموقع تبقى على beta.3 حتى اكتمال اختبار المالك؛ ملاحظات الإصدار والملفات متاحة من صفحة إصدار beta.5. ملف APK الموقّع يدعم arm64-v8a على Android 7.0 وأحدث.
+سُحبت beta.4 وbeta.5. الإصدار البديل **`1.0.0-beta.6`** نسخة اختبار تتضمن الإصلاحات المذكورة؛ يرجى اختبارها على جهازك قبل الاعتماد عليها. تبقى بطاقة الموقع على beta.3 حتى اكتمال اختبار المالك. ملف APK الموقّع يستهدف arm64-v8a.
 
 | الملف | ملاحظات |
 | --- | --- |
-| [APK أندرويد](https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.5/opencode-mobile-1.0.0-beta.5.apk) | [ملف SHA-256](https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.5/opencode-mobile-1.0.0-beta.5.apk.sha256)؛ arm64-v8a |
-| [حزم Bridge](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.5) | `.tar.gz` و`.zip` مع `SHA256SUMS` |
-| [حزم الويب](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.5) | تصدير Expo ثابت مع `SHA256SUMS` |
+| [APK أندرويد](https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.6/opencode-mobile-1.0.0-beta.6.apk) | [ملف SHA-256](https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.6/opencode-mobile-1.0.0-beta.6.apk.sha256)؛ arm64-v8a |
+| [حزم Bridge والويب](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.6) | حزم مع ملفات `SHA256SUMS` |
 | [المثبّتات](https://github.com/Aetherdz/opencode-mobile-dist) | مثبّت Bridge للينكس وماك وويندوز |
-
-تحقق من الـAPK قبل التثبيت:
-
-```bash
-sha256sum -c opencode-mobile-1.0.0-beta.5.apk.sha256
-```
 
 النسخة التجريبية غير موجودة على Google Play. بناء iPhone يحتاج macOS/EAS وهو غير من إنتاج CI.
 
@@ -324,7 +317,7 @@ npx expo export --platform web
 - مثبّتات الطرفية: <https://github.com/Aetherdz/opencode-mobile-dist>
 - الموقع: <https://aetherdz.github.io/opencode-mobile/>
 - حزم Bridge والويب لإصدار beta مع checksums في GitHub Releases.
-- صفحة إصدار beta.5 التجريبي: <https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.5>
+- أُخّر الإعلان عن إصدار تجريبي جديد حتى اكتمال إصلاحات الواجهة والتحقق منها.
 
 المتبقي:
 

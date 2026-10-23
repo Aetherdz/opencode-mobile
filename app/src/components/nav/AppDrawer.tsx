@@ -1,9 +1,20 @@
 import { router } from 'expo-router';
+import { useEffect, useState } from 'react';
 import { Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import Animated, {
+  FadeIn,
+  FadeOut,
+  SlideInLeft,
+  SlideInRight,
+  SlideOutLeft,
+  SlideOutRight,
+  useReducedMotion,
+} from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { SessionSummary } from '@/api/types';
 import { AppText } from '@/components/ui/AppText';
 import { Icon } from '@/components/ui/Icon';
+import { Rtl } from '@/components/ui/Rtl';
 import { useI18n } from '@/lib/i18n';
 import { formatSessionTitle } from '@/lib/format';
 import { layout } from '@/theme/layout';
@@ -21,6 +32,20 @@ export function AppDrawer({
   const theme = useTheme();
   const { t, locale, isRTL } = useI18n();
   const insets = useSafeAreaInsets();
+  const reduced = useReducedMotion();
+  const [mounted, setMounted] = useState(visible);
+  const [contentVisible, setContentVisible] = useState(visible);
+
+  useEffect(() => {
+    if (visible) {
+      setMounted(true);
+      const frame = requestAnimationFrame(() => setContentVisible(true));
+      return () => cancelAnimationFrame(frame);
+    }
+    setContentVisible(false);
+    const timeout = setTimeout(() => setMounted(false), reduced ? 120 : 200);
+    return () => clearTimeout(timeout);
+  }, [visible, reduced]);
 
   const open = (route: '/sessions' | '/settings' | '/new-session') => {
     onClose();
@@ -29,33 +54,56 @@ export function AppDrawer({
 
   return (
     <Modal
-      visible={visible}
+      visible={mounted}
       transparent
-      animationType="fade"
+      animationType="none"
       statusBarTranslucent
       onRequestClose={onClose}
     >
-      <View style={styles.root}>
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel={t('common.close')}
-          onPress={onClose}
-          style={[StyleSheet.absoluteFill, { backgroundColor: theme.colors.scrim }]}
-        />
-        <View
-          accessibilityViewIsModal
-          style={[
-            styles.panel,
-            {
-              marginLeft: isRTL ? 0 : 'auto',
-              marginRight: isRTL ? 'auto' : 0,
-              backgroundColor: theme.colors.canvas,
-              borderEndColor: theme.colors.line,
-              paddingTop: Math.max(insets.top, 16) + 12,
-              paddingBottom: Math.max(insets.bottom, 16) + 12,
-            },
-          ]}
-        >
+      <Rtl style={styles.root}>
+        {contentVisible ? (
+          <>
+            <Animated.View
+              pointerEvents="box-none"
+              entering={FadeIn.duration(reduced ? 80 : 140)}
+              exiting={FadeOut.duration(reduced ? 80 : 120)}
+              style={StyleSheet.absoluteFill}
+            >
+              <Pressable
+                accessibilityRole="button"
+                accessibilityLabel={t('common.close')}
+                onPress={onClose}
+                style={[StyleSheet.absoluteFill, { backgroundColor: theme.colors.scrim }]}
+              />
+            </Animated.View>
+            <Animated.View
+              accessibilityViewIsModal
+              entering={
+                reduced
+                  ? FadeIn.duration(100)
+                  : isRTL
+                    ? SlideInRight.duration(220)
+                    : SlideInLeft.duration(220)
+              }
+              exiting={
+                reduced
+                  ? FadeOut.duration(100)
+                  : isRTL
+                    ? SlideOutRight.duration(180)
+                    : SlideOutLeft.duration(180)
+              }
+              style={[
+                styles.panel,
+                {
+                  marginLeft: isRTL ? 'auto' : 0,
+                  marginRight: isRTL ? 0 : 'auto',
+                  backgroundColor: theme.colors.canvas,
+                  borderEndColor: theme.colors.line,
+                  paddingTop: Math.max(insets.top, 16) + 12,
+                  paddingBottom: Math.max(insets.bottom, 16) + 12,
+                },
+              ]}
+            >
           <View style={styles.brandRow}>
             <AppText variant="wordmark" style={{ fontFamily: theme.fonts.serif }}>
               OpenCode
@@ -138,14 +186,16 @@ export function AppDrawer({
               <AppText variant="label">OC</AppText>
             </View>
           </View>
-        </View>
-      </View>
+            </Animated.View>
+          </>
+        ) : null}
+      </Rtl>
     </Modal>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, flexDirection: 'row' },
+  root: { flex: 1 },
   panel: {
     width: '84%',
     maxWidth: 340,

@@ -143,7 +143,9 @@ export function registerRoutes(app: FastifyInstance, deps: Deps): void {
 
   app.get("/sessions", async (request, reply) => {
     try {
-      const raw = await adapter.listSessions({ limit: 50 });
+      const raw = (await adapter.listSessions({ limit: 200 })).filter(
+        (session) => session.time.archived == null,
+      );
       const sessions = await mapLimit(raw.slice(0, 30), 4, async (session: RawSession) => {
         const source = await sources.resolve(session.id);
         const runtime = state.statusOf(session.id);

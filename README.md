@@ -157,23 +157,17 @@ use a reachable private address such as a Tailscale address, not
 
 ## Download
 
-The current test release is **`1.0.0-beta.5`**. The website download card
-remains on beta.3 until owner testing is complete; release notes and artifacts
-are available from the beta.5 release page. The signed Android APK supports
-arm64-v8a on Android 7.0 and newer.
+Beta.4 and beta.5 have been withdrawn. The replacement **`1.0.0-beta.6`** is a
+test build with the reported fixes; please verify it on your device before
+relying on it. The website card remains on beta.3 pending owner testing. The
+signed Android APK targets arm64-v8a.
 
 | Artifact | Notes |
 | --- | --- |
-| [Android APK](https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.5/opencode-mobile-1.0.0-beta.5.apk) | [SHA-256 file](https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.5/opencode-mobile-1.0.0-beta.5.apk.sha256); arm64-v8a |
-| [Bridge bundles](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.5) | `.tar.gz` and `.zip`, with `SHA256SUMS` |
-| [Web bundles](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.5) | Static Expo export, with `SHA256SUMS` |
+| [Android APK](https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.6/opencode-mobile-1.0.0-beta.6.apk) | [SHA-256 file](https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.6/opencode-mobile-1.0.0-beta.6.apk.sha256); arm64-v8a |
+| [Bridge bundles](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.6) | `.tar.gz` and `.zip`, with `SHA256SUMS` |
+| [Web bundles](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.6) | Static Expo export, with `SHA256SUMS` |
 | [Installers](https://github.com/Aetherdz/opencode-mobile-dist) | Linux, macOS, and Windows bridge installer |
-
-Verify the downloaded APK before installing:
-
-```bash
-sha256sum -c opencode-mobile-1.0.0-beta.5.apk.sha256
-```
 
 The beta is not on Google Play. iPhone builds require macOS/EAS and are not
 produced by CI.

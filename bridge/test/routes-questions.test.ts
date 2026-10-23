@@ -65,6 +65,7 @@ interface Fixture {
   app: FastifyInstance;
   state: RuntimeState;
   adapter: {
+    listSessions: ReturnType<typeof vi.fn>;
     listModels: ReturnType<typeof vi.fn>;
     listSessionForms: ReturnType<typeof vi.fn>;
     replyForm: ReturnType<typeof vi.fn>;
@@ -79,6 +80,7 @@ async function makeFixture(): Promise<Fixture> {
   roots.push(root);
 
   const adapterMethods = {
+    listSessions: vi.fn(async () => []),
     listModels: vi.fn(async () => [
       { providerId: "p1", modelId: "m1", name: "Model One", providerName: "Provider One" },
     ]),
@@ -91,7 +93,6 @@ async function makeFixture(): Promise<Fixture> {
 
   const adapter = {
     serverInfo: async () => ({ version: "test" }),
-    listSessions: async () => [],
     getSession: async (id: string) => ({
       id,
       projectID: "proj_1",
@@ -156,6 +157,31 @@ afterEach(async () => {
 });
 
 describe("question routes", () => {
+  it("omits archived sessions from the sessions list", async () => {
+    const { app, adapter } = await makeFixture();
+    adapter.listSessions.mockResolvedValue([
+      {
+        id: "active",
+        projectID: "proj_1",
+        title: "Active session",
+        time: { created: 1, updated: 2 },
+        location: { directory: "/workspace" },
+      },
+      {
+        id: "archived",
+        projectID: "proj_1",
+        title: "Archived session",
+        time: { created: 1, updated: 2, archived: 3 },
+        location: { directory: "/workspace" },
+      },
+    ]);
+
+    const response = await app.inject({ method: "GET", url: "/sessions" });
+    expect(response.statusCode).toBe(200);
+    expect(adapter.listSessions).toHaveBeenCalledWith({ limit: 200 });
+    expect(response.json().data.map((session: { id: string }) => session.id)).toEqual(["active"]);
+  });
+
   it("serves only safe model catalog fields", async () => {
     const { app } = await makeFixture();
     const response = await app.inject({ method: "GET", url: "/models" });

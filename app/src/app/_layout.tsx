@@ -20,6 +20,7 @@ import { I18nManager, Platform, StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-context';
 import { StatusBar } from 'expo-status-bar';
+import { NavigationBar } from 'expo-navigation-bar';
 import { ThemeProvider, useTheme } from '@/theme/ThemeProvider';
 import { Rtl } from '@/components/ui/Rtl';
 import { DialogProvider } from '@/components/ui/DialogProvider';
@@ -51,11 +52,14 @@ function Navigator() {
   return (
     <>
       <StatusBar style={theme.scheme === 'dark' ? 'light' : 'dark'} />
+      {Platform.OS === 'android' ? (
+        <NavigationBar style={theme.scheme === 'dark' ? 'dark' : 'light'} />
+      ) : null}
       <Rtl style={styles.root}>
         <Stack
           screenOptions={{
             headerShown: false,
-            animation: 'slide_from_right',
+            animation: theme.isRTL ? 'slide_from_left' : 'slide_from_right',
             contentStyle: { backgroundColor: theme.colors.canvas },
           }}
         >

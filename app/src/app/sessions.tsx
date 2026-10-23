@@ -1,10 +1,11 @@
 import { FlashList } from '@shopify/flash-list';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { router } from 'expo-router';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Pressable, RefreshControl, StyleSheet, TextInput, View } from 'react-native';
-import { deleteSession, listSessions, renameSession } from '@/api/client';
-import type { SessionSummary } from '@/api/types';
+import { ApiError, deleteSession, getModels, listSessions, renameSession } from '@/api/client';
+import type { ModelSelection, SessionSummary } from '@/api/types';
+import { ModelSheet } from '@/components/chat/ModelSheet';
 import { RenameSheet } from '@/components/sessions/RenameSheet';
 import { SessionRow } from '@/components/sessions/SessionRow';
 import { AppDrawer } from '@/components/nav/AppDrawer';
@@ -25,6 +26,8 @@ import { TextField } from '@/components/ui/TextField';
 import { hapticMedium } from '@/lib/haptics';
 import { useI18n } from '@/lib/i18n';
 import { formatSessionTitle } from '@/lib/format';
+import { getStored, setStored, deleteStored } from '@/lib/storage';
+import { getHiddenSessionIds, setHiddenSessionIds } from '@/lib/sessionVisibility';
 import { layout } from '@/theme/layout';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useSettings } from '@/state/settings';
@@ -32,6 +35,8 @@ import { useSettings } from '@/state/settings';
 type SessionListItem =
   | { type: 'header'; key: string; label: string; count: number }
   | { type: 'session'; key: string; session: SessionSummary };
+
+const MODEL_STORAGE_KEY = 'chat.selectedModel.v1';
 
 function SkeletonRow() {
   const theme = useTheme();
@@ -69,7 +74,52 @@ export default function SessionsScreen() {
   const [actionError, setActionError] = useState<string | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [homePrompt, setHomePrompt] = useState('');
+  const [modelSheetOpen, setModelSheetOpen] = useState(false);
+  const [selectedModel, setSelectedModel] = useState<ModelSelection | null>(null);
+  const [hiddenSessionIds, setHiddenSessionIdsState] = useState<string[]>([]);
   const setThemeMode = useSettings((state) => state.setThemeMode);
+
+  const modelsQuery = useQuery({
+    queryKey: ['models'],
+    queryFn: getModels,
+    enabled: modelSheetOpen,
+    staleTime: 60_000,
+  });
+
+  useEffect(() => {
+    let alive = true;
+    void getStored(MODEL_STORAGE_KEY).then((saved) => {
+      if (!alive || !saved) return;
+      try {
+        const parsed = JSON.parse(saved) as Partial<ModelSelection>;
+        if (typeof parsed.providerID === 'string' && typeof parsed.modelID === 'string') {
+          setSelectedModel({ providerID: parsed.providerID, modelID: parsed.modelID });
+        }
+      } catch {
+        void deleteStored(MODEL_STORAGE_KEY);
+      }
+    });
+    return () => { alive = false; };
+  }, []);
+
+  useEffect(() => {
+    let alive = true;
+    void getHiddenSessionIds().then((ids) => {
+      if (alive) setHiddenSessionIdsState(ids);
+    });
+    return () => { alive = false; };
+  }, []);
+
+  const selectedModelName = modelsQuery.data?.find(
+    (model) => model.providerId === selectedModel?.providerID && model.modelId === selectedModel?.modelID,
+  )?.name;
+
+  const selectModel = useCallback((model: ModelSelection | null) => {
+    setSelectedModel(model);
+    if (model) void setStored(MODEL_STORAGE_KEY, JSON.stringify(model));
+    else void deleteStored(MODEL_STORAGE_KEY);
+    setModelSheetOpen(false);
+  }, []);
 
   const query = useQuery({
     queryKey: ['sessions'],
@@ -78,7 +128,8 @@ export default function SessionsScreen() {
   });
 
   const filteredSessions = useMemo(() => {
-    const list = query.data ?? [];
+    const hidden = new Set(hiddenSessionIds);
+    const list = (query.data ?? []).filter((session) => !hidden.has(session.id));
     const needle = search.trim().toLowerCase();
     if (!needle) return list;
     return list.filter(
@@ -86,7 +137,7 @@ export default function SessionsScreen() {
         session.title.toLowerCase().includes(needle) ||
         session.directory.toLowerCase().includes(needle),
     );
-  }, [query.data, search]);
+  }, [hiddenSessionIds, query.data, search]);
 
   const listItems = useMemo<SessionListItem[]>(() => {
     const now = new Date();
@@ -152,12 +203,19 @@ export default function SessionsScreen() {
     [queryClient, showDialog, t],
   );
 
+  const hideSession = useCallback(async (session: SessionSummary) => {
+    const ids = [...new Set([...hiddenSessionIds, session.id])];
+    setHiddenSessionIdsState(ids);
+    await setHiddenSessionIds(ids);
+  }, [hiddenSessionIds]);
+
   const openActions = useCallback(
     (session: SessionSummary) => {
       showDialog({
         title: formatSessionTitle(session.title, session.createdAt, locale),
         actions: [
           { label: t('sessions.rename'), onPress: () => setRenameTarget(session) },
+          { label: t('sessions.hideLocal'), onPress: () => void hideSession(session) },
           {
             label: t('sessions.delete'),
             variant: 'destructive',
@@ -167,7 +225,7 @@ export default function SessionsScreen() {
         ],
       });
     },
-    [confirmDelete, showDialog, t, locale],
+    [confirmDelete, hideSession, showDialog, t, locale],
   );
 
   const saveRename = async (title: string) => {
@@ -189,9 +247,6 @@ export default function SessionsScreen() {
     router.push({ pathname: '/chat/[id]', params: { id: session.id } } as never);
   }, []);
 
-  const openSettings = useCallback(() => {
-    router.push('/settings' as never);
-  }, []);
   const openNewSession = useCallback(() => {
     router.push('/new-session' as never);
   }, []);
@@ -384,10 +439,7 @@ export default function SessionsScreen() {
                 },
               ]}
             >
-              <Icon name="add" size={20} color="primary" />
-              <AppText variant="helper" weight="600" color="textStrong">
-                {t('sessions.new')}
-              </AppText>
+              <Icon name="add" size={22} color="primary" />
             </Pressable>
             <TextInput
               value={homePrompt}
@@ -415,13 +467,17 @@ export default function SessionsScreen() {
               <Icon name="arrow-up" size={20} color={homePrompt.trim() ? 'onPrimary' : 'text3'} />
             </Pressable>
           </View>
-          <IconButton
-            label={t('sessions.settings')}
-            onPress={openSettings}
-            size="md"
-            variant="borderless"
-            icon={<Icon name="settings-outline" size={22} color="secondary" />}
-          />
+          <Pressable
+            onPress={() => setModelSheetOpen(true)}
+            accessibilityRole="button"
+            accessibilityLabel={t('model.selector')}
+            style={({ pressed }) => [styles.modelButton, { backgroundColor: theme.colors.surface2, borderColor: theme.colors.border, opacity: pressed ? 0.7 : 1 }]}
+          >
+            <Icon name="options-outline" size={20} color="primary" />
+            <AppText variant="caption" weight="600" numberOfLines={1} style={styles.modelButtonLabel}>
+              {selectedModelName ?? t('model.selector')}
+            </AppText>
+          </Pressable>
         </View>
       </Rtl>
       </KeyboardAvoider>
@@ -436,6 +492,17 @@ export default function SessionsScreen() {
         visible={drawerOpen}
         onClose={() => setDrawerOpen(false)}
         sessions={query.data ?? []}
+      />
+      <ModelSheet
+        visible={modelSheetOpen}
+        models={modelsQuery.data ?? []}
+        selected={selectedModel}
+        loading={modelsQuery.isLoading}
+        failed={modelsQuery.isError}
+        errorDetail={modelsQuery.error instanceof ApiError ? modelsQuery.error.message : undefined}
+        onClose={() => setModelSheetOpen(false)}
+        onSelect={selectModel}
+        onRetry={() => void modelsQuery.refetch()}
       />
     </Screen>
   );
@@ -456,12 +523,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   greeting: {
-    minHeight: 176,
+    minHeight: 124,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: layout.padX,
-    paddingTop: 8,
-    paddingBottom: 18,
+    paddingTop: 4,
+    paddingBottom: 10,
   },
   greetingSub: {
     maxWidth: 300,
@@ -503,14 +570,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    paddingHorizontal: 16,
-    paddingTop: 10,
+    paddingHorizontal: 20,
+    paddingTop: 8,
     paddingBottom: 8,
-    borderTopWidth: StyleSheet.hairlineWidth,
   },
   composerCard: {
     flex: 1,
-    minHeight: 58,
+    minHeight: 56,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
@@ -519,20 +585,19 @@ const styles = StyleSheet.create({
     borderRadius: 26,
   },
   newChatButton: {
+    width: 44,
     minHeight: 44,
-    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 4,
-    paddingHorizontal: 10,
+    paddingHorizontal: 0,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 22,
   },
   homeInput: {
     flex: 1,
     minHeight: 44,
-    paddingVertical: 8,
-    fontSize: 16,
+    paddingVertical: 6,
+    fontSize: 14,
   },
   sendButton: {
     width: 40,
@@ -541,4 +606,17 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 20,
   },
+  modelButton: {
+    minWidth: 44,
+    maxWidth: 108,
+    minHeight: 44,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 5,
+    paddingHorizontal: 9,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: 22,
+  },
+  modelButtonLabel: { maxWidth: 64 },
 });

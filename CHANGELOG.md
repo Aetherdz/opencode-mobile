@@ -6,6 +6,20 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and the project uses [Semantic Versioning](https://semver.org/). This is a
 pre-1.0 beta; minor versions may change the bridge protocol.
 
+## [1.0.0-beta.6] - 2026-10-23
+
+### Fixed
+
+- Corrected drawer anchoring and stack transitions for the selected app language;
+  added reduced-motion-aware drawer and sheet transitions.
+- Replaced the settings control beside the sessions composer with a compact
+  model selector, shortened the new-session control, and reduced greeting space.
+- Matched Android navigation-button appearance to the resolved in-app theme.
+- Clarified work-directory authorization and model-catalog errors without
+  weakening `ALLOWED_WORKDIRS`.
+- Added notification permission recovery, masked the saved bridge URL by default,
+  and excluded already-archived sessions from the list.
+
 ## [1.0.0-beta.5] - 2026-10-23
 
 ### Added

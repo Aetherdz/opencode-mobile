@@ -69,7 +69,10 @@ export function Sheet({ visible, onClose, children, footer, title, titleAlign = 
             <KeyboardAvoider style={styles.keyboard} pointerEvents="box-none">
               <Animated.View
                 entering={
-                  reduced ? FadeIn.duration(120) : SlideInDown.springify().damping(26).stiffness(240)
+                  reduced
+                    ? FadeIn.duration(120)
+                    // Reanimated 4.x types this builder param as number; runtime treats it as boolean.
+                    : SlideInDown.springify().damping(30).stiffness(220).overshootClamping(1)
                 }
                 exiting={reduced ? FadeOut.duration(100) : SlideOutDown.duration(160)}
                 style={[

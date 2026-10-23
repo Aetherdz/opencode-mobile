@@ -1,6 +1,7 @@
 import Constants from 'expo-constants';
+import { useQuery } from '@tanstack/react-query';
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Platform,
   Pressable,
@@ -8,8 +9,9 @@ import {
   StyleSheet,
   Switch,
   View,
+  Linking,
 } from 'react-native';
-import { registerPushToken, unregisterPushToken } from '@/api/client';
+import { listSessions, registerPushToken, unregisterPushToken } from '@/api/client';
 import { bridgeSocket } from '@/api/ws';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
@@ -20,6 +22,8 @@ import { ScreenHeader } from '@/components/ui/ScreenHeader';
 import { hapticError, hapticSelection, hapticSuccess } from '@/lib/haptics';
 import { translate, useI18n } from '@/lib/i18n';
 import { registerForPushNotifications } from '@/lib/notifications';
+import { formatSessionTitle } from '@/lib/format';
+import { getHiddenSessionIds, setHiddenSessionIds } from '@/lib/sessionVisibility';
 import { useAuth } from '@/state/auth';
 import { useSettings, type Locale, type ThemeMode } from '@/state/settings';
 import { useTheme } from '@/theme/ThemeProvider';
@@ -99,10 +103,9 @@ function Row({
 
 export default function SettingsScreen() {
   const theme = useTheme();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const { showDialog } = useDialog();
   const themeMode = useSettings((state) => state.themeMode);
-  const locale = useSettings((state) => state.locale);
   const haptics = useSettings((state) => state.haptics);
   const notifications = useSettings((state) => state.notifications);
   const setThemeMode = useSettings((state) => state.setThemeMode);
@@ -113,6 +116,31 @@ export default function SettingsScreen() {
   const clearAuth = useAuth((state) => state.clear);
   const [pushToken, setPushToken] = useState<string | null>(null);
   const [pushBusy, setPushBusy] = useState(false);
+  const [showBridgeUrl, setShowBridgeUrl] = useState(false);
+  const [hiddenSessionIds, setHiddenSessionIdsState] = useState<string[]>([]);
+  const hiddenSessionsQuery = useQuery({
+    queryKey: ['sessions'],
+    queryFn: listSessions,
+    enabled: hiddenSessionIds.length > 0,
+  });
+
+  useEffect(() => {
+    let alive = true;
+    void getHiddenSessionIds().then((ids) => {
+      if (alive) setHiddenSessionIdsState(ids);
+    });
+    return () => { alive = false; };
+  }, []);
+
+  const restoreHiddenSession = async (sessionId: string) => {
+    const ids = hiddenSessionIds.filter((id) => id !== sessionId);
+    setHiddenSessionIdsState(ids);
+    await setHiddenSessionIds(ids);
+  };
+  const listedHiddenIds = new Set((hiddenSessionsQuery.data ?? []).map((session) => session.id));
+  const orphanedHiddenIds = hiddenSessionsQuery.isSuccess
+    ? hiddenSessionIds.filter((id) => !listedHiddenIds.has(id))
+    : [];
 
   const setTheme = (mode: ThemeMode) => {
     hapticSelection();
@@ -153,7 +181,20 @@ export default function SettingsScreen() {
               : registration.reason === 'no_project'
                 ? 'settings.pushNoProject'
                 : 'settings.pushFailed';
-        showDialog({ title: t('settings.notifications'), message: t(reasonKey) });
+        const message = t(reasonKey);
+        const actions: any[] = [
+          { label: t('common.cancel'), variant: 'cancel' },
+        ];
+        if (registration.reason === 'denied') {
+          actions.unshift({
+            label: t('common.openSettings'),
+            variant: 'primary',
+            onPress: () => {
+              void Linking.openSettings().catch(() => undefined);
+            },
+          });
+        }
+        showDialog({ title: t('settings.notifications'), message, actions });
         return;
       }
       await registerPushToken(
@@ -350,11 +391,85 @@ export default function SettingsScreen() {
         />
 
         <Section title={t('settings.connection')} />
-        <Row label={t('settings.bridge')} description={baseUrl} />
+        <Row
+          label={t('settings.bridge')}
+          description={showBridgeUrl ? baseUrl : '•'.repeat(30)}
+          last
+          right={
+            <Pressable
+              onPress={() => setShowBridgeUrl(!showBridgeUrl)}
+              accessibilityRole="button"
+              accessibilityLabel={showBridgeUrl ? t('common.hide') : t('common.show')}
+            >
+              <AppText variant="meta" color="accent">
+                {showBridgeUrl ? t('common.hide') : t('common.show')}
+              </AppText>
+            </Pressable>
+          }
+        />
         <Row label={t('settings.token')} description={t('settings.tokenBody')} last />
         <View style={{ padding: theme.spacing.lg }}>
           <Button label={t('settings.disconnect')} variant="danger" onPress={disconnect} fullWidth />
         </View>
+
+        <Section title={t('settings.hiddenSessions')} />
+        {hiddenSessionIds.length === 0 ? (
+          <Row label={t('settings.noHiddenSessions')} last />
+        ) : (
+          <>
+            <View style={{ alignItems: 'flex-end', paddingHorizontal: theme.spacing.lg, paddingBottom: theme.spacing.sm }}>
+              <Pressable
+                onPress={() => {
+                  setHiddenSessionIdsState([]);
+                  void setHiddenSessionIds([]);
+                }}
+                accessibilityRole="button"
+                accessibilityLabel={t('sessions.restoreAll')}
+                hitSlop={8}
+              >
+                <AppText variant="meta" color="accent">{t('sessions.restoreAll')}</AppText>
+              </Pressable>
+            </View>
+            {(hiddenSessionsQuery.data ?? [])
+              .filter((session) => hiddenSessionIds.includes(session.id))
+              .map((session) => (
+                <Row
+                  key={session.id}
+                  label={formatSessionTitle(session.title, session.createdAt, locale)}
+                  description={session.directory}
+                  right={(
+                    <Pressable
+                      onPress={() => void restoreHiddenSession(session.id)}
+                      accessibilityRole="button"
+                      accessibilityLabel={`${t('sessions.restore')}: ${formatSessionTitle(session.title, session.createdAt, locale)}`}
+                      hitSlop={8}
+                    >
+                      <AppText variant="meta" color="accent">{t('sessions.restore')}</AppText>
+                    </Pressable>
+                  )}
+                />
+              ))}
+            {orphanedHiddenIds.map((sessionId) => (
+              <Row
+                key={sessionId}
+                label={t('settings.hiddenSessionUnavailable')}
+                right={(
+                  <Pressable
+                    onPress={() => void restoreHiddenSession(sessionId)}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('sessions.restore')}
+                    hitSlop={8}
+                  >
+                    <AppText variant="meta" color="accent">{t('sessions.restore')}</AppText>
+                  </Pressable>
+                )}
+              />
+            ))}
+            {hiddenSessionsQuery.isError ? (
+              <Row label={t('settings.hiddenSessionsLoadError')} last />
+            ) : null}
+          </>
+        )}
 
         <Section title={t('settings.about')} />
         <Row
@@ -375,7 +490,7 @@ export default function SettingsScreen() {
 
 const styles = StyleSheet.create({
   row: {
-    minHeight: 60,
+    minHeight: 68,
     flexDirection: 'row',
     alignItems: 'center',
   },

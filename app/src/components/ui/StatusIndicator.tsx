@@ -90,9 +90,9 @@ export function StatusIndicator({
     return (
       <View
         accessible={false}
-        style={[styles.ring, { borderColor: theme.colors.textStrong }, style]}
+        style={[styles.ring, { borderColor: theme.colors.danger }, style]}
       >
-        <View style={[styles.centerDot, { backgroundColor: theme.colors.textStrong }]} />
+        <View style={[styles.centerDot, { backgroundColor: theme.colors.danger }]} />
       </View>
     );
   }
@@ -101,13 +101,13 @@ export function StatusIndicator({
     return (
       <View
         accessible={false}
-        style={[styles.ring, { borderColor: theme.colors.textStrong }, style]}
+        style={[styles.ring, { borderColor: theme.colors.danger }, style]}
       >
-        <View style={[styles.errorBar, { backgroundColor: theme.colors.textStrong }]} />
+        <View style={[styles.errorBar, { backgroundColor: theme.colors.danger }]} />
         <View
           style={[
             styles.errorDot,
-            { backgroundColor: theme.colors.textStrong },
+            { backgroundColor: theme.colors.danger },
           ]}
         />
       </View>
