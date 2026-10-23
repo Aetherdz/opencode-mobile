@@ -42,8 +42,10 @@ captures or a live account.
 | --- | --- | --- |
 | <img src="docs/images/sessions.png" alt="OpenCode Mobile sessions screen" width="210" /> | <img src="docs/images/chat.png" alt="OpenCode Mobile chat screen" width="210" /> | <img src="docs/images/model-picker.png" alt="OpenCode Mobile model picker" width="210" /> |
 
-The connection screen also accepts the QR payload printed by `opencode-mobile`;
-manual URL and token entry remain available.
+The connection screen accepts the QR payload printed by `opencode-mobile` or
+its `opencode-mobile://connect` app link. It only fills the connection fields;
+you must review them and tap Connect before credentials are saved. Manual URL
+and token entry remain available.
 
 ## Features
 
@@ -72,21 +74,30 @@ wrapper are not implemented. The app does receive a
 One-command setup (Linux/macOS): this fetches `main` from the [distribution installer](https://github.com/Aetherdz/opencode-mobile-dist), so it trusts that branch:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Aetherdz/opencode-mobile-dist/main/install.sh | bash -s -- setup
+installer="$(mktemp)"
+trap 'rm -f "$installer"' EXIT
+curl -fsSL https://raw.githubusercontent.com/Aetherdz/opencode-mobile-dist/main/install.sh -o "$installer"
+bash "$installer" setup
 ```
 
-After setup, start the bridge and open the temporary tunnel with `opencode-mobile`.
+After setup, run `opencode-mobile` once to pair the phone. On Linux with an
+active Tailscale connection it offers persistent, private Tailscale Serve by
+default; on other hosts, the temporary public tunnel requires explicit consent.
+See the distribution README for lifecycle and platform limitations.
 
-The command above fetches the latest installer from GitHub `main`; this is
-convenient but trusts that branch. Bridge release assets are verified against
-`SHA256SUMS` after download.
+The command above downloads the installer to a temporary file before running
+it. It trusts GitHub `main`; for higher assurance, pin and inspect a commit.
+Bridge release assets are verified against `SHA256SUMS` after download. Do not
+pipe the installer into `bash`.
 
 `setup` verifies the bridge release against `SHA256SUMS`, prompts for a
 project directory, preserves an existing token/config, and keeps the bridge on
-`127.0.0.1`. `opencode-mobile` checks OpenCode and bridge health, then creates a public
-temporary Cloudflare tunnel after explicit confirmation each time. It installs
-the verified `cloudflared` user binary without sudo on supported systems. The
-URL changes each run and is not saved. `down`, `status`, `doctor`, and `apk` are available. The current
+`127.0.0.1`. On Linux with `systemd --user`, it starts the bridge at user login.
+`opencode-mobile` checks OpenCode and bridge health, then prefers private,
+persistent Tailscale Serve when available. Pair the app with its tailnet URL and
+token once; the saved connection works while both devices are on the tailnet.
+The public temporary Cloudflare tunnel remains an explicit-consent alternative.
+`down`, `status`, `doctor`, and `apk` are available. The current
 APK is arm64-v8a only; `apk` verifies and displays its URL/checksum and does not
 install with adb without interactive approval. See the installer README for
 supported host architectures and setup limitations.
@@ -146,23 +157,22 @@ use a reachable private address such as a Tailscale address, not
 
 ## Download
 
-The current test release is **`1.0.0-beta.4`**. The website download card
-remains on beta.3 until owner testing is complete; release notes and current
-bridge/web bundles are available from the beta.4 release page. The Android APK
-is being built and will be attached after its signing and checksum checks. It
-supports arm64-v8a on Android 7.0 and newer.
+The current test release is **`1.0.0-beta.5`**. The website download card
+remains on beta.3 until owner testing is complete; release notes and artifacts
+are available from the beta.5 release page. The signed Android APK supports
+arm64-v8a on Android 7.0 and newer.
 
 | Artifact | Notes |
 | --- | --- |
-| Android APK | Building; will be uploaded after signed-artifact verification |
-| [Bridge bundles](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.4) | `.tar.gz` and `.zip`, with `SHA256SUMS` |
-| [Web bundles](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.4) | Static Expo export, with `SHA256SUMS` |
+| [Android APK](https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.5/opencode-mobile-1.0.0-beta.5.apk) | [SHA-256 file](https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.5/opencode-mobile-1.0.0-beta.5.apk.sha256); arm64-v8a |
+| [Bridge bundles](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.5) | `.tar.gz` and `.zip`, with `SHA256SUMS` |
+| [Web bundles](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.5) | Static Expo export, with `SHA256SUMS` |
 | [Installers](https://github.com/Aetherdz/opencode-mobile-dist) | Linux, macOS, and Windows bridge installer |
 
-Verify the APK before installing:
+Verify the downloaded APK before installing:
 
 ```bash
-sha256sum -c SHA256SUMS
+sha256sum -c opencode-mobile-1.0.0-beta.5.apk.sha256
 ```
 
 The beta is not on Google Play. iPhone builds require macOS/EAS and are not

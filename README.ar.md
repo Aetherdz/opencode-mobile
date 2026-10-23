@@ -78,14 +78,17 @@ flowchart LR
 إعداد بأمر واحد (Linux/macOS): يجلب هذا الأمر فرع `main` من [مثبّت التوزيعة](https://github.com/Aetherdz/opencode-mobile-dist)، ولذلك فهو يثق بذلك الفرع:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/Aetherdz/opencode-mobile-dist/main/install.sh | bash -s -- setup
+installer="$(mktemp)"
+trap 'rm -f "$installer"' EXIT
+curl -fsSL https://raw.githubusercontent.com/Aetherdz/opencode-mobile-dist/main/install.sh -o "$installer"
+bash "$installer" setup
 ```
 
-بعد الإعداد، اكتب `opencode-mobile` لتشغيل الجسر والنفق المؤقت.
+بعد الإعداد، شغّل `opencode-mobile` مرة واحدة لربط الهاتف. على Linux مع Tailscale متصل، يعرض Serve خاصاً ومستمراً افتراضياً؛ وعلى الأنظمة الأخرى يتطلب النفق العام المؤقت موافقة صريحة. راجع README التوزيعة للتفاصيل والقيود.
 
-يجلب الأمر المثبّت من فرع `main` في GitHub؛ هذا أسهل لكنه يثق بالفرع. يتم التحقق من ملفات إصدار الجسر عبر `SHA256SUMS` بعد تنزيلها.
+ينزّل الأمر المثبّت إلى ملف مؤقت قبل تشغيله، لكنه يثق بفرع `main` في GitHub؛ لثقة أعلى ثبّت commit محدداً وافحصه. يتم التحقق من ملفات إصدار الجسر عبر `SHA256SUMS` بعد تنزيلها. لا تمرر المثبّت مباشرة إلى `bash` عبر pipe.
 
-يتحقق `setup` من إصدار الجسر عبر `SHA256SUMS`، ويستخدم مجلد مشاريع محددًا، ويحافظ على الرمز والإعدادات الموجودة، ويبقي الجسر على `127.0.0.1`. يشغّل `opencode-mobile` الجسر بعد فحص الصحة، ثم يطلب موافقة صريحة قبل إنشاء نفق Cloudflare عام مؤقت. يُنزّل `cloudflared` الرسمي ويتحقق من SHA-256 ويضعه في مجلد المستخدم دون sudo على الأنظمة المدعومة. عنوان HTTPS عام وليس خاصاً؛ الرمز المشترك هو بوابة الوصول الوحيدة. من يملك الرمز يستطيع التحكم بالوكيل ضمن مجلدات العمل المسموحة. لا تشارك الرابط والرمز معاً، وضيّق `ALLOWED_WORKDIRS`، وأوقف النفق عبر `opencode-mobile down` بعد العرض. الرابط المؤقت لا يُحفظ وينتهي عند توقف عملية النفق؛ خدمة systemd تدير الجسر فقط ولا تعيد تشغيل النفق. استخدم Tailscale للوصول المعتاد. تتوفر أوامر `down` و`status` و`doctor` و`apk`. ملف APK الحالي لمعمارية arm64-v8a فقط. يبدأ التطبيق بالإنجليزية ويمكن تغيير اللغة من الإعدادات.
+يتحقق `setup` من إصدار الجسر عبر `SHA256SUMS`، ويستخدم مجلد مشاريع محددًا، ويحافظ على الرمز والإعدادات الموجودة، ويبقي الجسر على `127.0.0.1`. على Linux، يشغّل `systemd --user` الجسر عند تسجيل الدخول؛ لا يعمل قبل دخول المستخدم. بعد ذلك، يطلب `opencode-mobile` تأكيد إعداد Tailscale Serve الخاص والمستمر عند توفر Tailscale، ويعرض رابطاً ورمز ربط الهاتف مرة واحدة. بعد حفظهما في التطبيق، لا يلزم تشغيل الأمر أو إعادة تشغيل OpenCode كل مرة؛ يجب أن يبقى الهاتف على tailnet نفسه. إن لم يتوفر Tailscale أو رُفض، يُعرض نفق Cloudflare عام مؤقت بموافقة منفصلة؛ الرابط يتغير وينتهي عند إيقافه. من يملك الرابط والرمز يستطيع التحكم بالوكيل ضمن مجلدات العمل المسموحة؛ لا تشاركهما معاً وضيّق `ALLOWED_WORKDIRS`. استخدم `opencode-mobile down` لإيقاف جسر Tailscale المُدار. دعم Windows لدورة الخدمة وServe غير مكتمل وغير مُختبر. تتوفر أوامر `down` و`status` و`doctor` و`apk`. ملف APK الحالي لمعمارية arm64-v8a فقط. يبدأ التطبيق بالإنجليزية ويمكن تغيير اللغة من الإعدادات.
 
 ### 1. تشغيل OpenCode
 
@@ -145,19 +148,23 @@ CORS_ORIGINS=http://localhost:8081,http://127.0.0.1:8081
 
 في الشاشة الأولى أدخل عنوان الـBridge وقيمة `AUTH_TOKEN` نفسها. على الهاتف استخدم عنواناً خاصاً قابلاً للوصول مثل عنوان Tailscale، وليس `127.0.0.1` الخاص بالجهاز المضيف.
 
+يمكن أيضاً مسح QR الصادر من `opencode-mobile` أو فتح رابط `opencode-mobile://connect`. يملأ الرابط حقلي الاتصال فقط؛ راجعهما واضغط «اتصال» بنفسك قبل حفظ بيانات الاعتماد. يبقى الإدخال اليدوي متاحاً.
+
 ## التحميل
+
+النسخة التجريبية الحالية **`1.0.0-beta.5`**. بطاقة التحميل في الموقع تبقى على beta.3 حتى اكتمال اختبار المالك؛ ملاحظات الإصدار والملفات متاحة من صفحة إصدار beta.5. ملف APK الموقّع يدعم arm64-v8a على Android 7.0 وأحدث.
 
 | الملف | ملاحظات |
 | --- | --- |
-| APK أندرويد | قيد البناء؛ سيُرفع بعد التحقق من التوقيع والبصمة |
-| [حزم Bridge](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.4) | `.tar.gz` و`.zip` مع `SHA256SUMS` |
-| [حزم الويب](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.4) | تصدير Expo ثابت مع `SHA256SUMS` |
+| [APK أندرويد](https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.5/opencode-mobile-1.0.0-beta.5.apk) | [ملف SHA-256](https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.5/opencode-mobile-1.0.0-beta.5.apk.sha256)؛ arm64-v8a |
+| [حزم Bridge](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.5) | `.tar.gz` و`.zip` مع `SHA256SUMS` |
+| [حزم الويب](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.5) | تصدير Expo ثابت مع `SHA256SUMS` |
 | [المثبّتات](https://github.com/Aetherdz/opencode-mobile-dist) | مثبّت Bridge للينكس وماك وويندوز |
 
 تحقق من الـAPK قبل التثبيت:
 
 ```bash
-sha256sum -c SHA256SUMS
+sha256sum -c opencode-mobile-1.0.0-beta.5.apk.sha256
 ```
 
 النسخة التجريبية غير موجودة على Google Play. بناء iPhone يحتاج macOS/EAS وهو غير من إنتاج CI.
@@ -317,7 +324,7 @@ npx expo export --platform web
 - مثبّتات الطرفية: <https://github.com/Aetherdz/opencode-mobile-dist>
 - الموقع: <https://aetherdz.github.io/opencode-mobile/>
 - حزم Bridge والويب لإصدار beta مع checksums في GitHub Releases.
-- صفحة إصدار beta.4 التجريبي: <https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.4>
+- صفحة إصدار beta.5 التجريبي: <https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.5>
 
 المتبقي:
 

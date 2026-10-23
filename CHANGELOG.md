@@ -6,6 +6,23 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and the project uses [Semantic Versioning](https://semver.org/). This is a
 pre-1.0 beta; minor versions may change the bridge protocol.
 
+## [1.0.0-beta.5] - 2026-10-23
+
+### Added
+
+- The `opencode-mobile://connect` deep link pairs the app: opening it (or
+  scanning the pairing QR) fills the connection fields for review; connecting
+  still requires an explicit tap.
+
+### Fixed
+
+- App layout direction now follows the in-app language instead of the system
+  locale; mixed Arabic/English session titles keep per-title text direction.
+- Sessions without a title, and raw smoke-test timestamps used as titles, are
+  shown as readable fallbacks such as "Untitled · date and time".
+- The model picker sheet keeps a fixed height across loading, error, empty,
+  and loaded states so it no longer jumps when the list settles.
+
 ## [1.0.0-beta.4] - 2026-10-23
 
 ### Added

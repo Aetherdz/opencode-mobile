@@ -2,7 +2,7 @@
   "expo": {
     "name": "OpenCode Mobile",
     "slug": "opencode-mobile",
-    "version": "1.0.0-beta.4",
+    "version": "1.0.0-beta.5",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "opencode-mobile",
@@ -19,7 +19,7 @@
           "NSAllowsArbitraryLoads": true
         }
       },
-      "buildNumber": "4"
+      "buildNumber": "5"
     },
     "android": {
       "adaptiveIcon": {
@@ -30,7 +30,7 @@
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.aetherdz.opencodemobile",
-      "versionCode": 9
+      "versionCode": 10
     },
     "web": {
       "output": "single",
