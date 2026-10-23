@@ -195,7 +195,7 @@ export function Composer({
       {error || localError || attachmentError ? (
         <View style={styles.errorBlock}>
           <AppText variant="helper" color="danger" accessibilityLiveRegion="polite">
-            {localError ?? attachmentError ?? error}
+              {localError ?? attachmentError ?? (error === 'outside_workdir' ? t('chat.workdirError') : error)}
           </AppText>
           {hasFailedUpload ? (
             <Pressable

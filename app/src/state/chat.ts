@@ -154,9 +154,15 @@ export const useChat = create<ChatState>((set, get) => ({
       });
     } catch (error) {
       if (get().sessionId !== sessionId) return;
+      const workdirBlocked =
+        error instanceof ApiError && error.code === 'outside_workdir';
       set({
         loading: false,
-        error: error instanceof Error ? error.message : 'Could not load messages.',
+        error: workdirBlocked
+          ? 'outside_workdir'
+          : error instanceof Error
+            ? error.message
+            : 'Could not load messages.',
       });
     }
   },
@@ -377,7 +383,9 @@ export const useChat = create<ChatState>((set, get) => ({
         return;
       }
       case 'error': {
-        if (event.code === 'upstream_disconnected') {
+        if (event.code === 'outside_workdir') {
+          set({ error: 'outside_workdir', lastErrorCode: event.code });
+        } else if (event.code === 'upstream_disconnected') {
           set({ error: event.message, lastErrorCode: event.code });
         } else if (event.code === 'model_unavailable') {
           const optimisticId = event.requestId?.startsWith('req_local_')

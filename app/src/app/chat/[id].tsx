@@ -12,6 +12,7 @@ import {
   type NativeSyntheticEvent,
 } from 'react-native';
 import {
+  ApiError,
   deleteSession,
   getConfig,
   getModels,
@@ -554,7 +555,11 @@ export default function ChatScreen() {
           ) : chatError && messages.length === 0 ? (
             <View style={{ padding: layout.padX }}>
               <ErrorBanner
-                message={chatError}
+                message={
+                  chatError === 'outside_workdir'
+                    ? t('chat.workdirError')
+                    : chatError
+                }
                 onRetry={() => void useChat.getState().load(id)}
                 retryLabel={t('common.retry')}
                 design="new"
@@ -805,6 +810,11 @@ export default function ChatScreen() {
         selected={selectedModel}
         loading={modelsQuery.isLoading}
         failed={modelsQuery.isError}
+        errorDetail={
+          modelsQuery.error instanceof ApiError && modelsQuery.error.status !== 0
+            ? modelsQuery.error.message
+            : undefined
+        }
         onClose={() => setModelSheetOpen(false)}
         onSelect={selectModel}
         onRetry={() => void modelsQuery.refetch()}

@@ -15,6 +15,7 @@ export function ModelSheet({
   selected,
   loading,
   failed,
+  errorDetail,
   onClose,
   onSelect,
   onRetry,
@@ -24,6 +25,8 @@ export function ModelSheet({
   selected: ModelSelection | null;
   loading: boolean;
   failed: boolean;
+  /** Message from the bridge itself, when the bridge answered but the request failed. */
+  errorDetail?: string;
   onClose: () => void;
   onSelect: (model: ModelSelection | null) => void;
   onRetry: () => void;
@@ -56,6 +59,11 @@ export function ModelSheet({
           ) : failed ? (
             <View style={{ gap: theme.spacing.sm, alignItems: 'center' }}>
               <AppText color="danger" align="center">{t('model.loadError')}</AppText>
+              {errorDetail ? (
+                <AppText variant="helper" color="secondary" align="center">
+                  {errorDetail}
+                </AppText>
+              ) : null}
               <Pressable onPress={onRetry} accessibilityRole="button">
                 <AppText color="accent">{t('common.retry')}</AppText>
               </Pressable>

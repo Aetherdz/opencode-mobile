@@ -337,6 +337,11 @@ const strings: Record<string, Entry> = {
   },
   'new.failed': { en: 'Could not create the session', ar: 'تعذر إنشاء الجلسة' },
 
+  'chat.workdirError': {
+    en: "This session's work directory is outside the bridge's ALLOWED_WORKDIRS, so its content can't be opened. Create a session from an allowed work directory (New session) or ask the bridge admin to add this directory.",
+    ar: "مجلد عمل هذه الجلسة خارج ALLOWED_WORKDIRS على الجسر، لذا لا يمكن فتح محتواها. أنشئ جلسة من مجلد عمل مسموح (جلسة جديدة) أو اطلب من مشرف الجسر إضافة هذا المجلد.",
+  },
+
   'settings.title': { en: 'Settings', ar: 'الإعدادات' },
   'settings.appearance': { en: 'Appearance', ar: 'المظهر' },
   'settings.dark': { en: 'Dark', ar: 'داكن' },

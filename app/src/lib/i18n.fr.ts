@@ -212,6 +212,9 @@ export const frStrings: Record<string, string> = {
   'new.noWorkdirs': 'Aucun répertoire de travail configuré sur le bridge.',
   'new.failed': 'Impossible de créer la session',
 
+  'chat.workdirError':
+    "Le répertoire de travail de cette session est en dehors de ALLOWED_WORKDIRS du bridge, son contenu ne peut pas être ouvert. Créez une session depuis un répertoire autorisé (Nouvelle session) ou demandez à l'administrateur du bridge d'ajouter ce répertoire.",
+
   'settings.title': 'Réglages',
   'settings.appearance': 'Apparence',
   'settings.dark': 'Sombre',
