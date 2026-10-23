@@ -37,6 +37,7 @@ export const frStrings: Record<string, string> = {
   'model.empty': 'Aucun modèle activé trouvé.',
   'model.loadError': 'Impossible de charger la liste des modèles disponibles.',
   'model.connectionError': 'Impossible de joindre le bridge. Vérifiez la connexion et réessayez.',
+  'model.bridgeNotFound': 'Ce bridge ne fournit pas le catalogue des modèles. Mettez-le à jour puis reconnectez-vous avec ses nouvelles informations de jumelage.',
 
   'connect.title': 'Connectez-vous à votre bridge',
   'connect.subtitle': "Utilisez l'adresse et le jeton du fichier .env de votre bridge.",

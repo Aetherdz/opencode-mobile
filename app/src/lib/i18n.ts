@@ -29,6 +29,7 @@ const strings: Record<string, Entry> = {
   'model.empty': { en: 'No enabled models found.', ar: 'لم يتم العثور على نماذج مفعّلة.' },
   'model.loadError': { en: 'The available models could not be loaded.', ar: 'تعذر تحميل قائمة النماذج المتاحة.' },
   'model.connectionError': { en: 'Could not reach the bridge. Check the connection and retry.', ar: 'تعذر الوصول إلى الجسر. تحقق من الاتصال وأعد المحاولة.' },
+  'model.bridgeNotFound': { en: 'This bridge does not provide the model catalog. Update the bridge, then reconnect using its pairing details.', ar: 'هذا الجسر لا يوفّر قائمة النماذج. حدّث الجسر ثم أعد الاتصال ببيانات الربط الجديدة.' },
 
   'connect.title': { en: 'Connect to your bridge', ar: 'اتصل بالجسر' },
   'connect.subtitle': {

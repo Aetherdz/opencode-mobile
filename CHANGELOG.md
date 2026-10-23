@@ -6,6 +6,21 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and the project uses [Semantic Versioning](https://semver.org/). This is a
 pre-1.0 beta; minor versions may change the bridge protocol.
 
+## [1.0.0-beta.8] - 2026-10-23
+
+### Fixed
+
+- The Linux/macOS quickstart refreshes an outdated Bridge before pairing and
+  restarts only the installer's own managed bridge service.
+- Added a bundled terminal QR renderer so pairing works without system
+  `qrencode`; restored pairing output if a terminal wrapper closes fd 3.
+- Delayed native photo/document picker launch until the attachment sheet has
+  finished closing; kept browser file pickers synchronous.
+- Explained a missing model-catalog route as an outdated or incorrect Bridge
+  endpoint instead of showing only `Not found`.
+- Kept sessions outside `ALLOWED_WORKDIRS` blocked and directed users to an
+  allowed work directory.
+
 ## [1.0.0-beta.7] - 2026-10-23
 
 ### Fixed

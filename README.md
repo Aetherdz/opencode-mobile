@@ -157,16 +157,16 @@ use a reachable private address such as a Tailscale address, not
 
 ## Download
 
-Beta.4 and beta.5 have been withdrawn. The replacement **`1.0.0-beta.7`** is a
+Beta.4 and beta.5 have been withdrawn. The replacement **`1.0.0-beta.8`** is a
 test build with the reported fixes; please verify it on your device before
 relying on it. The website card remains on beta.3 pending owner testing. The
 signed Android APK targets arm64-v8a.
 
 | Artifact | Notes |
 | --- | --- |
-| [Android APK](https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.7/opencode-mobile-1.0.0-beta.7.apk) | [SHA-256 file](https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.7/opencode-mobile-1.0.0-beta.7.apk.sha256); arm64-v8a |
-| [Bridge bundles](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.7) | `.tar.gz` and `.zip`, with `SHA256SUMS` |
-| [Web bundles](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.7) | Static Expo export, with `SHA256SUMS` |
+| [Android APK](https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.8/opencode-mobile-1.0.0-beta.8.apk) | [SHA-256 file](https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.8/opencode-mobile-1.0.0-beta.8.apk.sha256); arm64-v8a |
+| [Bridge bundles](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.8) | `.tar.gz` and `.zip`, with `SHA256SUMS` |
+| [Web bundles](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.8) | Static Expo export, with `SHA256SUMS` |
 | [Installers](https://github.com/Aetherdz/opencode-mobile-dist) | Linux, macOS, and Windows bridge installer |
 
 The beta is not on Google Play. iPhone builds require macOS/EAS and are not

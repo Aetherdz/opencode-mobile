@@ -513,11 +513,13 @@ export default function ChatScreen() {
     : t('sessions.untitled');
   const modelLoadError = modelsQuery.error;
   const modelErrorDetail =
-    modelLoadError instanceof ApiError &&
-    !['network', 'timeout', 'tls', 'secure_unreachable', 'unreachable'].some(
-      (code) => code === modelLoadError.code,
-    )
-      ? modelLoadError.message
+    modelLoadError instanceof ApiError && modelLoadError.status === 404
+      ? t('model.bridgeNotFound')
+      : modelLoadError instanceof ApiError &&
+          !['network', 'timeout', 'tls', 'secure_unreachable', 'unreachable'].some(
+            (code) => code === modelLoadError.code,
+          )
+        ? modelLoadError.message
       : undefined;
   const outsideWorkdir = chatError === 'outside_workdir';
   const showWorkdirBanner = outsideWorkdir && messages.length > 0;

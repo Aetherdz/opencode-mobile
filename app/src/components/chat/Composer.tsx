@@ -554,7 +554,15 @@ export function Composer({
               onPress={() => {
                 hapticSelection();
                 setMenuOpen(false);
-                item.action();
+                // Native pickers present their own full-screen UI. Let the
+                // animated modal finish dismissing first to avoid competing
+                // Android/iOS window transitions. Keep web synchronous because
+                // browsers require file pickers to open in the user gesture.
+                if (Platform.OS === 'web') {
+                  item.action();
+                } else {
+                  setTimeout(item.action, 240);
+                }
               }}
               accessibilityRole="button"
               accessibilityLabel={item.label}
