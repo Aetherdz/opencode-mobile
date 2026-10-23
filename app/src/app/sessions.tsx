@@ -2,7 +2,7 @@ import { FlashList } from '@shopify/flash-list';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { router } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Pressable, RefreshControl, StyleSheet, TextInput, View } from 'react-native';
+import { Image, Pressable, RefreshControl, StyleSheet, TextInput, View } from 'react-native';
 import { ApiError, deleteSession, getModels, listSessions, renameSession } from '@/api/client';
 import type { ModelSelection, SessionSummary } from '@/api/types';
 import { ModelSheet } from '@/components/chat/ModelSheet';
@@ -288,7 +288,10 @@ export default function SessionsScreen() {
             variant="borderless"
             icon={<Icon name="menu-outline" size={22} color="textStrong" />}
           />
-          <AppText variant="eyebrow12" color="secondary">{t('appName')}</AppText>
+          <View style={styles.brandTitle}>
+            <Image source={require('../../assets/images/brand-mark.png')} style={styles.brandMark} accessibilityLabel="OpenCode Mobile" />
+            <AppText variant="eyebrow12" color="secondary">{t('appName')}</AppText>
+          </View>
           <IconButton
             label={t('home.theme')}
             onPress={() => setThemeMode(theme.scheme === 'dark' ? 'light' : 'dark')}
@@ -544,6 +547,8 @@ export default function SessionsScreen() {
 }
 
 const styles = StyleSheet.create({
+  brandTitle: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  brandMark: { width: 28, height: 28, borderRadius: 7 },
   flex: { flex: 1 },
   topBar: {
     minHeight: 56,

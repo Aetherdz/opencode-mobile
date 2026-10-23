@@ -1,6 +1,15 @@
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Modal, Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import {
+  Modal,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Image,
+  useWindowDimensions,
+  View,
+} from 'react-native';
+import { GestureDetector, GestureHandlerRootView, usePanGesture } from 'react-native-gesture-handler';
 import Animated, {
   FadeIn,
   FadeOut,
@@ -8,6 +17,10 @@ import Animated, {
   SlideInRight,
   SlideOutLeft,
   SlideOutRight,
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
   useReducedMotion,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -32,12 +45,52 @@ export function AppDrawer({
   const theme = useTheme();
   const { t, locale, isRTL } = useI18n();
   const insets = useSafeAreaInsets();
+  const { width: screenWidth } = useWindowDimensions();
   const reduced = useReducedMotion();
   const [mounted, setMounted] = useState(visible);
   const [contentVisible, setContentVisible] = useState(visible);
+  const dragX = useSharedValue(0);
+  const drawerWidth = Math.min(screenWidth * 0.84, 340);
+  const closeDirection = isRTL ? 1 : -1;
+
+  const pan = usePanGesture({
+    activeOffsetX: [-20, 20],
+    failOffsetY: [-12, 12],
+    maxPointers: 1,
+    onActivate: () => {
+      dragX.value = 0;
+    },
+    onUpdate: (event) => {
+      const signed = Math.max(-drawerWidth, Math.min(drawerWidth, event.translationX));
+      dragX.value = isRTL ? Math.max(0, signed) : Math.min(0, signed);
+    },
+    onDeactivate: (event) => {
+      if (event.canceled) {
+        dragX.value = withTiming(0, { duration: reduced ? 0 : 100 });
+        return;
+      }
+      const distance = dragX.value * closeDirection;
+      const velocity = event.velocityX * closeDirection;
+      const shouldClose =
+        distance > drawerWidth * 0.28 ||
+        (velocity > 700 && distance > 36);
+      if (shouldClose) {
+        dragX.value = withTiming(closeDirection * drawerWidth, { duration: reduced ? 0 : 120 }, () => {
+          runOnJS(onClose)();
+        });
+      } else {
+        dragX.value = withTiming(0, { duration: reduced ? 80 : 160 });
+      }
+    },
+  });
+
+  const dragStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: dragX.value }],
+  }));
 
   useEffect(() => {
     if (visible) {
+      dragX.value = 0;
       setMounted(true);
       const frame = requestAnimationFrame(() => setContentVisible(true));
       return () => cancelAnimationFrame(frame);
@@ -45,7 +98,7 @@ export function AppDrawer({
     setContentVisible(false);
     const timeout = setTimeout(() => setMounted(false), reduced ? 120 : 200);
     return () => clearTimeout(timeout);
-  }, [visible, reduced]);
+  }, [visible, reduced, dragX]);
 
   const open = (route: '/sessions' | '/settings' | '/new-session') => {
     onClose();
@@ -60,7 +113,8 @@ export function AppDrawer({
       statusBarTranslucent
       onRequestClose={onClose}
     >
-      <Rtl style={styles.root}>
+      <GestureHandlerRootView style={styles.root}>
+        <Rtl style={styles.root}>
         {contentVisible ? (
           <>
             <Animated.View
@@ -76,8 +130,9 @@ export function AppDrawer({
                 style={[StyleSheet.absoluteFill, { backgroundColor: theme.colors.scrim }]}
               />
             </Animated.View>
-            <Animated.View
-              accessibilityViewIsModal
+            <GestureDetector gesture={pan}>
+              <Animated.View
+                accessibilityViewIsModal
               entering={
                 reduced
                   ? FadeIn.duration(100)
@@ -92,8 +147,9 @@ export function AppDrawer({
                     ? SlideOutRight.duration(180)
                     : SlideOutLeft.duration(180)
               }
-              style={[
-                styles.panel,
+                style={[
+                  styles.panel,
+                  dragStyle,
                 {
                   left: isRTL ? undefined : 0,
                   right: isRTL ? 0 : undefined,
@@ -105,9 +161,12 @@ export function AppDrawer({
               ]}
             >
           <View style={styles.brandRow}>
-            <AppText variant="wordmark" style={{ fontFamily: theme.fonts.serif }}>
-              OpenCode
-            </AppText>
+            <View style={styles.brandIdentity}>
+              <Image source={require('../../../assets/images/brand-mark.png')} style={styles.brandMark} accessibilityLabel="OpenCode Mobile" />
+              <AppText variant="wordmark" style={{ fontFamily: theme.fonts.serif }}>
+                OpenCode
+              </AppText>
+            </View>
             <Pressable
               onPress={onClose}
               accessibilityRole="button"
@@ -186,10 +245,12 @@ export function AppDrawer({
               <AppText variant="label">OC</AppText>
             </View>
           </View>
-            </Animated.View>
+              </Animated.View>
+            </GestureDetector>
           </>
         ) : null}
-      </Rtl>
+        </Rtl>
+      </GestureHandlerRootView>
     </Modal>
   );
 }
@@ -206,6 +267,8 @@ const styles = StyleSheet.create({
     borderEndWidth: StyleSheet.hairlineWidth,
   },
   brandRow: { minHeight: 52, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  brandIdentity: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  brandMark: { width: 32, height: 32, borderRadius: 8 },
   closeButton: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
   navigation: { gap: 2, marginTop: 28, marginBottom: 22 },
   navRow: { minHeight: 56, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },

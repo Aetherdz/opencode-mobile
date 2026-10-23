@@ -1,4 +1,15 @@
-# OpenCode brand asset
+# OpenCode Mobile brand asset
+
+The mobile mark is a locally drawn adaptation of this project's own website
+asset at `website/assets/brand-mark.svg`. The source artwork was not changed.
+The mark retains the OpenCode Mobile phone silhouette and colors.
+
+`../images/brand-mark.png` is used in the app UI; launcher icon assets under
+`../images/` use the same visual identity, with Android adaptive foreground and
+monochrome variants.
+
+The OpenCode symbol remains separately documented below as the upstream
+project identity used by the client.
 
 Source: `anomalyco/opencode`, `packages/ui/src/assets/favicon/favicon-v3.svg`
 (https://github.com/anomalyco/opencode), retrieved 2026-10-20.
