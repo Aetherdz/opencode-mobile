@@ -6,6 +6,28 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and the project uses [Semantic Versioning](https://semver.org/). This is a
 pre-1.0 beta; minor versions may change the bridge protocol.
 
+## [1.0.0-beta.4] - 2026-10-23
+
+### Added
+
+- Local OpenCode MCP status integration, reporting bridge health without
+  exposing pairing credentials or session content.
+- Enabled-model discovery and model selection in the chat composer.
+
+### Changed
+
+- Message text direction now follows message content independently of the app
+  locale; the model selector sits beside attachment controls at the bottom of
+  the composer.
+- Improved theme hydration, settings persistence, session-list affordances,
+  and sheet dismissal behavior.
+
+### Fixed
+
+- Preserve the selected model when sending and reject unavailable models with
+  an error attached to the corresponding message.
+- Harden terminal questions/permissions and bridge WebSocket handling.
+
 ## [1.0.0-beta.3] - 2026-10-22
 
 ### Changed

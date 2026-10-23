@@ -20,7 +20,7 @@ import { AgentErrorCard } from '@/components/chat/AgentErrorCard';
 import { StatusIndicator } from '@/components/ui/StatusIndicator';
 import { formatClock } from '@/lib/format';
 import { hapticSelection } from '@/lib/haptics';
-import { textDirection } from '@/lib/textDirection';
+import { textDirection, visibleBidiControls } from '@/lib/textDirection';
 import { useI18n } from '@/lib/i18n';
 import { useTheme } from '@/theme/ThemeProvider';
 
@@ -236,7 +236,9 @@ export const MessageRow = memo(function MessageRow({
               delayLongPress={350}
               accessibilityRole="text"
               accessibilityLabel={
-                message.text ? `${t('chat.you')}: ${message.text}` : t('chat.sending')
+                message.text
+                  ? `${t('chat.you')}: ${visibleBidiControls(message.text)}`
+                  : t('chat.sending')
               }
               accessibilityHint={t('chat.copyMessage')}
               accessibilityActions={[{ name: 'copy', label: t('chat.copyMessage') }]}
@@ -246,7 +248,7 @@ export const MessageRow = memo(function MessageRow({
               style={({ pressed }) => ({ opacity: pressed ? 0.9 : 1 })}
             >
               {message.text ? (
-                <AppText variant="body15" selectable bidiIsolation={false}>
+                <AppText variant="body15" selectable>
                   {message.text}
                 </AppText>
               ) : null}

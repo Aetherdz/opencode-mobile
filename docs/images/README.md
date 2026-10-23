@@ -1,25 +1,25 @@
 # README images
 
-These files are the real captures used in `README.md` and `README.ar.md`.
-They were taken from the web build with synthetic demo data, so they contain no
-real token, path, address, or session title. Keep the filenames stable so the
-README links do not break.
+The three README product screenshots are real captures rendered by the current
+Expo web app against a local mock API with synthetic data. They are not
+native-device or live-account captures. No GIF or third-party UI screenshot is
+used as product imagery.
 
 ## Current captures
 
 | File | Screen | Notes |
 | --- | --- | --- |
-| `hero.png` | README hero | Wordmark banner for the top of both READMEs. |
-| `connect.png` | Connect | Neutral demo address, empty token field, connect action. |
-| `sessions.png` | Sessions | Three demo sessions with invented project names. |
-| `sessions-light.png` | Sessions | The same screen in the light theme. |
-| `sessions-ar.png` | Sessions | Arabic, right-to-left layout. |
-| `sessions-fr.png` | Sessions | French layout. |
-| `chat.png` | Chat | Short assistant reply, one tool activity row, composer. |
-| `chat-light.png` | Chat | The same screen in the light theme. |
-| `question.png` | Chat | Question card with two generic options. |
-| `social-preview.png` | Repository preview | Wordmark and the unofficial disclaimer. 1280×640. |
-| `navigation-en.png` | Updated English navigation | Current drawer with synthetic recent-session titles; no live account data. |
+| `sessions.png` | Sessions | Current light-theme web app; two synthetic demo sessions. |
+| `chat.png` | Chat | Current light-theme web app; synthetic mixed-language messages and bottom toolbar with model selector beside attachment control. |
+| `model-picker.png` | Model picker | Current light-theme Expo web build; synthetic catalog with selected state. |
+
+## Other retained assets
+
+The following assets are older illustrations/captures and are not used in the
+current README product gallery. Do not describe them as freshly verified screens:
+`hero.png`, `connect.png`, `sessions-light.png`, `sessions-ar.png`,
+`sessions-fr.png`, `chat-light.png`, `question.png`, `social-preview.png`, and
+`navigation-en.png`.
 
 `settings-fr.png` was an earlier French capture that still showed the beta 1
 version number and is no longer referenced by either README.

@@ -19,6 +19,13 @@ const strings: Record<string, Entry> = {
   'common.search': { en: 'Search', ar: 'بحث' },
   'common.ok': { en: 'OK', ar: 'حسناً' },
   'common.openSettings': { en: 'Open settings', ar: 'فتح الإعدادات' },
+  'model.title': { en: 'Choose a model', ar: 'اختر نموذجاً' },
+  'model.selector': { en: 'Model', ar: 'النموذج' },
+  'model.default': { en: 'Use OpenCode default', ar: 'استخدم نموذج OpenCode الافتراضي' },
+  'model.search': { en: 'Search models', ar: 'ابحث عن نموذج' },
+  'model.loading': { en: 'Loading models…', ar: 'جار تحميل النماذج…' },
+  'model.empty': { en: 'No enabled models found.', ar: 'لم يتم العثور على نماذج مفعّلة.' },
+  'model.loadError': { en: 'Could not load models. Check the bridge connection and retry.', ar: 'تعذر تحميل النماذج. تحقق من اتصال الجسر وأعد المحاولة.' },
 
   'connect.title': { en: 'Connect to your bridge', ar: 'اتصل بالجسر' },
   'connect.subtitle': {

@@ -36,6 +36,8 @@ export interface ComposerProps {
   uploading: boolean;
   maxFiles: number;
   error: string | null;
+  modelName?: string;
+  onModelSelect: () => void;
   seed?: string | null;
   onSeedConsumed?: () => void;
   onSend: (text: string, delivery?: Delivery) => Promise<SendResult>;
@@ -58,6 +60,8 @@ export function Composer({
   uploading,
   maxFiles,
   error,
+  modelName,
+  onModelSelect,
   seed,
   onSeedConsumed,
   onSend,
@@ -401,17 +405,6 @@ export function Composer({
         ) : null}
 
         <View style={styles.inputRow}>
-          <IconButton
-            label={t('chat.attach')}
-            onPress={() => setMenuOpen(true)}
-            disabled={attachments.length >= maxFiles}
-            size="sm"
-            variant="borderless"
-            hitSlop={layout.hitSlop}
-            icon={<Icon name="add" size={layout.icon} color="textStrong" />}
-            style={styles.plus}
-          />
-
           <TextInput
             ref={inputRef}
             value={text}
@@ -447,6 +440,9 @@ export function Composer({
             }}
           />
 
+        </View>
+
+        <View style={[styles.actionsRow, { direction: 'ltr' }]}>
           {sending ? (
             <View
               style={[
@@ -506,7 +502,39 @@ export function Composer({
               />
             </Pressable>
           )}
-        </View>
+
+        <View style={styles.actionsSpacer} />
+
+        <Pressable
+          onPress={onModelSelect}
+          accessibilityRole="button"
+          accessibilityLabel={`${t('model.selector')}${modelName ? `: ${modelName}` : ''}`}
+          style={({ pressed }) => [
+            styles.modelSelector,
+            {
+              alignSelf: 'flex-start',
+              borderColor: theme.colors.border,
+              backgroundColor: pressed ? theme.colors.raised : 'transparent',
+            },
+          ]}
+        >
+          <AppText variant="caption" color="secondary" numberOfLines={1} style={styles.modelName}>
+            {modelName || t('model.selector')}
+          </AppText>
+          <Icon name="chevron-down" size={14} color="secondary" />
+        </Pressable>
+
+        <IconButton
+          label={t('chat.attach')}
+          onPress={() => setMenuOpen(true)}
+          disabled={attachments.length >= maxFiles}
+          size="sm"
+          variant="borderless"
+          hitSlop={layout.hitSlop}
+          icon={<Icon name="add" size={layout.icon} color="textStrong" />}
+          style={styles.plus}
+        />
+      </View>
       </View>
 
       <Sheet
@@ -583,8 +611,29 @@ const styles = StyleSheet.create({
   },
   inputRow: {
     flexDirection: 'row',
-    alignItems: 'flex-end',
+    alignItems: 'flex-start',
+    minHeight: 36,
+  },
+  actionsRow: {
+    minHeight: 36,
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 8,
+  },
+  actionsSpacer: { flex: 1 },
+  modelSelector: {
+    minHeight: 32,
+    maxWidth: 188,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    alignSelf: 'flex-start',
+    paddingHorizontal: 10,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: 999,
+  },
+  modelName: {
+    maxWidth: 190,
   },
   plus: {
     marginBottom: 0,

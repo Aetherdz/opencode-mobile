@@ -2,6 +2,7 @@ import { Platform } from 'react-native';
 import { useAuth } from '@/state/auth';
 import type {
   ApprovalRequest,
+  AvailableModel,
   BridgeConfig,
   ChatMessage,
   Delivery,
@@ -443,6 +444,11 @@ export async function listPermissions(): Promise<ApprovalRequest[]> {
 
 export async function getConfig(): Promise<BridgeConfig> {
   const response = await request<{ data: BridgeConfig }>('/config');
+  return response.data;
+}
+
+export async function getModels(): Promise<AvailableModel[]> {
+  const response = await request<{ data: AvailableModel[] }>('/models');
   return response.data;
 }
 

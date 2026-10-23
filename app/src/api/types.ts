@@ -8,6 +8,18 @@ export type SessionStatus =
   | 'waiting_input';
 export type Delivery = 'steer' | 'queue';
 
+export interface AvailableModel {
+  providerId: string;
+  modelId: string;
+  name: string;
+  providerName: string;
+}
+
+export interface ModelSelection {
+  providerID: string;
+  modelID: string;
+}
+
 export interface SessionSummary {
   id: string;
   title: string;
@@ -146,7 +158,7 @@ export type ServerWsEvent =
   | { type: 'resume'; sessionId: string; replayed: number }
   | { type: 'ack'; sessionId: string; requestId: string }
   | { type: 'pong'; t: number }
-  | { type: 'error'; code: string; message: string };
+  | { type: 'error'; code: string; message: string; requestId?: string };
 
 export type ClientWsEvent =
   | { type: 'subscribe'; sessionId: string; lastEventId?: string }

@@ -370,13 +370,24 @@ export default function SessionsScreen() {
 
         <View style={[styles.composerDock, { borderTopColor: theme.colors.divider }]}>
           <View style={[styles.composerCard, { backgroundColor: theme.colors.surface2, borderColor: theme.colors.border }]}>
-            <IconButton
-              label={t('sessions.new')}
+            <Pressable
               onPress={openNewSession}
-              size="md"
-              variant="borderless"
-              icon={<Icon name="add" size={24} color="textStrong" />}
-            />
+              accessibilityRole="button"
+              accessibilityLabel={t('sessions.new')}
+              style={({ pressed }) => [
+                styles.newChatButton,
+                {
+                  backgroundColor: theme.colors.surface,
+                  borderColor: theme.colors.border,
+                  opacity: pressed ? 0.75 : 1,
+                },
+              ]}
+            >
+              <Icon name="add" size={20} color="primary" />
+              <AppText variant="helper" weight="600" color="textStrong">
+                {t('sessions.new')}
+              </AppText>
+            </Pressable>
             <TextInput
               value={homePrompt}
               onChangeText={setHomePrompt}
@@ -505,6 +516,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 7,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 26,
+  },
+  newChatButton: {
+    minHeight: 44,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 4,
+    paddingHorizontal: 10,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: 22,
   },
   homeInput: {
     flex: 1,

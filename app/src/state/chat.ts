@@ -17,6 +17,7 @@ import type {
   ApprovalRequest,
   ChatMessage,
   Delivery,
+  ModelSelection,
   DiffFile,
   MessageFile,
   QuestionRequest,
@@ -29,6 +30,7 @@ interface SendInput {
   text: string;
   files?: MessageFile[];
   delivery?: Delivery;
+  model?: ModelSelection;
 }
 
 export interface SendResult {
@@ -377,6 +379,17 @@ export const useChat = create<ChatState>((set, get) => ({
       case 'error': {
         if (event.code === 'upstream_disconnected') {
           set({ error: event.message, lastErrorCode: event.code });
+        } else if (event.code === 'model_unavailable') {
+          const optimisticId = event.requestId?.startsWith('req_local_')
+            ? event.requestId.slice(4)
+            : null;
+          set((state) => ({
+            messages: optimisticId
+              ? state.messages.filter((message) => message.id !== optimisticId)
+              : state.messages,
+            error: event.message,
+            lastErrorCode: event.code,
+          }));
         }
         return;
       }
@@ -385,7 +398,7 @@ export const useChat = create<ChatState>((set, get) => ({
     }
   },
 
-  send: async ({ text, files, delivery }) => {
+  send: async ({ text, files, delivery, model }) => {
     const { sessionId, status, busyOrigin } = get();
     if (!sessionId) return { ok: false, reason: 'error' };
     const busy =
@@ -421,6 +434,7 @@ export const useChat = create<ChatState>((set, get) => ({
       text,
       ...(files && files.length > 0 ? { fileIds: files.map((file) => file.id) } : {}),
       ...(delivery ? { delivery } : {}),
+      ...(model ? { model } : {}),
       requestId,
     });
     if (!sent) {

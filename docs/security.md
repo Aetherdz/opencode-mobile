@@ -61,6 +61,15 @@ or execute things that OpenCode is allowed to touch.
 - `OPENCODE_URL` must resolve to `127.0.0.1`, `::1`, or `localhost`.
 - The recommended remote path is Tailscale: `tailscale serve --bg
   http://127.0.0.1:8787`.
+- The optional Cloudflare quick tunnel exposes a public HTTPS hostname. HTTPS
+  protects traffic in transit but does not make the URL private; TLS terminates
+  at the tunnel provider, not end-to-end between app and host. The shared bearer
+  token remains the only access gate. A token holder can control the agent
+  within `ALLOWED_WORKDIRS`. Use it only for short, explicitly approved demos,
+  keep workdirs narrow, never share the URL together with the token, and stop it
+  with `opencode-mobile down` when finished. The URL is ephemeral and expires
+  when the tunnel process stops. The Linux user service manages only the bridge,
+  not tunnel recovery. Prefer Tailscale for routine access.
 - Browser access is opt-in. `CORS_ORIGINS` is a comma-separated list of exact
   `http://host:port` or `https://host:port` origins; wildcards, credentials,
   and paths are rejected. With no value, no CORS headers are sent and the web
@@ -172,21 +181,19 @@ themselves, but they matter when choosing an exposure model.
 
 ## Dependency audit status
 
-As of 2026-10-22:
+As of 2026-10-23 (rechecked in this workspace):
 
 - `bridge`: `npm audit --omit=dev` reports 0 vulnerabilities.
-- `app`: `npm audit --omit=dev` reports 22 advisories, 19 high and 3 moderate,
-  in the Expo CLI / Metro / `node-forge` / `uuid` dependency chains. The
-  reported issues are build-time or CLI paths, not app runtime code:
-  `braces` (GHSA-vfj7-8cjw-p6xm, no patched release exists, reached through
-  `micromatch` in the Metro file watcher), `uuid` (GHSA-w5hq-g745-h8pq, through
-  `xcode` during iOS project generation), and `node-forge`
-  (GHSA-86w9-cpqp-85rv, through `@expo/code-signing-certificates` for iOS
-  credential handling). None of these run inside the Android runtime or inside
-  the bridge, and the CI release path does not use the iOS signing helpers.
-  npm's proposed fix is a breaking downgrade to Expo 44, which is not
-  compatible with this app. The advisories are tracked upstream and must be
-  re-checked before a release.
+- `app`: both `npm audit --omit=dev --audit-level=high` and the full
+  `npm audit --audit-level=high` currently report 4 high findings, all from
+  `node-forge` GHSA-86w9-cpqp-85rv via `@expo/cli` and
+  `@expo/code-signing-certificates`. The registry currently lists `node-forge`
+  1.4.0 as latest, and the audit's only suggested fix downgrades Expo to 44,
+  incompatible with this SDK 58 app. These are Expo CLI/signing dependency
+  paths, not app runtime code; the Android release workflow does not use iOS
+  signing helpers. They remain unresolved and must be rechecked before a
+  stable release. The separate `npm audit fix --force` recommendation is not a
+  safe fix.
 
 CI runs `npm audit --omit=dev --audit-level=critical` for both packages, so a
 critical advisory blocks a build while the unfixable Expo toolchain advisories

@@ -2,6 +2,7 @@ import type { BackendAdapter } from "./BackendAdapter.js";
 import { OpenCodeHttp } from "../opencode/client.js";
 import type {
   DiffFile,
+  AvailableModel,
   FormAnswer,
   MessageListPage,
   OpenCodeEvent,
@@ -12,6 +13,37 @@ import type {
 } from "../types.js";
 
 type Wrapped<T> = { data: T };
+
+export function mapAvailableModels(rawModels: unknown, rawProviders: unknown): AvailableModel[] {
+  const models = Array.isArray(rawModels) ? rawModels : [];
+  const providers = Array.isArray(rawProviders) ? rawProviders : [];
+  const providerNames = new Map<string, string>();
+  for (const value of providers) {
+    if (!value || typeof value !== "object") continue;
+    const provider = value as Record<string, unknown>;
+    if (typeof provider.id === "string" && typeof provider.name === "string") {
+      providerNames.set(provider.id, provider.name);
+    }
+  }
+  const safe: AvailableModel[] = [];
+  for (const value of models) {
+    if (!value || typeof value !== "object") continue;
+    const model = value as Record<string, unknown>;
+    if (
+      model.enabled !== true ||
+      typeof model.providerID !== "string" ||
+      typeof model.modelID !== "string" ||
+      typeof model.name !== "string"
+    ) continue;
+    safe.push({
+      providerId: model.providerID,
+      modelId: model.modelID,
+      name: model.name,
+      providerName: providerNames.get(model.providerID) ?? model.providerID,
+    });
+  }
+  return safe;
+}
 
 function seg(value: string): string {
   return encodeURIComponent(value);
@@ -33,6 +65,14 @@ export class OpenCodeAdapter implements BackendAdapter {
 
   async serverInfo(): Promise<{ version: string; pid?: number }> {
     return this.http.request<{ version: string; pid?: number }>("GET", "/api/info");
+  }
+
+  async listModels(): Promise<AvailableModel[]> {
+    const [modelsResponse, providersResponse] = await Promise.all([
+      this.http.request<Wrapped<unknown[]>>("GET", "/api/model"),
+      this.http.request<Wrapped<unknown[]>>("GET", "/api/provider").catch(() => ({ data: [] })),
+    ]);
+    return mapAvailableModels(unwrap(modelsResponse), unwrap(providersResponse));
   }
 
   async listSessions(options?: { limit?: number; directory?: string }): Promise<RawSession[]> {
@@ -100,6 +140,7 @@ export class OpenCodeAdapter implements BackendAdapter {
         ...(input.metadata ? { metadata: input.metadata } : {}),
         ...(input.delivery ? { delivery: input.delivery } : {}),
         ...(input.resume === undefined ? {} : { resume: input.resume }),
+        ...(input.model ? { model: input.model } : {}),
       },
     );
     return unwrap(response) ?? {};

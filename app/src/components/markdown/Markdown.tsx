@@ -12,6 +12,7 @@ import { hapticSelection } from '@/lib/haptics';
 import { useI18n } from '@/lib/i18n';
 import { useRtl } from '@/components/ui/Rtl';
 import { useTheme } from '@/theme/ThemeProvider';
+import { visibleBidiControls } from '@/lib/textDirection';
 import {
   fonts,
   radii,
@@ -1056,25 +1057,30 @@ export function Markdown({
   const { isRTL: i18nRtl } = useI18n();
   const forcedRtl = useRtl();
   const isRTL = i18nRtl || forcedRtl;
+  const contentIsRTL = contentRTL ?? isRTL;
   const styles = useMemo(
-    () => createStyles(colors, isRTL, compact, contentRTL ?? isRTL, design),
-    [colors, isRTL, compact, contentRTL, design],
+    () => createStyles(colors, compact, contentIsRTL, design),
+    [colors, compact, contentIsRTL, design],
   );
-  const blocks = useMemo(() => parseBlocks(text), [text]);
+  const safeText = useMemo(() => visibleBidiControls(text), [text]);
+  const blocks = useMemo(() => parseBlocks(safeText), [safeText]);
   const context: RenderContext = { styles, selectable };
 
-  return <View style={styles.container}>{renderBlocks(blocks, context, 'md')}</View>;
+  return (
+    <View style={[styles.container, { direction: contentIsRTL ? 'rtl' : 'ltr' }]}>
+      {renderBlocks(blocks, context, 'md')}
+    </View>
+  );
 }
 
 function createStyles(
   colors: ThemeColors,
-  isRTL: boolean,
   compact: boolean,
   contentRTL: boolean,
   design: 'default' | 'chat',
 ) {
   const alignment: TextStyle = {
-    textAlign: isRTL ? 'right' : 'left',
+    textAlign: contentRTL ? 'right' : 'left',
     writingDirection: contentRTL ? 'rtl' : 'ltr',
   };
   const chat = design === 'chat';
@@ -1086,7 +1092,6 @@ function createStyles(
   return StyleSheet.create({
     container: {
       width: '100%',
-      ...(Platform.OS === 'web' ? null : { direction: isRTL ? ('rtl' as const) : ('ltr' as const) }),
       gap: compact ? spacing.xs : spacing.sm,
     },
     paragraph: {
@@ -1188,7 +1193,7 @@ function createStyles(
       fontSize: bodySize,
       lineHeight: bodyLineHeight,
       writingDirection: 'ltr',
-      textAlign: isRTL ? 'right' : 'left',
+       textAlign: contentRTL ? 'right' : 'left',
     },
     listContent: {
       flex: 1,
@@ -1197,12 +1202,12 @@ function createStyles(
     },
     quote: {
       width: '100%',
-      borderLeftWidth: isRTL ? 0 : 3,
-      borderRightWidth: isRTL ? 3 : 0,
+      borderLeftWidth: contentRTL ? 0 : 3,
+      borderRightWidth: contentRTL ? 3 : 0,
       borderLeftColor: colors.accent,
       borderRightColor: colors.accent,
-      paddingLeft: isRTL ? 0 : spacing.md,
-      paddingRight: isRTL ? spacing.md : 0,
+      paddingLeft: contentRTL ? 0 : spacing.md,
+      paddingRight: contentRTL ? spacing.md : 0,
       gap: spacing.xs,
     },
     rule: {

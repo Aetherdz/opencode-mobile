@@ -1,7 +1,8 @@
 import { create } from 'zustand';
 import { getStored, setStored } from '@/lib/storage';
+import { normalizeThemeMode, type ThemeMode } from './settingsSchema';
 
-export type ThemeMode = 'dark' | 'light' | 'system';
+export type { ThemeMode } from './settingsSchema';
 export type Locale = 'ar' | 'en' | 'fr';
 
 export interface SettingsState {
@@ -65,10 +66,7 @@ export const useSettings = create<SettingsState>((set, get) => ({
       try {
         const parsed = JSON.parse(raw) as PersistedSettings;
         set({
-          themeMode:
-            parsed.themeMode === 'light' || parsed.themeMode === 'system'
-              ? parsed.themeMode
-              : 'light',
+          themeMode: normalizeThemeMode(parsed.themeMode),
           locale: normalizeLocale(parsed.locale),
           haptics: parsed.haptics !== false,
           notifications: parsed.notifications === true,

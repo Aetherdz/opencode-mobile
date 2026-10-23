@@ -14,16 +14,18 @@ import {
 import {
   deleteSession,
   getConfig,
+  getModels,
   getSession,
   renameSession,
 } from '@/api/client';
 import { bridgeSocket, useConnection } from '@/api/ws';
-import type { ChatMessage, MessageFile, SessionSummary } from '@/api/types';
+import type { ChatMessage, MessageFile, ModelSelection, SessionSummary } from '@/api/types';
 import { ApprovalSheet } from '@/components/chat/ApprovalSheet';
 import { ChatTopBar } from '@/components/chat/ChatTopBar';
 import { Composer } from '@/components/chat/Composer';
 import { InlineQuestionCard } from '@/components/chat/InlineQuestionCard';
 import { MessageRow } from '@/components/chat/MessageRow';
+import { ModelSheet } from '@/components/chat/ModelSheet';
 import { ImageViewer } from '@/components/attachments/ImageViewer';
 import { RenameSheet } from '@/components/sessions/RenameSheet';
 import { AppText } from '@/components/ui/AppText';
@@ -46,6 +48,7 @@ import {
   hapticWarning,
 } from '@/lib/haptics';
 import { useI18n } from '@/lib/i18n';
+import { deleteStored, getStored, setStored } from '@/lib/storage';
 import { openFile } from '@/lib/openFile';
 import { useAttachments } from '@/lib/useAttachments';
 import { useChat } from '@/state/chat';
@@ -63,6 +66,7 @@ type Row =
     };
 
 const GROUP_WINDOW_MS = 5 * 60 * 1000;
+const MODEL_STORAGE_KEY = 'chat.selectedModel.v1';
 
 function mergeActivities(
   current: ChatMessage['activities'],
@@ -165,6 +169,9 @@ export default function ChatScreen() {
   const [approvalOpen, setApprovalOpen] = useState(false);
   const [questionOpen, setQuestionOpen] = useState(false);
   const [renameOpen, setRenameOpen] = useState(false);
+  const [modelSheetOpen, setModelSheetOpen] = useState(false);
+  const [selectedModel, setSelectedModel] = useState<ModelSelection | null>(null);
+  const modelSelectionTouched = useRef(false);
   const [seed, setSeed] = useState<string | null>(null);
   const [viewer, setViewer] = useState<{ uri: string; headers?: Record<string, string> } | null>(
     null,
@@ -196,6 +203,40 @@ export default function ChatScreen() {
     queryFn: getConfig,
     staleTime: 300_000,
   });
+
+  const modelsQuery = useQuery({
+    queryKey: ['models'],
+    queryFn: getModels,
+    enabled: modelSheetOpen,
+    staleTime: 60_000,
+  });
+
+  useEffect(() => {
+    let alive = true;
+    void getStored(MODEL_STORAGE_KEY).then((saved) => {
+      if (!alive || !saved || modelSelectionTouched.current) return;
+      try {
+        const parsed = JSON.parse(saved) as Partial<ModelSelection>;
+        if (typeof parsed.providerID === 'string' && typeof parsed.modelID === 'string') {
+          setSelectedModel({ providerID: parsed.providerID, modelID: parsed.modelID });
+        }
+      } catch {
+        void deleteStored(MODEL_STORAGE_KEY);
+      }
+    });
+    return () => { alive = false; };
+  }, []);
+
+  useEffect(() => {
+    if (!modelsQuery.data || !selectedModel) return;
+    const stillEnabled = modelsQuery.data.some(
+      (model) => model.providerId === selectedModel.providerID && model.modelId === selectedModel.modelID,
+    );
+    if (!stillEnabled) {
+      setSelectedModel(null);
+      void deleteStored(MODEL_STORAGE_KEY);
+    }
+  }, [modelsQuery.data, selectedModel]);
 
   const attachments = useAttachments(id, {
     maxFiles: configQuery.data?.maxFilesPerMessage ?? 10,
@@ -304,6 +345,7 @@ export default function ChatScreen() {
       const result = await useChat.getState().send({
         text,
         files: attachments.readyFiles,
+        ...(selectedModel ? { model: selectedModel } : {}),
         ...(delivery ? { delivery } : {}),
       });
       if (result.ok) {
@@ -314,8 +356,21 @@ export default function ChatScreen() {
       }
       return result;
     },
-    [attachments.readyFiles, scrollToLatest],
+    [attachments.readyFiles, scrollToLatest, selectedModel],
   );
+
+  const selectModel = useCallback((model: ModelSelection | null) => {
+    modelSelectionTouched.current = true;
+    setSelectedModel(model);
+    if (model) void setStored(MODEL_STORAGE_KEY, JSON.stringify(model));
+    else void deleteStored(MODEL_STORAGE_KEY);
+    setModelSheetOpen(false);
+    hapticSelection();
+  }, []);
+
+  const selectedModelName = modelsQuery.data?.find(
+    (model) => model.providerId === selectedModel?.providerID && model.modelId === selectedModel?.modelID,
+  )?.name;
 
   const stop = useCallback(() => {
     hapticLight();
@@ -707,6 +762,8 @@ export default function ChatScreen() {
           uploading={attachments.uploading}
           maxFiles={attachments.maxFiles}
           error={chatError}
+          modelName={selectedModelName}
+          onModelSelect={() => setModelSheetOpen(true)}
           seed={seed}
           onSeedConsumed={() => setSeed(null)}
           onSend={send}
@@ -735,6 +792,17 @@ export default function ChatScreen() {
         initial={sessionQuery.data?.title ?? ''}
         onClose={() => setRenameOpen(false)}
         onSave={saveRename}
+      />
+
+      <ModelSheet
+        visible={modelSheetOpen}
+        models={modelsQuery.data ?? []}
+        selected={selectedModel}
+        loading={modelsQuery.isLoading}
+        failed={modelsQuery.isError}
+        onClose={() => setModelSheetOpen(false)}
+        onSelect={selectModel}
+        onRetry={() => void modelsQuery.refetch()}
       />
 
       <ImageViewer

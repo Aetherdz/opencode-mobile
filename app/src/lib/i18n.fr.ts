@@ -27,6 +27,13 @@ export const frStrings: Record<string, string> = {
   'common.search': 'Rechercher',
   'common.ok': 'OK',
   'common.openSettings': 'Ouvrir les réglages',
+  'model.title': 'Choisir un modèle',
+  'model.selector': 'Modèle',
+  'model.default': 'Utiliser le modèle par défaut d’OpenCode',
+  'model.search': 'Rechercher des modèles',
+  'model.loading': 'Chargement des modèles…',
+  'model.empty': 'Aucun modèle activé trouvé.',
+  'model.loadError': 'Impossible de charger les modèles. Vérifiez la connexion au bridge et réessayez.',
 
   'connect.title': 'Connectez-vous à votre bridge',
   'connect.subtitle': "Utilisez l'adresse et le jeton du fichier .env de votre bridge.",

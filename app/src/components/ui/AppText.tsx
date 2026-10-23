@@ -1,7 +1,7 @@
 import { Text as RNText, useWindowDimensions, type TextProps } from 'react-native';
 import { useTheme } from '@/theme/ThemeProvider';
 import type { ThemeColors } from '@/theme/tokens';
-import { hasArabic, isolateMixed, textDirection } from '@/lib/textDirection';
+import { hasArabic, isolateMixed, textDirection, visibleBidiControls } from '@/lib/textDirection';
 import { useRtl } from './Rtl';
 
 type Variant =
@@ -64,11 +64,11 @@ export function AppText({
   const displayContent =
     typeof props.children === 'string'
       ? mono || !bidiIsolation
-        ? props.children
+        ? visibleBidiControls(props.children)
         : isolateMixed(props.children)
       : props.children;
   const direction = content ? textDirection(content, isRtl) : isRtl ? 'rtl' : 'ltr';
-  const resolvedAlign = align === 'auto' ? (isRtl ? 'right' : 'left') : align;
+  const resolvedAlign = align === 'auto' ? (direction === 'rtl' ? 'right' : 'left') : align;
   const useArabicFace = content ? arabicContent : isRtl;
   const resolvedWeight =
     weight ??

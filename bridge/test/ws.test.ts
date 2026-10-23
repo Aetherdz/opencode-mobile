@@ -33,6 +33,8 @@ const logger: LoggerLike = {
 
 const roots: string[] = [];
 const hubs: WsHub[] = [];
+const promptCalls: Array<Record<string, unknown>> = [];
+let modelCatalog = [{ providerId: "provider", modelId: "model", name: "Model", providerName: "Provider" }];
 let sequence = 0;
 
 function event(type: string, data: Record<string, unknown>): OpenCodeEvent {
@@ -72,7 +74,8 @@ function fakeAdapter(workdir: string): BackendAdapter {
     renameSession: async () => {},
     deleteSession: async () => {},
     listMessages: async () => ({ data: [], cursor: {} }),
-    sendPrompt: async () => ({ id: "msg_1" }),
+    sendPrompt: async (_id, input) => { promptCalls.push(input as unknown as Record<string, unknown>); return { id: "msg_1" }; },
+    listModels: async () => modelCatalog,
     interrupt: async () => true,
     listPendingPermissions: async () => [],
     listSessionPermissions: async () => [],
@@ -97,6 +100,8 @@ async function makeFixture(): Promise<{
 }> {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "bridge-ws-"));
   roots.push(root);
+  promptCalls.length = 0;
+  modelCatalog = [{ providerId: "provider", modelId: "model", name: "Model", providerName: "Provider" }];
 
   const state = new RuntimeState();
   const hub = new WsHub(
@@ -135,6 +140,33 @@ afterEach(async () => {
 });
 
 describe("WsHub upstream mapping", () => {
+  it("passes an enabled model to OpenCode and rejects unavailable model selections", async () => {
+    const { socket, internals } = await makeFixture();
+    const model = { providerID: "provider", modelID: "model" };
+    await internals.onClientMessage(socket as unknown as WebSocket, JSON.stringify({
+      type: "message.send", sessionId: "ses_1", text: "hello", model,
+    }));
+    expect(promptCalls).toHaveLength(1);
+    expect(promptCalls[0]?.model).toEqual(model);
+
+    modelCatalog = [];
+    socket.sent.length = 0;
+    await internals.onClientMessage(socket as unknown as WebSocket, JSON.stringify({
+      type: "message.send", sessionId: "ses_1", text: "hello", model, requestId: "req_local_test",
+    }));
+    expect(promptCalls).toHaveLength(1);
+    expect(sentEvents(socket)).toContainEqual(expect.objectContaining({
+      type: "error", code: "model_unavailable", requestId: "req_local_test",
+    }));
+
+    socket.sent.length = 0;
+    await internals.onClientMessage(socket as unknown as WebSocket, JSON.stringify({
+      type: "message.send", sessionId: "ses_1", text: "hello", model: { providerID: "", modelID: "model" },
+    }));
+    expect(promptCalls).toHaveLength(1);
+    expect(sentEvents(socket)).toContainEqual(expect.objectContaining({ type: "error", code: "bad_event" }));
+  });
+
   it("emits status and message.created for execution and inbox events", async () => {
     const { socket, state, internals } = await makeFixture();
 
@@ -370,5 +402,71 @@ describe("WsHub upstream mapping", () => {
         status: "rejected",
       }),
     );
+  });
+
+  it("scopes permission and form requests and their resolutions to their session rooms", async () => {
+    const { socket: first, state, internals } = await makeFixture();
+    const second = fakeSocket();
+    const hub = hubs[hubs.length - 1] as unknown as {
+      attach(socket: WebSocket): void;
+      onClientMessage(socket: WebSocket, raw: string): Promise<void>;
+    };
+    hub.attach(second as unknown as WebSocket);
+    await hub.onClientMessage(
+      second as unknown as WebSocket,
+      JSON.stringify({ type: "subscribe", sessionId: "ses_2" }),
+    );
+    first.sent.length = 0;
+    second.sent.length = 0;
+
+    internals.onUpstream(
+      event("permission.asked", {
+        sessionID: "ses_1",
+        id: "per_scoped",
+        action: "read",
+        resources: ["/tmp/one"],
+      }),
+    );
+    internals.onUpstream(
+      event("form.created", {
+        sessionID: "ses_2",
+        form: {
+          id: "frm_scoped",
+          sessionID: "ses_2",
+          title: "Question",
+          metadata: { kind: "question" },
+          fields: [{ key: "q0", type: "string", title: "Answer" }],
+        },
+      }),
+    );
+
+    expect(sentEvents(first)).toContainEqual(
+      expect.objectContaining({ type: "approval.request", sessionId: "ses_1", request: expect.objectContaining({ id: "per_scoped" }) }),
+    );
+    expect(sentEvents(first).some((message) => message.type === "question.request")).toBe(false);
+    expect(sentEvents(second)).toContainEqual(
+      expect.objectContaining({ type: "question.request", sessionId: "ses_2", question: expect.objectContaining({ id: "frm_scoped" }) }),
+    );
+    expect(sentEvents(second).some((message) => message.type === "approval.request")).toBe(false);
+    expect(state.pendingApprovals("ses_1")).toEqual(["per_scoped"]);
+    expect(state.pendingApprovals("ses_2")).toEqual([]);
+    expect(state.pendingQuestions("ses_1")).toEqual([]);
+    expect(state.pendingQuestions("ses_2")).toHaveLength(1);
+
+    first.sent.length = 0;
+    second.sent.length = 0;
+    internals.onUpstream(event("permission.replied", { sessionID: "ses_1", id: "per_scoped" }));
+    internals.onUpstream(event("form.replied", { sessionID: "ses_2", id: "frm_scoped" }));
+    expect(sentEvents(first)).toContainEqual(
+      expect.objectContaining({ type: "approval.resolved", sessionId: "ses_1", requestId: "per_scoped" }),
+    );
+    expect(sentEvents(first).some((message) => message.type === "question.resolved")).toBe(false);
+    expect(sentEvents(second)).toContainEqual(
+      expect.objectContaining({ type: "question.resolved", sessionId: "ses_2", questionId: "frm_scoped", status: "answered" }),
+    );
+    expect(sentEvents(second).some((message) => message.type === "approval.resolved")).toBe(false);
+    expect(state.pendingApprovals("ses_1")).toEqual([]);
+    expect(state.pendingQuestions("ses_2")).toEqual([]);
+    expect(state.findQuestion("frm_scoped")).toMatchObject({ sessionId: "ses_2", question: null, resolvedStatus: "answered" });
   });
 });

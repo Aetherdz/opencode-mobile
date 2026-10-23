@@ -37,6 +37,10 @@ const ClientEventSchema = z.discriminatedUnion("type", [
     sessionId: z.string().regex(/^[A-Za-z0-9_-]+$/),
     text: z.string().min(1).max(100_000),
     fileIds: z.array(z.string().max(100)).max(50).optional(),
+    model: z.object({
+      providerID: z.string().min(1).max(200),
+      modelID: z.string().min(1).max(300),
+    }).strict().optional(),
     delivery: z.enum(["steer", "queue"]).optional(),
     requestId: z.string().max(100).optional(),
   }),
@@ -275,11 +279,26 @@ export class WsHub {
             uri: toFileUri(record.path),
             name: record.name,
           }));
+          if (event.model) {
+            const available = await this.adapter.listModels();
+            if (!available.some((model) =>
+              model.providerId === event.model?.providerID && model.modelId === event.model?.modelID
+            )) {
+              this.send(socket, {
+                type: "error",
+                code: "model_unavailable",
+                message: "The selected model is not enabled or is no longer available.",
+                ...(event.requestId ? { requestId: event.requestId } : {}),
+              });
+              return;
+            }
+          }
           await this.adapter.sendPrompt(event.sessionId, {
             text: withReadInstructions(event.text, records),
             ...(fileRefs.length > 0 ? { files: fileRefs } : {}),
             metadata: { source: "app" },
             delivery: event.delivery ?? "queue",
+            ...(event.model ? { model: event.model } : {}),
           });
           if (event.requestId) {
             this.send(socket, {

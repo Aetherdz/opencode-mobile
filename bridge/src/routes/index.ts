@@ -133,6 +133,14 @@ export function registerRoutes(app: FastifyInstance, deps: Deps): void {
 
   app.get("/health", async () => ({ ok: true }));
 
+  app.get("/models", async (_request, reply) => {
+    try {
+      return { data: await adapter.listModels() };
+    } catch {
+      return fail(reply, 502, "models_unavailable", "Could not load the enabled OpenCode models.");
+    }
+  });
+
   app.get("/sessions", async (request, reply) => {
     try {
       const raw = await adapter.listSessions({ limit: 50 });

@@ -65,6 +65,7 @@ interface Fixture {
   app: FastifyInstance;
   state: RuntimeState;
   adapter: {
+    listModels: ReturnType<typeof vi.fn>;
     listSessionForms: ReturnType<typeof vi.fn>;
     replyForm: ReturnType<typeof vi.fn>;
     cancelForm: ReturnType<typeof vi.fn>;
@@ -78,6 +79,9 @@ async function makeFixture(): Promise<Fixture> {
   roots.push(root);
 
   const adapterMethods = {
+    listModels: vi.fn(async () => [
+      { providerId: "p1", modelId: "m1", name: "Model One", providerName: "Provider One" },
+    ]),
     listSessionForms: vi.fn(async () => [questionForm()]),
     replyForm: vi.fn(async () => undefined),
     cancelForm: vi.fn(async () => undefined),
@@ -152,6 +156,17 @@ afterEach(async () => {
 });
 
 describe("question routes", () => {
+  it("serves only safe model catalog fields", async () => {
+    const { app } = await makeFixture();
+    const response = await app.inject({ method: "GET", url: "/models" });
+    expect(response.statusCode).toBe(200);
+    expect(response.json()).toEqual({ data: [
+      { providerId: "p1", modelId: "m1", name: "Model One", providerName: "Provider One" },
+    ] });
+    expect(response.body).not.toContain("password");
+    expect(response.body).not.toContain("headers");
+  });
+
   it("lists pending question forms and records them in state", async () => {
     const { app, state } = await makeFixture();
 

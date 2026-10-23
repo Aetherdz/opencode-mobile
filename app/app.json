@@ -2,12 +2,11 @@
   "expo": {
     "name": "OpenCode Mobile",
     "slug": "opencode-mobile",
-    "version": "1.0.0-beta.3",
+    "version": "1.0.0-beta.4",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "opencode-mobile",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "ios": {
       "icon": "./assets/images/icon.png",
       "supportsTablet": true,
@@ -20,7 +19,7 @@
           "NSAllowsArbitraryLoads": true
         }
       },
-      "buildNumber": "3"
+      "buildNumber": "4"
     },
     "android": {
       "adaptiveIcon": {
@@ -31,8 +30,7 @@
       },
       "predictiveBackGestureEnabled": false,
       "package": "com.aetherdz.opencodemobile",
-      "versionCode": 8,
-      "usesCleartextTraffic": true
+      "versionCode": 9
     },
     "web": {
       "output": "single",
@@ -76,7 +74,15 @@
         }
       ],
       "expo-document-picker",
-      "expo-notifications"
+      "expo-notifications",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,

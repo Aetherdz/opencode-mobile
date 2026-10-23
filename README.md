@@ -20,10 +20,6 @@ from the keyboard but still need to answer the agent.
 [![CI](https://github.com/Aetherdz/opencode-mobile/actions/workflows/ci.yml/badge.svg)](https://github.com/Aetherdz/opencode-mobile/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-black.svg)](LICENSE)
 
-<a href="https://aetherdz.github.io/opencode-mobile/">
-  <img src="docs/images/hero.png" alt="OpenCode Mobile on Android: sessions and chat" width="100%" />
-</a>
-
 </div>
 
 ## What it is
@@ -36,30 +32,18 @@ It does **not** run a second agent and it does **not** expose a terminal on the
 phone. A small authenticated bridge connects the app to the OpenCode service
 that is already running on your host.
 
-## Screens
+## Screens (synthetic demo data)
 
-Connect is captured from the actual Expo web app. Sessions, Chat, and Questions
-are illustrative previews pending capture against a seeded demo bridge. No real
-tokens or account data are shown.
+These are screenshots rendered by the current Expo web app against a local
+mock API with synthetic data. They show the actual app UI, not native-device
+captures or a live account.
 
-| Connect | Sessions | Chat | Questions |
-| --- | --- | --- | --- |
-| <img src="docs/images/connect.png" alt="Connect screen" width="190" /> | <img src="docs/images/sessions.png" alt="Illustrative sessions preview" width="190" /> | <img src="docs/images/chat.png" alt="Illustrative chat preview" width="190" /> | <img src="docs/images/question.png" alt="Illustrative agent question card" width="190" /> |
+| Demo sessions | Demo chat | Demo model picker |
+| --- | --- | --- |
+| <img src="docs/images/sessions.png" alt="OpenCode Mobile sessions screen" width="210" /> | <img src="docs/images/chat.png" alt="OpenCode Mobile chat screen" width="210" /> | <img src="docs/images/model-picker.png" alt="OpenCode Mobile model picker" width="210" /> |
 
 The connection screen also accepts the QR payload printed by `opencode-mobile`;
 manual URL and token entry remain available.
-
-| Light theme | Français | العربية |
-| --- | --- | --- |
-| <img src="docs/images/sessions-light.png" alt="Light sessions screen" width="190" /> | <img src="docs/images/sessions-fr.png" alt="French sessions screen" width="190" /> | <img src="docs/images/sessions-ar.png" alt="Arabic RTL sessions screen" width="190" /> |
-
-### Updated English UI
-
-| Updated navigation drawer |
-| --- |
-| <img src="docs/images/navigation-en.png" alt="Updated English navigation drawer" width="190" /> |
-
-The alternate locale and theme previews are retained as existing UI examples.
 
 ## Features
 
@@ -69,24 +53,29 @@ The alternate locale and theme previews are retained as existing UI examples.
 - Inline agent questions and permission approval, including destructive-action confirmation.
 - Image, camera, and document attachments with upload retry and authenticated downloads.
 - Tool activity summaries, diff view, and monochrome code highlighting.
-- Dark and light themes, English, Arabic, and French UI, mixed-direction text, and RTL layout.
+- Dark and light themes, English and French UI, with mixed-direction text support.
+- Message direction follows its content (English LTR, Arabic RTL), regardless of app locale; verified on Expo Web. Native RTL behavior remains unverified.
 - Optional Expo push notifications for finished turns, questions, and approvals.
 - Expo Web build with an opt-in bridge origin allowlist (`CORS_ORIGINS`).
 
-Not implemented yet: model or agent switching, per-session model selection, a
-built-in Telegram bot, and a native desktop wrapper. The app does receive a
+The bottom composer toolbar places model switching beside the attachment
+control. It uses the enabled model catalog from OpenCode; the choice is stored
+locally on the device and applies to new messages across chats. Agent switching,
+per-session model selection, a built-in Telegram bot, and a native desktop
+wrapper are not implemented. The app does receive a
 `telegram` source label when another OpenCode client is used.
 
 ## Quick start
 
 ### One-time host setup (Linux/macOS)
 
-For an automated install, this one-line command fetches `main` from the [distribution installer](https://github.com/Aetherdz/opencode-mobile-dist) and therefore trusts that branch:
+One-command setup (Linux/macOS): this fetches `main` from the [distribution installer](https://github.com/Aetherdz/opencode-mobile-dist), so it trusts that branch:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Aetherdz/opencode-mobile-dist/main/install.sh | bash -s -- setup
-opencode-mobile
 ```
+
+After setup, start the bridge and open the temporary tunnel with `opencode-mobile`.
 
 The command above fetches the latest installer from GitHub `main`; this is
 convenient but trusts that branch. Bridge release assets are verified against
@@ -102,7 +91,7 @@ APK is arm64-v8a only; `apk` verifies and displays its URL/checksum and does not
 install with adb without interactive approval. See the installer README for
 supported host architectures and setup limitations.
 
-The app starts in English. Arabic and French remain selectable in Settings.
+The app starts in English; language preferences are available in Settings.
 
 ### 1. Start OpenCode
 
@@ -157,7 +146,8 @@ use a reachable private address such as a Tailscale address, not
 
 ## Download
 
-The current public release remains **`1.0.0-beta.3`**. The homepage has a direct
+The current public release remains **`1.0.0-beta.3`** while beta.4 is being
+prepared. The homepage has a direct
 Android APK download card; release notes, bridge/web bundles, and checksums are
 available from the release page. The Android APK supports arm64-v8a on Android
 7.0 and newer.
@@ -254,9 +244,18 @@ tailscale serve --bg http://127.0.0.1:8787
 Then enter the resulting `https://<machine>.<tailnet>.ts.net` URL in the app. An
 SSH tunnel also works for a laptop-based preview.
 
-A Cloudflare Tunnel can work for a short-lived demo, but it puts the bridge
-behind a public hostname. The token is the only gate. For anything longer than a
-demo, use Tailscale and keep `HOST=127.0.0.1`.
+### Temporary Cloudflare tunnel security
+
+The optional quick tunnel creates a **publicly reachable HTTPS hostname** that
+forwards to the bridge on loopback. HTTPS encrypts traffic in transit; it does
+not make the hostname private. The shared bearer token is the only access gate,
+and a token holder can control the agent within the configured workdirs. TLS
+terminates at the tunnel provider, so this is not end-to-end private. Approve
+the tunnel only for a short demo, do not share its URL and token together, keep
+`ALLOWED_WORKDIRS` narrow, and run `opencode-mobile down` when finished. The
+temporary URL is not saved and expires when its tunnel process stops; the Linux
+service manages the bridge only, not tunnel recovery. Use Tailscale for routine
+remote access and keep `HOST=127.0.0.1`.
 
 Do not bind the bridge to `0.0.0.0` and expose the port directly to the
 internet.
@@ -270,7 +269,7 @@ npm run check
 ```
 
 `npm run check` runs the app typecheck, the app lint, the bridge typecheck, and
-the bridge tests (84 tests).
+the bridge test suite (98 tests at the last verified run).
 
 Useful commands:
 

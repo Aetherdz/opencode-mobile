@@ -8,6 +8,7 @@ import { hapticSelection } from '@/lib/haptics';
 import { useI18n } from '@/lib/i18n';
 import { layout } from '@/theme/layout';
 import { useTheme } from '@/theme/ThemeProvider';
+import { useChat } from '@/state/chat';
 
 export const SessionRow = memo(function SessionRow({
   session,
@@ -19,6 +20,7 @@ export const SessionRow = memo(function SessionRow({
   onLongPress: (session: SessionSummary) => void;
 }) {
   const theme = useTheme();
+  const selected = useChat((state) => state.sessionId === session.id);
   const { t, locale } = useI18n();
   const status =
     session.status === 'running'
@@ -47,22 +49,35 @@ export const SessionRow = memo(function SessionRow({
       delayLongPress={350}
       accessibilityRole="button"
       accessibilityLabel={`${title}, ${folder}, ${time}${status ? `, ${status.label}` : ''}`}
+      accessibilityState={{ selected }}
       style={({ pressed }) => [
         styles.row,
         {
           borderBottomColor: theme.colors.divider,
-          backgroundColor: pressed ? theme.colors.surface : 'transparent',
+          backgroundColor: selected
+            ? theme.colors.surface2
+            : pressed
+              ? theme.colors.surface
+              : 'transparent',
+          borderStartColor: selected ? theme.colors.primary : 'transparent',
         },
       ]}
     >
-      <View style={styles.line}>
-        <AppText variant="body15" weight="500" numberOfLines={1} style={styles.title}>
-          {title}
-        </AppText>
-        {status ? <StatusIndicator status={session.status} /> : null}
-        <AppText variant="helper" color="secondary" style={styles.time}>
-          {time}
-        </AppText>
+      <View style={styles.content}>
+        <View style={styles.line}>
+          <AppText variant="body15" weight="600" numberOfLines={1} style={styles.title}>
+            {title}
+          </AppText>
+          {status ? <StatusIndicator status={session.status} /> : null}
+        </View>
+        <View style={styles.metaLine}>
+          <AppText variant="helper" color="secondary" numberOfLines={1} style={styles.folder}>
+            {folder}
+          </AppText>
+          <AppText variant="helper" color="secondary" style={styles.time}>
+            {time}
+          </AppText>
+        </View>
       </View>
     </Pressable>
   );
@@ -70,17 +85,26 @@ export const SessionRow = memo(function SessionRow({
 
 const styles = StyleSheet.create({
   row: {
-    minHeight: 58,
+    minHeight: 68,
     paddingHorizontal: layout.padX,
     paddingVertical: layout.rowPadY,
     borderBottomWidth: layout.border,
+    borderStartWidth: 3,
     justifyContent: 'center',
   },
+  content: { gap: 5 },
   line: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
   },
   title: { flex: 1 },
+  metaLine: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 10,
+  },
+  folder: { flex: 1 },
   time: { fontVariant: ['tabular-nums'] },
 });

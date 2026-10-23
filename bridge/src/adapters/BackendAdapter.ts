@@ -1,5 +1,6 @@
 import type {
   DiffFile,
+  AvailableModel,
   FormAnswer,
   MessageListPage,
   OpenCodeEvent,
@@ -11,6 +12,7 @@ import type {
 
 export interface BackendAdapter {
   serverInfo(): Promise<{ version: string; pid?: number }>;
+  listModels(): Promise<AvailableModel[]>;
   listSessions(options?: { limit?: number; directory?: string }): Promise<RawSession[]>;
   getSession(id: string): Promise<RawSession>;
   createSession(directory: string, title?: string): Promise<RawSession>;

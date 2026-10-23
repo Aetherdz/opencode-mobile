@@ -2,9 +2,15 @@ name: Android release APK
 
 on:
   workflow_dispatch:
+    inputs:
+      publish_release:
+        description: Attach the verified APK to the release for this ref (run after bridge/web bundles publish).
+        required: false
+        default: false
+        type: boolean
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: android-release
@@ -104,8 +110,7 @@ jobs:
           fi
           "$BUILD_TOOLS/aapt" dump badging "$APK" | grep -E "^(package|sdkVersion|targetSdkVersion):"
           VERSION="$(node -p "require('./app/app.json').expo.version")"
-          SHORT_SHA="${GITHUB_SHA::7}"
-          NAME="opencode-mobile-${VERSION}-${SHORT_SHA}.apk"
+          NAME="opencode-mobile-${VERSION}.apk"
           cp "$APK" "$NAME"
           echo "name=$NAME" >> "$GITHUB_OUTPUT"
           sha256sum "$NAME" | tee "$NAME.sha256"
@@ -120,6 +125,37 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
+      - name: Attach APK and checksums to GitHub release
+        if: ${{ inputs.publish_release }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
+          APK_NAME: ${{ steps.artifact.outputs.name }}
+        run: |
+          set -euo pipefail
+          if [[ ! "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::Dispatch this workflow on a version tag before attaching a release asset."
+            exit 1
+          fi
+          VERSION="${TAG#v}"
+          EXPECTED="opencode-mobile-${VERSION}.apk"
+          if [ "$APK_NAME" != "$EXPECTED" ]; then
+            echo "::error::APK filename does not match the checked-out version and commit."
+            exit 1
+          fi
+          if [ "$(node -p "require('./app/app.json').expo.version")" != "$VERSION" ]; then
+            echo "::error::Release tag does not match app.json version."
+            exit 1
+          fi
+          gh release view "$TAG" >/dev/null
+          mkdir -p "$RUNNER_TEMP/release-assets"
+          gh release download "$TAG" --pattern SHA256SUMS --dir "$RUNNER_TEMP/release-assets"
+          SUMS="$RUNNER_TEMP/release-assets/SHA256SUMS"
+          grep -vF "  $APK_NAME" "$SUMS" > "$SUMS.new" || true
+          mv "$SUMS.new" "$SUMS"
+          sha256sum "$APK_NAME" "$APK_NAME.sha256" >> "$SUMS"
+          gh release upload "$TAG" "$APK_NAME" "$APK_NAME.sha256" "$SUMS" --clobber
+
       - name: Summary
         run: |
           {
@@ -128,7 +164,7 @@ jobs:
             echo "Artifact: \`${{ steps.artifact.outputs.name }}\`"
             echo
             echo "Signed with the project release key stored in repository secrets."
-            echo "Verify the certificate and checksum before publishing the asset."
+            echo "The artifact is also attached to the GitHub release when publish_release was selected."
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Remove release keystore

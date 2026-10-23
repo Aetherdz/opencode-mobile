@@ -99,6 +99,14 @@ export interface SendPromptInput {
   metadata?: Record<string, unknown>;
   delivery?: Delivery;
   resume?: boolean;
+  model?: { providerID: string; modelID: string };
+}
+
+export interface AvailableModel {
+  providerId: string;
+  modelId: string;
+  name: string;
+  providerName: string;
 }
 
 export interface RawSession {
@@ -246,7 +254,7 @@ export type ServerWsEvent =
   | { type: "resume"; sessionId: string; replayed: number }
   | { type: "ack"; sessionId: string; requestId: string }
   | { type: "pong"; t: number }
-  | { type: "error"; code: string; message: string };
+  | { type: "error"; code: string; message: string; requestId?: string };
 
 export type ClientWsEvent =
   | { type: "subscribe"; sessionId: string; lastEventId?: string }
@@ -256,6 +264,7 @@ export type ClientWsEvent =
       sessionId: string;
       text: string;
       fileIds?: string[];
+      model?: { providerID: string; modelID: string };
       delivery?: Delivery;
       requestId?: string;
     }
