@@ -2683,8 +2683,8 @@ section[id] {
     grid-column: 1;
   }
 
-  .hero > .hero-art { grid-row: 1; }
-  .hero > .hero-copy { grid-row: 2; }
+  .hero > .hero-copy { grid-row: 1; }
+  .hero > .hero-art { grid-row: 2; }
   .hero-copy > * { min-width: 0; }
   .hero-copy .display { max-width: 100%; overflow-wrap: normal; }
 
@@ -2698,7 +2698,7 @@ section[id] {
   .phone {
     width: clamp(250px, 78vw, 340px);
     max-width: 100%;
-    transform: perspective(900px) rotate(-9deg) rotateY(-2deg);
+    transform: none;
   }
 
   .phone-screen { min-height: 28rem; }
@@ -3827,7 +3827,7 @@ html[dir="rtl"] .page-meta span + span::before { order: 2; }
   .brand-build { display: none; }
   .header-tools { --control-h: 2.75rem; gap: 0.5rem; }
 
-  .hero .display { max-width: 100%; font-size: clamp(2.53rem, 11.3vw, 3.1rem); line-height: 1.12; }
+  .hero .display { max-width: 100%; font-size: clamp(2.65rem, 13vw, 3.5rem); line-height: 1.08; }
   .hero .lede { max-width: 100%; font-size: clamp(1.05rem, 4.4vw, 1.25rem); line-height: 1.55; }
   .hero .eyebrow { max-width: 100%; flex-wrap: wrap; }
   .hero-release { padding: 0.8rem; }
