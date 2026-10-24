@@ -70,7 +70,7 @@ const EnvSchema = z.object({
     ),
   OPENCODE_URL: z.string().url().optional(),
   OPENCODE_PASSWORD: z.string().optional(),
-  ALLOWED_WORKDIRS: z.string().default(os.homedir()),
+  ALLOWED_WORKDIRS: z.string().default(() => path.join(os.homedir(), "projects")),
   MAX_UPLOAD_MB: z.coerce.number().positive().default(25),
   MAX_UPLOAD_TOTAL_MB: z.coerce.number().positive().default(100),
   MAX_SESSION_UPLOAD_MB: z.coerce.number().positive().default(1024),
@@ -208,6 +208,12 @@ export function loadConfig(): {
   const env = parsed.data;
   const opencode = discoverService();
   assertLoopback(opencode.url);
+
+  // Keep the implicit scope to the conventional project folder, never all of
+  // $HOME. Explicit ALLOWED_WORKDIRS continues to be validated below.
+  if (!process.env.ALLOWED_WORKDIRS) {
+    fs.mkdirSync(path.join(os.homedir(), "projects"), { recursive: true, mode: 0o700 });
+  }
 
   const allowedWorkdirs = splitList(env.ALLOWED_WORKDIRS).map((dir) =>
     fs.realpathSync.native(expandHome(dir)),

@@ -505,11 +505,13 @@ export class WsHub {
           | undefined;
         if (item?.type === "user" && item.payload) {
           const source = metadataSource(item.payload.metadata);
+          const cachedSession = this.sessionCache.get(sessionId);
+          const scopedWorkdir = cachedSession ? this.access?.directory(cachedSession) : null;
           const eventFiles = resolveEventFiles(
             item.payload.files,
             sessionId,
             this.files,
-            this.workdirs,
+            scopedWorkdir ? [scopedWorkdir] : this.workdirs,
             this.maxUploadBytes,
           );
           const message: ChatMessage = {

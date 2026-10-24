@@ -125,8 +125,9 @@ npm run build
 npm start
 ```
 
-Set `ALLOWED_WORKDIRS` to the project roots you want to expose. The bridge
-listens on `127.0.0.1:8787` by default.
+By default, `ALLOWED_WORKDIRS` is `~/projects` (created if missing), not the
+entire home directory. Set it explicitly to the project roots you want to
+expose. The bridge listens on `127.0.0.1:8787` by default.
 
 ```bash
 curl http://127.0.0.1:8787/health
@@ -211,7 +212,7 @@ Not protected:
 - There is no end-to-end encryption between the app and the bridge.
 - Native builds allow cleartext HTTP for local and Tailscale connections.
 - The WebSocket upgrade uses a short-lived one-time ticket; do not log query strings.
-- Session metadata outside `ALLOWED_WORKDIRS` may still appear in the session list, but content, prompts, approvals, diffs, uploads, and stop/delete actions are rejected.
+- Sessions outside `ALLOWED_WORKDIRS` may still appear in the list. Their content and actions remain blocked until a user explicitly enables that individual session in the app. This bridge-level grant is not an OS sandbox: OpenCode tools retain the filesystem permissions of the OpenCode process.
 - Optional push notifications go through Expo's push service. Payloads contain IDs and generic text, not message bodies.
 
 Rotate `AUTH_TOKEN` if it was ever shared, logged, or captured in a screenshot.
@@ -225,7 +226,7 @@ Keep the bridge on a private network. See [SECURITY.md](SECURITY.md) and
 | `AUTH_TOKEN` | required | Shared bearer token. At least 32 characters. |
 | `HOST` | `127.0.0.1` | Bind address. Keep loopback. |
 | `PORT` | `8787` | Bridge HTTP port. |
-| `ALLOWED_WORKDIRS` | home directory | Comma-separated roots allowed for sessions and uploads. Set this narrowly. |
+| `ALLOWED_WORKDIRS` | `~/projects` | Comma-separated roots allowed for sessions and uploads. Set this narrowly. |
 | `CORS_ORIGINS` | empty | Exact browser origins allowed to call the bridge. Empty disables CORS. |
 | `MAX_UPLOAD_MB` | `25` | Per-file limit. |
 | `MAX_UPLOAD_TOTAL_MB` | `100` | Per-request total upload limit. |

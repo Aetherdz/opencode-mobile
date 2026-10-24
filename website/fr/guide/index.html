@@ -182,6 +182,9 @@ npm start</code></pre>
             Définissez <code>ALLOWED_WORKDIRS</code> sur les racines de projets que
             vous souhaitez exposer, puis vérifiez que le service répond :
           </p>
+          <p class="docs-note">
+            La valeur par défaut est <code>~/projects</code>, et non tout le dossier personnel. Une session existante en dehors des racines configurées peut être autorisée explicitement dans l’application, une session à la fois. Il s’agit d’une autorisation du bridge, pas d’une sandbox système : les outils OpenCode gardent les permissions du processus OpenCode.
+          </p>
           <div class="terminal">
             <div class="terminal-bar">
               <span class="terminal-dots" aria-hidden="true"><i></i><i></i></span>

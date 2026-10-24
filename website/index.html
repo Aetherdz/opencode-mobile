@@ -272,7 +272,8 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
           </div>
           <div class="docs-note">
             <strong>First connection · Linux and macOS</strong>
-            <p>Have Node.js 22+, OpenCode running, and a project folder ready. Setup installs the bridge and limits access to the selected work folder (not your whole home directory). Then run <code>opencode-mobile</code>, choose private Tailscale or the temporary Cloudflare Quick Tunnel, and scan the terminal QR in the app. The public tunnel is off until you explicitly confirm; the URL and token together grant access, so keep them private. Leave the terminal open while using the temporary link. <a href="https://github.com/Aetherdz/opencode-mobile-dist#linux-and-macos-quick-setup" rel="noopener noreferrer">Full setup, Windows instructions, and troubleshooting</a>.</p>
+            <p>Have Node.js 22+, OpenCode running, and a project folder ready. Setup limits the bridge allowlist to <code>~/projects</code> by default, not your whole home directory. Then run <code>opencode-mobile</code>, choose private Tailscale or the temporary Cloudflare Quick Tunnel, and scan the terminal QR in the app. The public tunnel is off until you explicitly confirm; the URL and token together grant access, so keep them private. Leave the terminal open while using the temporary link. <a href="https://github.com/Aetherdz/opencode-mobile-dist#linux-and-macos-quick-setup" rel="noopener noreferrer">Full setup, Windows instructions, and troubleshooting</a>.</p>
+            <p>If an existing session is outside that folder, you can explicitly enable that session in the app. This bridge grant is not an OS sandbox: OpenCode tools still have the filesystem permissions of the process running OpenCode.</p>
           </div>
         </div>
       </section>
