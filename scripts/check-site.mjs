@@ -30,9 +30,9 @@ for (const file of htmlFiles) {
 }
 
 const errors = [];
-const socialPreview = fs.readFileSync(path.join(root, "assets/og-beta9.png"));
+const socialPreview = fs.readFileSync(path.join(root, "assets/og.png"));
 if (socialPreview.length < 24 || socialPreview.toString("hex", 0, 8) !== "89504e470d0a1a0a" || socialPreview.readUInt32BE(16) !== 1200 || socialPreview.readUInt32BE(20) !== 630) {
-  errors.push("assets/og-beta9.png: expected a 1200×630 PNG social preview");
+  errors.push("assets/og.png: expected a 1200×630 PNG social preview");
 }
 
 for (const file of htmlFiles) {
@@ -194,7 +194,7 @@ for (const relative of ["index.html", "ar/index.html", "fr/index.html", "es/inde
   if (!command.includes("curl -fsSL") || !command.includes("install.sh | bash -s -- setup")) errors.push(`${relative}: POSIX install command changed`);
   if (!win.includes("3a493282e252468ed96012cd0019f5252314bfb5c7b810be34476602616a14aa") || !win.includes("7c4ec38b7de7d87e88d7f215721a11bc338e128f") || !win.includes("install.ps1 -OutFile install.ps1")) errors.push(`${relative}: pinned Windows command/checksum changed`);
   if (!(html.match(/v1\.0\.0-beta\.9/g) ?? []).length || !html.includes("opencode-mobile-1.0.0-beta.9.apk")) errors.push(`${relative}: APK version/asset changed`);
-  if ((html.match(/assets\/og-beta9\.png\?v=beta9/g) ?? []).length !== 2 || !html.includes('property="og:title"')) errors.push(`${relative}: refreshed social preview metadata is missing`);
+  if ((html.match(/assets\/og\.png\?v=beta9-original/g) ?? []).length !== 2 || !html.includes('property="og:title"')) errors.push(`${relative}: social preview metadata is missing`);
 }
 
 if (errors.length > 0) {
