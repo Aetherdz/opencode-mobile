@@ -9,6 +9,7 @@ import Animated, {
   useReducedMotion,
 } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { dismissKeyboard } from '@/lib/keyboard';
 import { useI18n } from '@/lib/i18n';
 import { useTheme } from '@/theme/ThemeProvider';
 import { AppText } from './AppText';
@@ -33,15 +34,26 @@ export function Sheet({ visible, onClose, children, footer, title, titleAlign = 
 
   useEffect(() => {
     if (visible) {
+      // An overlay must not inherit an IME focused on the screen beneath it.
+      dismissKeyboard();
       setMounted(true);
       // Let the Modal mount before the entering animation is evaluated.
       const frame = requestAnimationFrame(() => setContentVisible(true));
       return () => cancelAnimationFrame(frame);
     }
 
-    setContentVisible(false);
+    // Drop the IME while the inputs are still mounted. Unmounting a focused
+    // TextInput inside a lingering Android Modal leaves the keyboard and its
+    // insets stuck, freezing taps until the app restarts.
+    dismissKeyboard();
+    // Keep the content mounted a beat longer so the blur settles before the
+    // inputs unmount; the Modal itself lingers for the exit animation.
+    const hide = setTimeout(() => setContentVisible(false), reduced ? 0 : 80);
     const timeout = setTimeout(() => setMounted(false), reduced ? 120 : 210);
-    return () => clearTimeout(timeout);
+    return () => {
+      clearTimeout(hide);
+      clearTimeout(timeout);
+    };
   }, [visible, reduced]);
 
   return (

@@ -1,6 +1,6 @@
 {
   "name": "opencode-mobile-app",
-  "version": "1.0.0-beta.9",
+  "version": "1.0.0-beta.11",
   "main": "expo-router/entry",
   "dependencies": {
     "@expo-google-fonts/inter": "^0.4.2",

@@ -88,12 +88,15 @@ or execute things that OpenCode is allowed to touch.
 - Session creation resolves the requested directory with `realpath` and checks
   it is inside `ALLOWED_WORKDIRS`.
 - `ALLOWED_WORKDIRS` cannot be the filesystem root.
+- The default workdir is `~/projects`, not the entire home directory.
 - Uploads are written inside the session workdir, not in a shared temp
   directory.
 - Downloads are checked against the file registry and served only by file ID.
-- Existing OpenCode sessions outside `ALLOWED_WORKDIRS` may still be visible
-  through the OpenCode API. The bridge's workdir check is not a complete
-  OpenCode ACL.
+- Existing sessions outside `ALLOWED_WORKDIRS` may still appear in the list.
+  The app can grant access to one such session at a time after explicit user
+  confirmation; grants are runtime-only and do not modify the configured roots.
+- A bridge grant is not an OS sandbox. OpenCode tools keep the permissions of
+  the OpenCode process and may access other paths available to that process.
 
 ### Uploads
 

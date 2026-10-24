@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { useEffect, useRef, useState, type ComponentRef } from 'react';
+import { TextInput, View } from 'react-native';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { Sheet } from '@/components/ui/Sheet';
@@ -23,6 +23,7 @@ export function RenameSheet({
   const [title, setTitle] = useState(initial);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const inputRef = useRef<ComponentRef<typeof TextInput>>(null);
 
   useEffect(() => {
     if (visible) {
@@ -31,14 +32,22 @@ export function RenameSheet({
     }
   }, [initial, visible]);
 
+  useEffect(() => {
+    if (!visible) return;
+    // autoFocus inside a freshly mounted Modal races the window attach on
+    // Android; focus after the sheet has settled instead.
+    const timer = setTimeout(() => inputRef.current?.focus(), 280);
+    return () => clearTimeout(timer);
+  }, [visible]);
+
   return (
     <Sheet visible={visible} onClose={onClose}>
       <View style={{ padding: theme.spacing.xl, gap: theme.spacing.lg }}>
         <AppText variant="title">{t('sessions.renameTitle')}</AppText>
         <TextField
+          ref={inputRef}
           value={title}
           onChangeText={setTitle}
-          autoFocus
           maxLength={120}
           placeholder={t('sessions.untitled')}
         />

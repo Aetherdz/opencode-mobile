@@ -8,6 +8,8 @@ import type { LoggerLike } from "../src/log.js";
 import { RuntimeState } from "../src/state.js";
 import type { OpenCodeEvent, RawSession, ServerWsEvent } from "../src/types.js";
 import { FileRegistry } from "../src/uploads.js";
+import { SessionAccess } from "../src/sessionAccess.js";
+import { toFileUri } from "../src/fileUri.js";
 import { WsHub } from "../src/ws.js";
 
 interface FakeSocket {
@@ -93,7 +95,7 @@ function sentEvents(socket: FakeSocket): Array<ServerWsEvent & { eventId?: strin
   return socket.sent.map((raw) => JSON.parse(raw) as ServerWsEvent & { eventId?: string });
 }
 
-async function makeFixture(): Promise<{
+async function makeFixture(options: { sessionDirectory?: string; workdirs?: string[]; access?: SessionAccess } = {}): Promise<{
   socket: FakeSocket;
   state: RuntimeState;
   internals: HubInternals;
@@ -105,13 +107,15 @@ async function makeFixture(): Promise<{
 
   const state = new RuntimeState();
   const hub = new WsHub(
-    fakeAdapter(root),
+    fakeAdapter(options.sessionDirectory ?? root),
     state,
     new FileRegistry(path.join(root, "data")),
     logger,
-    [root],
+    options.workdirs ?? [root],
     1024,
     10,
+    undefined,
+    options.access,
   );
   hubs.push(hub);
 
@@ -140,6 +144,47 @@ afterEach(async () => {
 });
 
 describe("WsHub upstream mapping", () => {
+  it("resolves live attachment files from an explicitly granted outside session only", async () => {
+    const outside = fs.mkdtempSync(path.join(os.tmpdir(), "bridge-ws-outside-"));
+    roots.push(outside);
+    const filePath = path.join(outside, "output.txt");
+    fs.writeFileSync(filePath, "agent output");
+    const access = new SessionAccess([]);
+    expect(access.authorize({
+      id: "ses_1",
+      projectID: "proj_1",
+      time: { created: 1, updated: 2 },
+      location: { directory: outside },
+    })).not.toBeNull();
+
+    const { socket, internals } = await makeFixture({
+      sessionDirectory: outside,
+      workdirs: [],
+      access,
+    });
+
+    internals.onUpstream(event("session.inbox.enqueued", {
+      sessionID: "ses_1",
+      inboxID: "inbox_outside",
+      item: {
+        type: "user",
+        payload: {
+          text: "here is the output",
+          files: [{ source: { type: "uri", uri: toFileUri(filePath) } }],
+        },
+      },
+    }));
+
+    expect(sentEvents(socket)).toContainEqual(expect.objectContaining({
+      type: "message.created",
+      sessionId: "ses_1",
+      message: expect.objectContaining({
+        id: "inbox_outside",
+        files: [expect.objectContaining({ name: "output.txt", url: expect.stringMatching(/^\/files\//) })],
+      }),
+    }));
+  });
+
   it("passes an enabled model to OpenCode and rejects unavailable model selections", async () => {
     const { socket, internals } = await makeFixture();
     const model = { providerID: "provider", modelID: "model" };

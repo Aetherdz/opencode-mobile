@@ -29,6 +29,7 @@ import { AppText } from '@/components/ui/AppText';
 import { Icon } from '@/components/ui/Icon';
 import { Rtl } from '@/components/ui/Rtl';
 import { useI18n } from '@/lib/i18n';
+import { dismissKeyboard } from '@/lib/keyboard';
 import { formatSessionTitle } from '@/lib/format';
 import { layout } from '@/theme/layout';
 import { useTheme } from '@/theme/ThemeProvider';
@@ -90,17 +91,24 @@ export function AppDrawer({
 
   useEffect(() => {
     if (visible) {
+      // The drawer opens over the sessions screen; its search input or home
+      // prompt may own the IME, which would otherwise stay up under the
+      // drawer's Modal window.
+      dismissKeyboard();
       dragX.value = 0;
       setMounted(true);
       const frame = requestAnimationFrame(() => setContentVisible(true));
       return () => cancelAnimationFrame(frame);
     }
+    dismissKeyboard();
     setContentVisible(false);
     const timeout = setTimeout(() => setMounted(false), reduced ? 120 : 200);
     return () => clearTimeout(timeout);
   }, [visible, reduced, dragX]);
 
   const open = (route: '/sessions' | '/settings' | '/new-session') => {
+    // Blur before the route changes so the IME is never carried over.
+    dismissKeyboard();
     onClose();
     router.push(route as never);
   };
@@ -151,8 +159,10 @@ export function AppDrawer({
                   styles.panel,
                   dragStyle,
                 {
-                  left: isRTL ? undefined : 0,
-                  right: isRTL ? 0 : undefined,
+                  // Use the logical leading edge. React Native may swap
+                  // physical left/right styles in RTL, which can otherwise
+                  // anchor this drawer to the left even for Arabic.
+                  start: 0,
                   backgroundColor: theme.colors.canvas,
                   borderEndColor: theme.colors.line,
                   paddingTop: Math.max(insets.top, 16) + 12,
@@ -208,6 +218,7 @@ export function AppDrawer({
               <Pressable
                 key={session.id}
                 onPress={() => {
+                  dismissKeyboard();
                   onClose();
                   router.push({ pathname: '/chat/[id]', params: { id: session.id } } as never);
                 }}

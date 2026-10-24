@@ -168,6 +168,7 @@ export type ClientWsEvent =
       sessionId: string;
       text: string;
       fileIds?: string[];
+      model?: ModelSelection;
       delivery?: Delivery;
       requestId?: string;
     }

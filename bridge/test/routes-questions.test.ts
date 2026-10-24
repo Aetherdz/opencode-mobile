@@ -66,6 +66,7 @@ interface Fixture {
   state: RuntimeState;
   adapter: {
     listSessions: ReturnType<typeof vi.fn>;
+    listMessages: ReturnType<typeof vi.fn>;
     listModels: ReturnType<typeof vi.fn>;
     listSessionForms: ReturnType<typeof vi.fn>;
     replyForm: ReturnType<typeof vi.fn>;
@@ -78,9 +79,12 @@ interface Fixture {
 async function makeFixture(): Promise<Fixture> {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "bridge-routes-"));
   roots.push(root);
+  const outside = fs.mkdtempSync(path.join(os.tmpdir(), "bridge-outside-"));
+  roots.push(outside);
 
   const adapterMethods = {
     listSessions: vi.fn(async () => []),
+    listMessages: vi.fn(async () => ({ data: [], cursor: {} })),
     listModels: vi.fn(async () => [
       { providerId: "p1", modelId: "m1", name: "Model One", providerName: "Provider One" },
     ]),
@@ -98,14 +102,13 @@ async function makeFixture(): Promise<Fixture> {
       projectID: "proj_1",
       title: "Test",
       time: { created: 1, updated: 2 },
-      location: { directory: root },
+      location: { directory: id === "outside" ? outside : root },
     }),
     createSession: async () => {
       throw new Error("not used");
     },
     renameSession: async () => {},
     deleteSession: async () => {},
-    listMessages: async () => ({ data: [], cursor: {} }),
     sendPrompt: async () => ({ id: "msg_1" }),
     interrupt: async () => true,
     listSessionPermissions: async () => [],
@@ -157,6 +160,33 @@ afterEach(async () => {
 });
 
 describe("question routes", () => {
+  it("requires explicit grant before opening an outside session and then allows chat history", async () => {
+    const { app, adapter } = await makeFixture();
+    adapter.listPendingPermissions.mockResolvedValue([
+      { id: "pending-outside", sessionID: "outside", action: "write", resources: ["secret.txt"] },
+      { id: "pending-allowed", sessionID: "inside", action: "read", resources: ["project.ts"] },
+    ]);
+
+    const denied = await app.inject({ method: "GET", url: "/sessions/outside/messages" });
+    expect(denied.statusCode).toBe(403);
+    expect(denied.json().code).toBe("outside_workdir");
+    const hiddenPermissions = await app.inject({ method: "GET", url: "/permissions" });
+    expect(hiddenPermissions.json().data.map((item: { id: string }) => item.id)).toEqual(["pending-allowed"]);
+
+    const grant = await app.inject({ method: "POST", url: "/sessions/outside/access", payload: {} });
+    expect(grant.statusCode).toBe(200);
+    expect(grant.json().data.sessionId).toBe("outside");
+    expect(grant.json().data.limitation).toContain("not OS-sandboxed");
+
+    const allowed = await app.inject({ method: "GET", url: "/sessions/outside/messages" });
+    expect(allowed.statusCode).toBe(200);
+    const visiblePermissions = await app.inject({ method: "GET", url: "/permissions" });
+    expect(visiblePermissions.json().data.map((item: { id: string }) => item.id)).toEqual([
+      "pending-outside",
+      "pending-allowed",
+    ]);
+  });
+
   it("omits archived sessions from the sessions list", async () => {
     const { app, adapter } = await makeFixture();
     adapter.listSessions.mockResolvedValue([

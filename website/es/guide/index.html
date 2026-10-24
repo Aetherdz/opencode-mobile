@@ -182,6 +182,9 @@ npm start</code></pre>
             Define <code>ALLOWED_WORKDIRS</code> con las raíces de proyecto que
             quieras exponer y comprueba que el servicio responde:
           </p>
+          <p class="docs-note">
+            El valor predeterminado es <code>~/projects</code>, no todo el directorio personal. Puedes habilitar explícitamente desde la aplicación una sesión existente fuera de las raíces configuradas, una por una. Es un permiso del puente, no un aislamiento del sistema operativo: las herramientas de OpenCode conservan los permisos del proceso que ejecuta OpenCode.
+          </p>
           <div class="terminal">
             <div class="terminal-bar">
               <span class="terminal-dots" aria-hidden="true"><i></i><i></i></span>
