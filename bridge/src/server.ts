@@ -14,6 +14,7 @@ import { WsHub } from "./ws.js";
 import { registerRoutes } from "./routes/index.js";
 import { PushService } from "./push.js";
 import { mapQuestion } from "./mapping.js";
+import { SessionAccess } from "./sessionAccess.js";
 import type { QuestionRequest } from "./types.js";
 
 export interface BuiltServer {
@@ -53,6 +54,7 @@ export async function buildServer(config: Config): Promise<BuiltServer> {
   const files = new FileRegistry(config.dataDir);
   const sources = new SourceResolver(adapter, state);
   const push = new PushService(config.dataDir, app.log, config.pushEnabled);
+  const access = new SessionAccess(config.allowedWorkdirs);
   const hub = new WsHub(
     adapter,
     state,
@@ -62,6 +64,7 @@ export async function buildServer(config: Config): Promise<BuiltServer> {
     config.maxUploadBytes * 4,
     config.maxFilesPerMessage,
     push,
+    access,
   );
 
   registerCors(app, config.corsOrigins);
@@ -78,7 +81,7 @@ export async function buildServer(config: Config): Promise<BuiltServer> {
     await authenticate(request, reply);
   });
 
-  registerRoutes(app, { config, adapter, state, files, sources, push });
+  registerRoutes(app, { config, adapter, state, files, sources, push, access });
 
   app.post("/ws-ticket", async () => guard.issueWsTicket());
 

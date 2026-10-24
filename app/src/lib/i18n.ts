@@ -12,6 +12,7 @@ const strings: Record<string, Entry> = {
   'common.save': { en: 'Save', ar: 'حفظ' },
   'common.delete': { en: 'Delete', ar: 'حذف' },
   'common.retry': { en: 'Retry', ar: 'إعادة المحاولة' },
+  'common.continue': { en: 'Continue', ar: 'متابعة' },
   'common.loading': { en: 'Loading', ar: 'جار التحميل' },
   'common.error': { en: 'Something went wrong', ar: 'حدث خطأ' },
   'common.copy': { en: 'Copy', ar: 'نسخ' },
@@ -349,6 +350,13 @@ const strings: Record<string, Entry> = {
     ar: "مجلد عمل هذه الجلسة خارج ALLOWED_WORKDIRS على الجسر، لذا لا يمكن فتح محتواها. أنشئ جلسة من مجلد عمل مسموح (جلسة جديدة) أو اطلب من مشرف الجسر إضافة هذا المجلد.",
   },
   'chat.chooseWorkdir': { en: 'Choose a work directory', ar: 'اختر مجلد عمل' },
+  'chat.authorizeSession': { en: 'Enable this session', ar: 'تفعيل هذه الجلسة' },
+  'chat.authorizeTitle': { en: 'Enable access to this session?', ar: 'هل تريد تفعيل الوصول لهذه الجلسة؟' },
+  'chat.authorizeConfirm': { en: 'Enable session', ar: 'تفعيل الجلسة' },
+  'chat.authorizeWarning': {
+    en: 'This grants the bridge access to this session only. Important: OpenCode is not sandboxed by this setting; its tools run with the bridge process permissions and may access other files available to that process. Continue only if you trust this session and its tasks.',
+    ar: 'هذا يمنح الجسر الوصول إلى هذه الجلسة فقط. تنبيه مهم: هذا لا يعزل OpenCode على مستوى النظام؛ تعمل أدواته بصلاحيات عملية الجسر وقد تصل إلى ملفات أخرى متاحة لها. تابع فقط إذا كنت تثق بهذه الجلسة ومهامها.',
+  },
 
   'settings.title': { en: 'Settings', ar: 'الإعدادات' },
   'settings.appearance': { en: 'Appearance', ar: 'المظهر' },

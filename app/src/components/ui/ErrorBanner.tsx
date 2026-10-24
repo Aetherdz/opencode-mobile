@@ -10,11 +10,15 @@ export function ErrorBanner({
   message,
   onRetry,
   retryLabel,
+  onSecondaryAction,
+  secondaryLabel,
   design = 'classic',
 }: {
   message: string;
   onRetry?: () => void;
   retryLabel?: string;
+  onSecondaryAction?: () => void;
+  secondaryLabel?: string;
   design?: 'classic' | 'new';
 }) {
   const theme = useTheme();
@@ -49,15 +53,29 @@ export function ErrorBanner({
           {message}
         </AppText>
       </View>
-      {onRetry ? (
-        <Button
-          label={retryLabel ?? t('common.retry')}
-          variant="secondary"
-          design={isNew ? 'new' : 'classic'}
-          size={isNew ? 'sm' : undefined}
-          compact
-          onPress={onRetry}
-        />
+      {onRetry || onSecondaryAction ? (
+        <View style={styles.actions}>
+          {onRetry ? (
+            <Button
+              label={retryLabel ?? t('common.retry')}
+              variant="secondary"
+              design={isNew ? 'new' : 'classic'}
+              size={isNew ? 'sm' : undefined}
+              compact
+              onPress={onRetry}
+            />
+          ) : null}
+          {onSecondaryAction ? (
+            <Button
+              label={secondaryLabel ?? t('common.continue')}
+              variant="secondary"
+              design={isNew ? 'new' : 'classic'}
+              size={isNew ? 'sm' : undefined}
+              compact
+              onPress={onSecondaryAction}
+            />
+          ) : null}
+        </View>
       ) : null}
     </View>
   );
@@ -65,5 +83,6 @@ export function ErrorBanner({
 
 const styles = StyleSheet.create({
   root: { borderWidth: 1 },
+  actions: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   row: { flexDirection: 'row', alignItems: 'flex-start', gap: 8 },
 });

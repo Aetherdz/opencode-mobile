@@ -19,6 +19,7 @@ import {
   hapticWarning,
 } from '@/lib/haptics';
 import { useI18n } from '@/lib/i18n';
+import { dismissKeyboard } from '@/lib/keyboard';
 import { useTheme } from '@/theme/ThemeProvider';
 
 interface AnswerState {
@@ -80,6 +81,9 @@ export function QuestionSheet({
 
   useEffect(() => {
     if (!request) {
+      // The sheet is torn down by the parent without going through Sheet's
+      // close transition, so the IME must be dropped here.
+      if (activeId.current !== null) dismissKeyboard();
       activeId.current = null;
       setIndex(0);
       setAnswers([]);
@@ -148,6 +152,10 @@ export function QuestionSheet({
       updateCurrent({ selected: [...selected, value] });
       return;
     }
+    if (currentAnswer?.customSelected) {
+      // Selecting an option unmounts the focused custom field.
+      dismissKeyboard();
+    }
     updateCurrent({ selected: [value], custom: '', customSelected: false });
   };
 
@@ -156,6 +164,10 @@ export function QuestionSheet({
     hapticSelection();
     setError(null);
     if (current.multiple) {
+      if (currentAnswer?.customSelected) {
+        // Unchecking custom unmounts the focused field.
+        dismissKeyboard();
+      }
       updateCurrent({ customSelected: !currentAnswer?.customSelected });
       return;
     }

@@ -243,7 +243,7 @@
                   <span class="copy-label" data-copy-label aria-live="polite">نسخ</span>
                 </button>
               </div>
-              <pre id="cmd-bridge"><code>curl -fsSL https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>main/<wbr>install.sh | bash -s -- setup</code></pre>
+              <pre id="cmd-bridge"><code>installer="$(mktemp)" &amp;&amp; trap 'rm -f "$installer"' EXIT &amp;&amp; curl -fsSL https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>main/<wbr>install.sh -o "$installer" &amp;&amp; bash "$installer" setup</code></pre>
             </div>
             <p class="cmd-note">بعد الإعداد، شغّل <code>opencode-mobile</code> كلما أردت بدء الرابط المؤقت.</p>
             <div class="cmd-panel" id="install-panel-win">

@@ -2,7 +2,7 @@ import { FlashList } from '@shopify/flash-list';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { router } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Image, Pressable, RefreshControl, StyleSheet, TextInput, View } from 'react-native';
+import { Image, Platform, Pressable, RefreshControl, StyleSheet, TextInput, View } from 'react-native';
 import { ApiError, deleteSession, getModels, listSessions, renameSession } from '@/api/client';
 import type { ModelSelection, SessionSummary } from '@/api/types';
 import { ModelSheet } from '@/components/chat/ModelSheet';
@@ -25,6 +25,7 @@ import { Skeleton } from '@/components/ui/Skeleton';
 import { TextField } from '@/components/ui/TextField';
 import { hapticMedium } from '@/lib/haptics';
 import { useI18n } from '@/lib/i18n';
+import { dismissKeyboard } from '@/lib/keyboard';
 import { formatSessionTitle } from '@/lib/format';
 import { getStored, setStored, deleteStored } from '@/lib/storage';
 import { getHiddenSessionIds, setHiddenSessionIds } from '@/lib/sessionVisibility';
@@ -267,10 +268,12 @@ export default function SessionsScreen() {
   };
 
   const openSession = useCallback((session: SessionSummary) => {
+    dismissKeyboard();
     router.push({ pathname: '/chat/[id]', params: { id: session.id } } as never);
   }, []);
 
   const openNewSession = useCallback(() => {
+    dismissKeyboard();
     router.push('/new-session' as never);
   }, []);
   const hour = new Date().getHours();
@@ -386,6 +389,7 @@ export default function SessionsScreen() {
           }}
           contentContainerStyle={{ paddingBottom: 28 }}
           showsVerticalScrollIndicator={false}
+          keyboardDismissMode={Platform.OS === 'ios' ? 'interactive' : 'on-drag'}
           refreshControl={
             <RefreshControl
               refreshing={query.isRefetching && !query.isLoading}
@@ -461,6 +465,7 @@ export default function SessionsScreen() {
               accessibilityLabel={t('home.placeholder')}
               returnKeyType="send"
               onSubmitEditing={() => {
+                dismissKeyboard();
                 const seed = homePrompt.trim();
                 router.push({ pathname: '/new-session', params: seed ? { seed } : {} } as never);
               }}
@@ -468,6 +473,7 @@ export default function SessionsScreen() {
             />
             <Pressable
               onPress={() => {
+                dismissKeyboard();
                 const seed = homePrompt.trim();
                 router.push({ pathname: '/new-session', params: seed ? { seed } : {} } as never);
               }}
