@@ -6,6 +6,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and the project uses [Semantic Versioning](https://semver.org/). This is a
 pre-1.0 beta; minor versions may change the bridge protocol.
 
+## [1.0.0-beta.9] - 2026-10-24
+
+### Improved
+
+- Added swipe-to-dismiss behavior for the navigation drawer and refreshed the
+  in-app brand mark and Android launcher icons.
+
 ## [1.0.0-beta.8] - 2026-10-23
 
 ### Fixed

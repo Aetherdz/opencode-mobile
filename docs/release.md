@@ -11,8 +11,9 @@ The project uses a split distribution model:
 
 ## Versioning
 
-The public beta version is `1.0.0-beta.2`. A release tag is `v` plus that
-version, for example `v1.0.0-beta.2`.
+The current public beta version is recorded in the root and app package
+metadata. At this revision it is `1.0.0-beta.9`; the release tag is `v` plus
+that version (`v1.0.0-beta.9`).
 
 When you bump the version, update all of these together:
 
@@ -122,8 +123,8 @@ sha256sum -c opencode-mobile-*.apk.sha256
 Rename the verified file to the stable asset name and attach it to the release:
 
 ```bash
-cp opencode-mobile-1.0.0-beta.2-<sha>.apk opencode-mobile-1.0.0-beta.2.apk
-gh release upload v1.0.0-beta.2 opencode-mobile-1.0.0-beta.2.apk
+cp opencode-mobile-1.0.0-beta.9-<sha>.apk opencode-mobile-1.0.0-beta.9.apk
+gh release upload v1.0.0-beta.9 opencode-mobile-1.0.0-beta.9.apk
 ```
 
 Then regenerate `SHA256SUMS` over every release asset and upload it with
@@ -165,16 +166,16 @@ The release workflow does **not** build or sign the APK. Build it with the
 3. Attach it to the release:
 
    ```bash
-   gh release upload v1.0.0-beta.2 opencode-mobile-1.0.0-beta.2.apk --clobber
+   gh release upload v1.0.0-beta.9 opencode-mobile-1.0.0-beta.9.apk --clobber
    ```
 
 4. Regenerate and upload the checksum file over every asset:
 
    ```bash
-   gh release download v1.0.0-beta.2 --dir release-assets
+   gh release download v1.0.0-beta.9 --dir release-assets
    rm -f release-assets/SHA256SUMS release-assets/*-debug.apk
    (cd release-assets && sha256sum * > SHA256SUMS)
-   gh release upload v1.0.0-beta.2 release-assets/SHA256SUMS --clobber
+   gh release upload v1.0.0-beta.9 release-assets/SHA256SUMS --clobber
    ```
 
 Use a tag that points at the source commit used for the APK. If the tag is

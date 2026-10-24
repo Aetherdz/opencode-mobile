@@ -152,12 +152,12 @@ CORS_ORIGINS=http://localhost:8081,http://127.0.0.1:8081
 
 ## التحميل
 
-سُحبت beta.4 وbeta.5. الإصدار البديل **`1.0.0-beta.8`** نسخة اختبار تتضمن الإصلاحات المذكورة؛ يرجى اختبارها على جهازك قبل الاعتماد عليها. تبقى بطاقة الموقع على beta.3 حتى اكتمال اختبار المالك. ملف APK الموقّع يستهدف arm64-v8a.
+سُحبت beta.4 وbeta.5. الإصدار الحالي **`1.0.0-beta.9`** نسخة اختبار؛ يرجى اختبارها على جهازك قبل الاعتماد عليها. ملف APK الموقّع يستهدف arm64-v8a.
 
 | الملف | ملاحظات |
 | --- | --- |
-| [APK أندرويد](https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.8/opencode-mobile-1.0.0-beta.8.apk) | [ملف SHA-256](https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.8/opencode-mobile-1.0.0-beta.8.apk.sha256)؛ arm64-v8a |
-| [حزم Bridge والويب](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.8) | حزم مع ملفات `SHA256SUMS` |
+| [APK أندرويد](https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.9/opencode-mobile-1.0.0-beta.9.apk) | [ملف SHA-256](https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.9/opencode-mobile-1.0.0-beta.9.apk.sha256)؛ arm64-v8a |
+| [حزم Bridge والويب](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.9) | حزم مع ملفات `SHA256SUMS` |
 | [المثبّتات](https://github.com/Aetherdz/opencode-mobile-dist) | مثبّت Bridge للينكس وماك وويندوز |
 
 النسخة التجريبية غير موجودة على Google Play. بناء iPhone يحتاج macOS/EAS وهو غير من إنتاج CI.
