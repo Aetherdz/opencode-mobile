@@ -37,7 +37,7 @@ asset, and fragment target in the HTML, including the pages in subdirectories.
 | `styles.css` | Design system and responsive layout |
 | `app.js` | Mobile navigation, copy buttons, year, cached star count, page sidebar |
 | `assets/favicon.svg` | Neutral terminal-prompt mark |
-| `assets/og.png` | 1200×630 social preview |
+| `assets/og-beta9.svg` / `assets/og-beta9.png` | Editable source and 1200×630 beta 9 social preview |
 | `../.github/social-preview.png` | 1280×640 GitHub social preview; upload it manually in repository settings |
 
 Pages live in directories so the URLs stay clean (`/features/`). All links are
