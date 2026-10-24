@@ -151,8 +151,10 @@ export function AppDrawer({
                   styles.panel,
                   dragStyle,
                 {
-                  left: isRTL ? undefined : 0,
-                  right: isRTL ? 0 : undefined,
+                  // Use the logical leading edge. React Native may swap
+                  // physical left/right styles in RTL, which can otherwise
+                  // anchor this drawer to the left even for Arabic.
+                  start: 0,
                   backgroundColor: theme.colors.canvas,
                   borderEndColor: theme.colors.line,
                   paddingTop: Math.max(insets.top, 16) + 12,

@@ -93,7 +93,7 @@ export interface ChatState {
   refreshInputs: () => Promise<void>;
   applyEvent: (event: ServerWsEvent) => void;
   send: (input: SendInput) => Promise<SendResult>;
-  retryLast: () => Promise<SendResult>;
+  retryLast: (model?: ModelSelection) => Promise<SendResult>;
   stop: () => Promise<void>;
   replyApproval: (requestId: string, decision: 'once' | 'always' | 'reject') => Promise<void>;
   replyQuestion: (questionId: string, answers: string[][]) => Promise<void>;
@@ -459,7 +459,7 @@ export const useChat = create<ChatState>((set, get) => ({
     return { ok: true };
   },
 
-  retryLast: async () => {
+  retryLast: async (model) => {
     const { sessionId, status, busyOrigin, messages } = get();
     if (!sessionId) return { ok: false, reason: 'error' };
     const busy =
@@ -488,6 +488,7 @@ export const useChat = create<ChatState>((set, get) => ({
       ...(lastUser.files && lastUser.files.length > 0
         ? { fileIds: lastUser.files.map((file) => file.id) }
         : {}),
+      ...(model ? { model } : {}),
       requestId,
     });
     if (!sent) {

@@ -379,7 +379,7 @@ export default function ChatScreen() {
   }, []);
 
   const retryLast = useCallback(async () => {
-    const result = await useChat.getState().retryLast();
+    const result = await useChat.getState().retryLast(selectedModel ?? undefined);
     if (result.ok) {
       hapticLight();
       setTimeout(() => scrollToLatest(), 60);
@@ -387,7 +387,7 @@ export default function ChatScreen() {
       hapticError();
     }
     return result.ok;
-  }, [scrollToLatest]);
+  }, [scrollToLatest, selectedModel]);
 
   const decideApproval = useCallback(
     async (decision: 'once' | 'always' | 'reject') => {
