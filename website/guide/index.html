@@ -210,6 +210,9 @@ npm start</code></pre>
             Set <code>ALLOWED_WORKDIRS</code> to the project roots you want to
             expose, then check that the service answers:
           </p>
+          <p class="docs-note">
+            The default is <code>~/projects</code>, not the entire home directory. An existing session outside the configured roots can be explicitly enabled from the app, one session at a time. This is a bridge-level grant, not an OS sandbox: OpenCode tools still run with the filesystem permissions of the OpenCode process.
+          </p>
           <div class="terminal">
             <div class="terminal-bar">
               <span class="terminal-dots" aria-hidden="true"><i></i><i></i></span>

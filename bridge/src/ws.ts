@@ -4,6 +4,7 @@ import { z } from "zod";
 import type { BackendAdapter } from "./adapters/BackendAdapter.js";
 import type { LoggerLike } from "./log.js";
 import type { PushService } from "./push.js";
+import type { SessionAccess } from "./sessionAccess.js";
 import type { FileRegistry, StoredFile } from "./uploads.js";
 import { BRIDGE_VERSION, isInsideWorkdir } from "./config.js";
 import { RuntimeState } from "./state.js";
@@ -90,6 +91,7 @@ export class WsHub {
     private readonly maxUploadBytes: number,
     private readonly maxFiles: number,
     private readonly push?: PushService,
+    private readonly access?: SessionAccess,
   ) {}
 
   start(): void {
@@ -141,13 +143,13 @@ export class WsHub {
   private async sessionAllowed(sessionId: string): Promise<boolean> {
     const cached = this.sessionCache.get(sessionId);
     if (cached?.location?.directory) {
-      return Boolean(isInsideWorkdir(this.workdirs, cached.location.directory));
+      return Boolean(this.access?.directory(cached) ?? isInsideWorkdir(this.workdirs, cached.location.directory));
     }
     try {
       const session = await this.adapter.getSession(sessionId);
       this.sessionCache.set(sessionId, session);
       const directory = session.location?.directory;
-      return Boolean(directory && isInsideWorkdir(this.workdirs, directory));
+      return Boolean(directory && (this.access?.directory(session) ?? isInsideWorkdir(this.workdirs, directory)));
     } catch {
       return false;
     }
@@ -503,11 +505,13 @@ export class WsHub {
           | undefined;
         if (item?.type === "user" && item.payload) {
           const source = metadataSource(item.payload.metadata);
+          const cachedSession = this.sessionCache.get(sessionId);
+          const scopedWorkdir = cachedSession ? this.access?.directory(cachedSession) : null;
           const eventFiles = resolveEventFiles(
             item.payload.files,
             sessionId,
             this.files,
-            this.workdirs,
+            scopedWorkdir ? [scopedWorkdir] : this.workdirs,
             this.maxUploadBytes,
           );
           const message: ChatMessage = {

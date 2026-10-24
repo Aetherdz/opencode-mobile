@@ -249,9 +249,9 @@
                   <span class="copy-label" data-copy-label aria-live="polite">Copy</span>
                 </button>
               </div>
-              <pre id="cmd-bridge"><code>curl -fsSL https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>main/<wbr>install.sh | bash -s -- setup</code></pre>
+              <pre id="cmd-bridge"><code>installer="$(mktemp)" &amp;&amp; trap 'rm -f "$installer"' EXIT &amp;&amp; curl -fsSL https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>main/<wbr>install.sh -o "$installer" &amp;&amp; bash "$installer" setup</code></pre>
             </div>
-            <p class="cmd-note">After setup, run <code>opencode-mobile</code> whenever you want to start the temporary link.</p>
+            <p class="cmd-note">After setup, run <code>opencode-mobile</code> whenever you want to create a phone connection link.</p>
             <div class="cmd-panel" id="install-panel-win">
               <div class="cmd-bar">
                 <span class="cmd-prompt" aria-hidden="true">&gt;</span>
@@ -270,7 +270,11 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
             </div>
           </div>
           </div>
-
+          <div class="docs-note">
+            <strong>First connection · Linux and macOS</strong>
+            <p>Have Node.js 22+, OpenCode running, and a project folder ready. Setup limits the bridge allowlist to <code>~/projects</code> by default, not your whole home directory. Then run <code>opencode-mobile</code>, choose private Tailscale or the temporary Cloudflare Quick Tunnel, and scan the terminal QR in the app. The public tunnel is off until you explicitly confirm; the URL and token together grant access, so keep them private. Leave the terminal open while using the temporary link. <a href="https://github.com/Aetherdz/opencode-mobile-dist#linux-and-macos-quick-setup" rel="noopener noreferrer">Full setup, Windows instructions, and troubleshooting</a>.</p>
+            <p>If an existing session is outside that folder, you can explicitly enable that session in the app. This bridge grant is not an OS sandbox: OpenCode tools still have the filesystem permissions of the process running OpenCode.</p>
+          </div>
         </div>
       </section>
 
@@ -351,7 +355,7 @@ if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksu
           <div class="release-panel">
             <p class="release-kicker">Latest public beta</p>
             <p class="release-version">1.0.0-beta.9</p>
-            <p class="release-meta">Release APK · arm64</p>
+            <p class="release-meta">Release APK · arm64 · install on your Android phone</p>
             <a
               class="button button-primary release-download"
               href="https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.9/opencode-mobile-1.0.0-beta.9.apk"

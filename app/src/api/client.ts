@@ -223,6 +223,13 @@ export async function getSession(id: string): Promise<SessionSummary> {
   return response.data;
 }
 
+export async function authorizeSessionAccess(id: string): Promise<void> {
+  await request<{ data: { sessionId: string; directory: string; limitation: string } }>(
+    `/sessions/${encodeURIComponent(id)}/access`,
+    { method: 'POST', body: JSON.stringify({}) },
+  );
+}
+
 export async function createSession(directory: string, title?: string): Promise<SessionSummary> {
   const response = await request<{ data: SessionSummary }>('/sessions', {
     method: 'POST',

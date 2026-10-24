@@ -243,9 +243,9 @@
                   <span class="copy-label" data-copy-label aria-live="polite">نسخ</span>
                 </button>
               </div>
-              <pre id="cmd-bridge"><code>curl -fsSL https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>main/<wbr>install.sh | bash -s -- setup</code></pre>
+              <pre id="cmd-bridge"><code>installer="$(mktemp)" &amp;&amp; trap 'rm -f "$installer"' EXIT &amp;&amp; curl -fsSL https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>main/<wbr>install.sh -o "$installer" &amp;&amp; bash "$installer" setup</code></pre>
             </div>
-            <p class="cmd-note">بعد الإعداد، شغّل <code>opencode-mobile</code> كلما أردت بدء الرابط المؤقت.</p>
+            <p class="cmd-note">بعد الإعداد، شغّل <code>opencode-mobile</code> لإنشاء رابط اتصال للهاتف.</p>
             <div class="cmd-panel" id="install-panel-win">
               <div class="cmd-bar">
                 <span class="cmd-prompt" aria-hidden="true">&gt;</span>
@@ -259,7 +259,11 @@ irm https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobi
 if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksum mismatch" }
 .\install.ps1 -Command install -WorkDir "$env:USERPROFILE\projects"</code></pre>
             </div>
-          </div>
+            </div>
+            <div class="docs-note">
+              <strong>الاتصال الأول · Linux وmacOS</strong>
+              <p>يقتصر نطاق الجسر افتراضياً على <code>~/projects</code>، وليس مجلد المنزل كله. شغّل <code>opencode-mobile</code> واختر Tailscale الخاص أو Cloudflare Quick Tunnel المؤقت، ثم امسح رمز QR في التطبيق. النفق العام لا يبدأ دون موافقتك؛ لا تشارك الرابط ورمز الوصول معاً، واترك الطرفية مفتوحة أثناء استخدام الرابط المؤقت. إذا كانت جلسة موجودة خارج المجلد، يمكنك تفعيل تلك الجلسة صراحةً من التطبيق. هذا الإذن لا يعزل OpenCode على مستوى النظام؛ تبقى أدواته بصلاحيات عملية OpenCode ويمكنها الوصول إلى ملفات أخرى متاحة لها. <a href="https://github.com/Aetherdz/opencode-mobile-dist#linux-and-macos-quick-setup" rel="noopener noreferrer">دليل التثبيت الكامل واستكشاف الأخطاء</a>.</p>
+            </div>
           </div>
 
         </div>

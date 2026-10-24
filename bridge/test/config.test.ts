@@ -165,6 +165,32 @@ describe("loadConfig auth token", () => {
 });
 
 describe("loadConfig defaults", () => {
+  it("defaults to ~/projects rather than the entire home directory", () => {
+    const home = tempRoot("bridge-config-home-");
+    const keys = ["HOME", "AUTH_TOKEN", "OPENCODE_URL", "OPENCODE_PASSWORD", "ALLOWED_WORKDIRS", "DATA_DIR"] as const;
+    const saved = new Map<string, string | undefined>();
+    for (const key of keys) saved.set(key, process.env[key]);
+
+    process.env.HOME = home;
+    process.env.AUTH_TOKEN = "0123456789abcdef".repeat(4);
+    process.env.OPENCODE_URL = "http://127.0.0.1:4096";
+    process.env.OPENCODE_PASSWORD = "test-password";
+    delete process.env.ALLOWED_WORKDIRS;
+    process.env.DATA_DIR = path.join(home, "data");
+
+    try {
+      const config = loadConfig();
+      expect(config.allowedWorkdirs).toEqual([fs.realpathSync.native(path.join(home, "projects"))]);
+      expect(config.allowedWorkdirs).not.toContain(fs.realpathSync.native(home));
+    } finally {
+      for (const key of keys) {
+        const value = saved.get(key);
+        if (value === undefined) delete process.env[key];
+        else process.env[key] = value;
+      }
+    }
+  });
+
   it("does not include SVG in the default upload allowlist", () => {
     const root = tempRoot("bridge-config-defaults-");
     const workdir = path.join(root, "work");

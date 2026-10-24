@@ -244,9 +244,9 @@
                   <span class="copy-label" data-copy-label aria-live="polite">Copier</span>
                 </button>
               </div>
-              <pre id="cmd-bridge"><code>curl -fsSL https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>main/<wbr>install.sh | bash -s -- setup</code></pre>
+              <pre id="cmd-bridge"><code>installer="$(mktemp)" &amp;&amp; trap 'rm -f "$installer"' EXIT &amp;&amp; curl -fsSL https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>main/<wbr>install.sh -o "$installer" &amp;&amp; bash "$installer" setup</code></pre>
             </div>
-            <p class="cmd-note">Après l’installation, lancez <code>opencode-mobile</code> pour démarrer le lien temporaire.</p>
+            <p class="cmd-note">Après l’installation, lancez <code>opencode-mobile</code> pour créer le lien de connexion du téléphone.</p>
             <div class="cmd-panel" id="install-panel-win">
               <div class="cmd-bar">
                 <span class="cmd-prompt" aria-hidden="true">&gt;</span>
@@ -260,7 +260,11 @@ irm https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobi
 if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksum mismatch" }
 .\install.ps1 -Command install -WorkDir "$env:USERPROFILE\projects"</code></pre>
             </div>
-          </div>
+            </div>
+            <div class="docs-note">
+              <strong>Première connexion · Linux et macOS</strong>
+              <p>Par défaut, le périmètre du bridge est limité à <code>~/projects</code>, pas à tout le dossier personnel. Lancez <code>opencode-mobile</code>, choisissez Tailscale privé ou Cloudflare Quick Tunnel temporaire, puis scannez le QR dans l’application. Le tunnel public ne démarre qu’après votre accord ; gardez l’URL et le jeton secrets et laissez le terminal ouvert pendant son utilisation. Pour une session existante située ailleurs, vous pouvez autoriser cette session depuis l’application. Cette autorisation ne crée pas de sandbox système : les outils OpenCode conservent les permissions du processus OpenCode. <a href="https://github.com/Aetherdz/opencode-mobile-dist#linux-and-macos-quick-setup" rel="noopener noreferrer">Guide complet et dépannage</a>.</p>
+            </div>
           </div>
 
         </div>

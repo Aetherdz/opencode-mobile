@@ -1,7 +1,14 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import {
+  Platform,
+  Pressable,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import { createSession, getConfig } from '@/api/client';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
@@ -14,6 +21,7 @@ import { ScreenHeader } from '@/components/ui/ScreenHeader';
 import { TextField } from '@/components/ui/TextField';
 import { hapticSelection, hapticSuccess } from '@/lib/haptics';
 import { useI18n } from '@/lib/i18n';
+import { dismissKeyboard } from '@/lib/keyboard';
 import { useTheme } from '@/theme/ThemeProvider';
 
 export default function NewSessionScreen() {
@@ -38,6 +46,7 @@ export default function NewSessionScreen() {
 
   const create = async () => {
     if (!directory || creating) return;
+    dismissKeyboard();
     setCreating(true);
     setError(null);
     try {
@@ -56,7 +65,7 @@ export default function NewSessionScreen() {
 
   return (
     <Screen>
-      <ScreenHeader title={t('new.title')} onBack={() => router.back()} />
+      <ScreenHeader title={t('new.title')} onBack={() => { dismissKeyboard(); router.back(); }} />
       {config.isLoading ? (
         <View style={{ padding: theme.spacing.xl, gap: theme.spacing.md }}>
           {[0, 1, 2].map((index) => (
@@ -90,6 +99,7 @@ export default function NewSessionScreen() {
               paddingBottom: 48,
             }}
             keyboardShouldPersistTaps="handled"
+            keyboardDismissMode={Platform.OS === 'ios' ? 'interactive' : 'on-drag'}
             refreshControl={
               <RefreshControl
                 refreshing={config.isRefetching && !config.isLoading}

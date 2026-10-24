@@ -6,6 +6,22 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and the project uses [Semantic Versioning](https://semver.org/). This is a
 pre-1.0 beta; minor versions may change the bridge protocol.
 
+## [Unreleased]
+
+### Added
+
+- Added explicit runtime-only access grants for individual sessions outside
+  `ALLOWED_WORKDIRS`; the grant is bridge-scoped and is not an OS sandbox.
+- Added first-connection and session-permission guidance next to the website's
+  install instructions.
+
+### Fixed
+
+- Limited the default `ALLOWED_WORKDIRS` to `~/projects` instead of the home
+  directory.
+- Fixed keyboard dismissal and focus cleanup across navigation and overlays.
+- Reworked the application mark into a balanced square icon.
+
 ## [1.0.0-beta.9] - 2026-10-24
 
 ### Improved

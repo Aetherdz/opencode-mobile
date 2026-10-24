@@ -6,6 +6,7 @@ import { Icon } from '@/components/ui/Icon';
 import { Sheet } from '@/components/ui/Sheet';
 import { TextField } from '@/components/ui/TextField';
 import { useI18n } from '@/lib/i18n';
+import { dismissKeyboard } from '@/lib/keyboard';
 import { layout } from '@/theme/layout';
 import { useTheme } from '@/theme/ThemeProvider';
 
@@ -82,7 +83,10 @@ export function ModelSheet({
                 const isSelected = selected?.providerID === item.providerId && selected.modelID === item.modelId;
                 return (
                   <Pressable
-                    onPress={() => onSelect({ providerID: item.providerId, modelID: item.modelId })}
+                    onPress={() => {
+                      dismissKeyboard();
+                      onSelect({ providerID: item.providerId, modelID: item.modelId });
+                    }}
                     accessibilityRole="radio"
                     accessibilityState={{ selected: isSelected }}
                     accessibilityLabel={`${item.name}, ${item.providerName}`}
@@ -108,7 +112,10 @@ export function ModelSheet({
           )}
         </View>
         <Pressable
-          onPress={() => onSelect(null)}
+          onPress={() => {
+            dismissKeyboard();
+            onSelect(null);
+          }}
           accessibilityRole="radio"
           accessibilityState={{ selected: selected === null }}
           style={({ pressed }) => [

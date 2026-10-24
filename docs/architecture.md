@@ -36,12 +36,14 @@ flowchart TB
    Protected by one bearer token, rate limits, and a small API surface.
 2. **Bridge to OpenCode** — loopback only. The bridge refuses non-loopback
    OpenCode URLs and uses HTTP Basic auth with the OpenCode password.
-3. **Bridge to the filesystem** — only paths inside `ALLOWED_WORKDIRS` can be
-   used for sessions, uploads, and downloads. Uploads are written inside the
-   workdir, not to a shared temp directory.
+3. **Bridge to the filesystem** — paths inside `ALLOWED_WORKDIRS` are allowed;
+   an outside session requires an explicit runtime grant for that session ID
+   and its canonical workdir. Uploads are written inside that workdir, not to a
+   shared temp directory. The default root is `~/projects`.
 4. **OpenCode to the machine** — outside this project's control. OpenCode can
    run tools with the permissions granted to it. The bridge does not add a
-   sandbox.
+   sandbox. A session-specific bridge grant does not constrain OpenCode's OS
+   permissions.
 
 ## Session flow
 

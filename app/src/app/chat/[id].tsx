@@ -4,6 +4,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
+  Alert,
   Platform,
   Pressable,
   StyleSheet,
@@ -13,6 +14,7 @@ import {
 } from 'react-native';
 import {
   ApiError,
+  authorizeSessionAccess,
   deleteSession,
   getConfig,
   getModels,
@@ -49,6 +51,7 @@ import {
   hapticWarning,
 } from '@/lib/haptics';
 import { useI18n } from '@/lib/i18n';
+import { dismissKeyboard } from '@/lib/keyboard';
 import { deleteStored, getStored, setStored } from '@/lib/storage';
 import { openFile } from '@/lib/openFile';
 import { useAttachments } from '@/lib/useAttachments';
@@ -326,6 +329,9 @@ export default function ChatScreen() {
   }, []);
 
   const openImage = useCallback((uri: string, headers?: Record<string, string>) => {
+    // The viewer is a Modal; an IME left attached to the composer would
+    // linger under it on Android.
+    dismissKeyboard();
     setViewer({ uri, headers });
   }, []);
 
@@ -379,7 +385,7 @@ export default function ChatScreen() {
   }, []);
 
   const retryLast = useCallback(async () => {
-    const result = await useChat.getState().retryLast();
+    const result = await useChat.getState().retryLast(selectedModel ?? undefined);
     if (result.ok) {
       hapticLight();
       setTimeout(() => scrollToLatest(), 60);
@@ -387,7 +393,7 @@ export default function ChatScreen() {
       hapticError();
     }
     return result.ok;
-  }, [scrollToLatest]);
+  }, [scrollToLatest, selectedModel]);
 
   const decideApproval = useCallback(
     async (decision: 'once' | 'always' | 'reject') => {
@@ -433,6 +439,7 @@ export default function ChatScreen() {
           variant: 'destructive',
           onPress: async () => {
             hapticMedium();
+            dismissKeyboard();
             try {
               await deleteSession(id);
               queryClient.removeQueries({ queryKey: ['session', id] });
@@ -462,6 +469,7 @@ export default function ChatScreen() {
                 label: `${t('chat.viewChanges')} · ${diff.length}`,
                 onPress: () => {
                   hapticSelection();
+                  dismissKeyboard();
                   router.push({ pathname: '/diff/[id]', params: { id } } as never);
                 },
               },
@@ -523,8 +531,27 @@ export default function ChatScreen() {
       : undefined;
   const outsideWorkdir = chatError === 'outside_workdir';
   const showWorkdirBanner = outsideWorkdir && messages.length > 0;
+  const authorizeOutsideSession = () => {
+    Alert.alert(t('chat.authorizeTitle'), t('chat.authorizeWarning'), [
+      { text: t('common.cancel'), style: 'cancel' },
+      {
+        text: t('chat.authorizeConfirm'),
+        style: 'destructive',
+        onPress: () => {
+          void authorizeSessionAccess(id)
+            .then(() => useChat.getState().load(id))
+            .catch((error: unknown) => {
+              useChat.setState({
+                error: error instanceof Error ? error.message : t('common.error'),
+              });
+            });
+        },
+      },
+    ]);
+  };
   const handleInitialErrorAction = () => {
     if (outsideWorkdir) {
+      dismissKeyboard();
       router.push('/new-session' as never);
       return;
     }
@@ -537,7 +564,10 @@ export default function ChatScreen() {
         <ChatTopBar
           title={sessionTitle}
           subtitle={subtitle}
-          onBack={() => router.back()}
+          onBack={() => {
+            dismissKeyboard();
+            router.back();
+          }}
           onActions={openActions}
         />
         <ConnectionBanner />
@@ -545,8 +575,13 @@ export default function ChatScreen() {
           <View style={{ paddingHorizontal: layout.padX, paddingTop: theme.spacing.sm }}>
             <ErrorBanner
               message={t('chat.workdirError')}
-              onRetry={() => router.push('/new-session' as never)}
+              onRetry={() => {
+                dismissKeyboard();
+                router.push('/new-session' as never);
+              }}
               retryLabel={t('chat.chooseWorkdir')}
+              onSecondaryAction={authorizeOutsideSession}
+              secondaryLabel={t('chat.authorizeSession')}
               design="new"
             />
           </View>
@@ -591,6 +626,8 @@ export default function ChatScreen() {
                 }
                 onRetry={handleInitialErrorAction}
                 retryLabel={outsideWorkdir ? t('chat.chooseWorkdir') : t('common.retry')}
+                onSecondaryAction={outsideWorkdir ? authorizeOutsideSession : undefined}
+                secondaryLabel={t('chat.authorizeSession')}
                 design="new"
               />
             </View>

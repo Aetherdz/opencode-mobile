@@ -8,6 +8,7 @@ import { IconButton } from '@/components/ui/IconButton';
 import { TextField } from '@/components/ui/TextField';
 import { hapticError, hapticSelection, hapticSuccess, hapticWarning } from '@/lib/haptics';
 import { useI18n } from '@/lib/i18n';
+import { dismissKeyboard } from '@/lib/keyboard';
 import { layout } from '@/theme/layout';
 import { useTheme } from '@/theme/ThemeProvider';
 
@@ -76,6 +77,10 @@ export function InlineQuestionCard({
     setError(null);
   }, [request]);
 
+  // The card unmounts (or collapses) with the custom field possibly focused;
+  // drop the IME explicitly so it cannot outlive its input.
+  useEffect(() => () => dismissKeyboard(), []);
+
   const total = request.questions.length;
   const current = request.questions[index];
   const currentAnswer = answers[index];
@@ -122,6 +127,10 @@ export function InlineQuestionCard({
       updateCurrent({ selected: [...selected, value] });
       return;
     }
+    if (currentAnswer?.customSelected) {
+      // Selecting an option unmounts the focused custom field.
+      dismissKeyboard();
+    }
     updateCurrent({ selected: [value], custom: '', customSelected: false });
   };
 
@@ -130,6 +139,10 @@ export function InlineQuestionCard({
     hapticSelection();
     setError(null);
     if (current.multiple) {
+      if (currentAnswer?.customSelected) {
+        // Unchecking custom unmounts the focused field.
+        dismissKeyboard();
+      }
       updateCurrent({ customSelected: !currentAnswer?.customSelected });
       return;
     }
@@ -261,7 +274,11 @@ export function InlineQuestionCard({
         </View>
         <IconButton
           label={t('common.close')}
-          onPress={onToggle}
+          onPress={() => {
+            // Collapsing unmounts the custom field below.
+            dismissKeyboard();
+            onToggle();
+          }}
           disabled={submitting}
           size="sm"
           variant="borderless"

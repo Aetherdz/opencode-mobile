@@ -125,7 +125,6 @@ function ReasoningBlock({ text }: { text: string }) {
 
 export const MessageRow = memo(function MessageRow({
   message,
-  isFirstInGroup,
   showTime,
   reasoning,
   onOpenImage,
@@ -136,7 +135,6 @@ export const MessageRow = memo(function MessageRow({
   const { t, locale } = useI18n();
   const [copied, setCopied] = useState(false);
   const isUser = message.role === 'user';
-  const isAssistant = message.role === 'assistant';
   const files = message.files ?? [];
   const images = files.filter(isImage);
   const documents = files.filter((file) => !isImage(file));
@@ -166,16 +164,6 @@ export const MessageRow = memo(function MessageRow({
       }}
       accessible={false}
     >
-      {isAssistant && isFirstInGroup ? (
-        <AppText
-          variant="eyebrow12"
-          color="secondary"
-          style={{ marginBottom: 6 }}
-        >
-          {t('chat.assistant')}
-        </AppText>
-      ) : null}
-
       {isUser ? (
         <View
           style={[
@@ -330,7 +318,6 @@ const styles = StyleSheet.create({
   userBubble: { borderRadius: 18 },
   imageRow: { flexDirection: 'row', flexWrap: 'wrap' },
   thumb: { width: 72, height: 72, borderWidth: StyleSheet.hairlineWidth },
-  agentLabel: { flexDirection: 'row', alignItems: 'center' },
   agentMark: { width: 20, height: 20, alignItems: 'center', justifyContent: 'center' },
   metaRow: { flexDirection: 'row', alignItems: 'center' },
   working: {
