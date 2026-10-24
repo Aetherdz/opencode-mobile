@@ -542,7 +542,15 @@ export function registerRoutes(app: FastifyInstance, deps: Deps): void {
     try {
       const pending = await adapter.listPendingPermissions();
       state.notePermissions(pending);
-      return reply.send({ data: pending.map(mapPermission) });
+      const visible = await mapLimit(pending, 8, async (request) => {
+        try {
+          const scoped = await requireSessionWorkdir(adapter, config, request.sessionID, access);
+          return scoped ? mapPermission(request) : null;
+        } catch {
+          return null;
+        }
+      });
+      return reply.send({ data: visible.filter((request): request is NonNullable<typeof request> => request !== null) });
     } catch (error) {
       return handleError(reply, error);
     }

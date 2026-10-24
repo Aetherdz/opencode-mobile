@@ -161,11 +161,17 @@ afterEach(async () => {
 
 describe("question routes", () => {
   it("requires explicit grant before opening an outside session and then allows chat history", async () => {
-    const { app } = await makeFixture();
+    const { app, adapter } = await makeFixture();
+    adapter.listPendingPermissions.mockResolvedValue([
+      { id: "pending-outside", sessionID: "outside", action: "write", resources: ["secret.txt"] },
+      { id: "pending-allowed", sessionID: "inside", action: "read", resources: ["project.ts"] },
+    ]);
 
     const denied = await app.inject({ method: "GET", url: "/sessions/outside/messages" });
     expect(denied.statusCode).toBe(403);
     expect(denied.json().code).toBe("outside_workdir");
+    const hiddenPermissions = await app.inject({ method: "GET", url: "/permissions" });
+    expect(hiddenPermissions.json().data.map((item: { id: string }) => item.id)).toEqual(["pending-allowed"]);
 
     const grant = await app.inject({ method: "POST", url: "/sessions/outside/access", payload: {} });
     expect(grant.statusCode).toBe(200);
@@ -174,6 +180,11 @@ describe("question routes", () => {
 
     const allowed = await app.inject({ method: "GET", url: "/sessions/outside/messages" });
     expect(allowed.statusCode).toBe(200);
+    const visiblePermissions = await app.inject({ method: "GET", url: "/permissions" });
+    expect(visiblePermissions.json().data.map((item: { id: string }) => item.id)).toEqual([
+      "pending-outside",
+      "pending-allowed",
+    ]);
   });
 
   it("omits archived sessions from the sessions list", async () => {
