@@ -61,34 +61,9 @@ Once installed, simply invoke the CLI to generate your instant connection link a
 opencode-mobile
 ```
 
-```text
-╭──────────────────────────────────────────────────────────────╮
-│  ✦ OpenCode Mobile · Quick Connect                           │
-├──────────────────────────────────────────────────────────────┤
-│  Bridge Service:    ● Online (Port 8787)                     │
-│  OpenCode Agent:    ● Connected                              │
-│  Connection Mode:   Secure Tailscale Serve / Local Loopback  │
-│                                                              │
-│  Connection URL:                                             │
-│  https://workstation.tailnet.ts.net                          │
-│                                                              │
-│  Pairing Token:                                              │
-│  e4b17a8c3d90f251a842de561c9b4e07... (32+ chars)            │
-│                                                              │
-│  Workdir: /home/developer/projects                           │
-├──────────────────────────────────────────────────────────────┤
-│  ▄▄▄▄▄▄▄ ▄ ▄▄ ▄▄▄▄ ▄▄▄▄▄▄▄                                   │
-│  █ ▄▄▄ █ █▄█ █▄███ █ ▄▄▄ █   1-Tap QR Auto-Connect:          │
-│  █ ███ █ ▄▀█▄█▀▄ █ █ ███ █   Point camera at this QR code    │
-│  █▄▄▄▄▄█ █ █ █ █ █ █▄▄▄▄▄█   to pair credentials instantly   │
-│  ▄▄ ▄  ▄▄▀▄▀▄▀▄▄██▄▄  ▄ ▄▄   without manual typing!          │
-│  █▄▄▄▄▄█ █▀▀██▄▀ █ █ ▄ █▄█                                   │
-│  ▀▀▀▀▀▀▀ ▀   ▀▀▀▀▀ ▀▀▀  ▀▀                                   │
-├──────────────────────────────────────────────────────────────┤
-│  Scan with OpenCode Mobile camera to pair immediately.       │
-│  Press Ctrl+C to disconnect at any time.                     │
-╰──────────────────────────────────────────────────────────────╯
-```
+<p align="center">
+  <img src="docs/images/tui-banner.svg" alt="OpenCode Mobile Interactive Terminal Session & 1-Tap QR Auto-Connect" width="820" />
+</p>
 
 ---
 
@@ -96,10 +71,10 @@ opencode-mobile
 
 The user interface is crafted with precision, native fluid physics, high-contrast dark and light modes, and full bidirectional Arabic/English support:
 
-| 1. Auto-Connect | 2. Elevated Sessions | 3. Streamed Chat | 4. Argon 4 Model Picker | 5. Inline Questions |
+| 1. Auto-Connect | 2. Elevated Sessions | 3. Streamed Chat | 4. Universal Model Selector | 5. Inline Questions |
 | :---: | :---: | :---: | :---: | :---: |
-| <img src="docs/images/connect.png" width="175" alt="Connect Screen with 1-Tap QR Scan & Smart Paste" /> | <img src="docs/images/sessions.png" width="175" alt="Elevated Session Cards" /> | <img src="docs/images/chat.png" width="175" alt="Streamed Real-Time Chat" /> | <img src="docs/images/model-picker.png" width="175" alt="Argon 4 Model Selector" /> | <img src="docs/images/question.png" width="175" alt="Inline Question & Approval Card" /> |
-| **Instant QR Auto-Connect**<br/>One-tap camera scan & smart clipboard detection | **Elevated Session Cards**<br/>Tactile scaling physics, status dots, and grouping | **Streamed Chat & Diffs**<br/>Live SSE updates, collapsible diffs, code highlight | **Argon 4 High Reasoning**<br/>Dynamic model catalog & instant switching | **Agent Question Prompts**<br/>Inline multi-choice options & safety approvals |
+| <img src="docs/images/connect.png" width="175" alt="Connect Screen with 1-Tap QR Scan & Smart Paste" /> | <img src="docs/images/sessions.png" width="175" alt="Elevated Session Cards" /> | <img src="docs/images/chat.png" width="175" alt="Streamed Real-Time Chat" /> | <img src="docs/images/model-picker.png" width="175" alt="Universal Model Selector" /> | <img src="docs/images/question.png" width="175" alt="Inline Question & Approval Card" /> |
+| **Instant QR Auto-Connect**<br/>One-tap camera scan & smart clipboard detection | **Elevated Session Cards**<br/>Tactile scaling physics, status dots, and grouping | **Streamed Chat & Diffs**<br/>Live SSE updates, collapsible diffs, code highlight | **Universal Model Selector**<br/>Supports all OpenCode models (Claude, GPT, Gemini, Ollama) | **Agent Question Prompts**<br/>Inline multi-choice options & safety approvals |
 
 ---
 
@@ -151,7 +126,7 @@ flowchart TD
 
 ### Architectural Highlights
 
-1. **Gemini 4 Argon High-Reasoning Engine**: Built-in support for the `antigravity-gemini-4-argon` model family. OpenCode Mobile automatically detects local model configurations via `readConfiguredModels` and provides seamless runtime model selection directly in the bottom composer.
+1. **Engineered by Gemini 4 Argon**: OpenCode Mobile v1.0.0-beta.10 was architected, refactored, and audited under the lead direction of **Gemini 4 Argon** (Google DeepMind), introducing zero-friction 1-command installation, calibrated touch ergonomics, and hardened bridge security. The app's bottom composer features a universal **Model Selector** supporting all configured OpenCode models (including `antigravity-gemini-4-argon`, Claude, GPT, and local Ollama models) with automatic local discovery (`readConfiguredModels`).
 2. **1-Tap QR Auto-Connect**: The CLI outputs an encrypted `opencode-mobile://connect` pairing payload embedded into an ANSI terminal QR code. Scanning with the app immediately verifies the connection and saves credentials without manual keying.
 3. **Elevated Session Cards**: Session rows feature continuous corner curves, micro-scale press animations, clear status indicators (idle, active turn, waiting for answer), and comprehensive session management (search, create, rename, delete).
 4. **Scoped Directory Access**: Out-of-the-box isolation confining agent activity strictly to `ALLOWED_WORKDIRS` (`~/projects`). Out-of-bounds repositories require explicit 1-tap runtime authorization grants via native dialogs.
