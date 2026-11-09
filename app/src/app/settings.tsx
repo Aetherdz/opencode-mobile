@@ -747,7 +747,7 @@ export default function SettingsScreen() {
               icon="hardware-chip-outline"
               iconBg="#3B82F6"
               label={t('settings.version')}
-              description={`${t('appName')} ${Constants.expoConfig?.version ?? '1.0.0-beta.11'}`}
+              description={`${t('appName')} ${Constants.expoConfig?.version ?? '1.0.0-beta.10'}`}
               last
             />
             <View style={{ padding: theme.spacing.md }}>

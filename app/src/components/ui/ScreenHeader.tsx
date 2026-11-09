@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useI18n } from '@/lib/i18n';
+import { layout } from '@/theme/layout';
 import { useTheme } from '@/theme/ThemeProvider';
 import { AppText } from './AppText';
 import { Icon } from './Icon';
@@ -33,7 +34,9 @@ export function ScreenHeader({ title, subtitle, onBack, right, showBorder = true
         <IconButton
           label={t('common.back')}
           onPress={onBack}
-          hitSlop={2}
+          size="md"
+          variant="borderless"
+          hitSlop={layout.hitSlop}
           icon={<Icon name="chevron-back" size="md" />}
         />
       ) : null}

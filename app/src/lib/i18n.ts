@@ -123,6 +123,12 @@ const strings: Record<string, Entry> = {
   },
   'connect.showToken': { en: 'Show token', ar: 'إظهار الرمز' },
   'connect.hideToken': { en: 'Hide token', ar: 'إخفاء الرمز' },
+  'connect.hideManual': { en: 'Hide manual fields', ar: 'إخفاء الحقول اليدوية' },
+  'connect.showManual': { en: 'Or enter address manually', ar: 'أو أدخل العنوان يدوياً' },
+  'connect.scannerHint': {
+    en: 'Point camera at the terminal QR code to connect automatically',
+    ar: 'وجّه الكاميرا نحو رمز QR في الطرفية للاتصال تلقائياً',
+  },
   'connect.brandTagline': {
     en: 'Your agent, in your pocket',
     ar: 'وكيلك في جيبك',

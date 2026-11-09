@@ -6,21 +6,28 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and the project uses [Semantic Versioning](https://semver.org/). This is a
 pre-1.0 beta; minor versions may change the bridge protocol.
 
-## [Unreleased]
+## [1.0.0-beta.10] - 2026-11-09
 
 ### Added
 
-- Added explicit runtime-only access grants for individual sessions outside
-  `ALLOWED_WORKDIRS`; the grant is bridge-scoped and is not an OS sandbox.
-- Added first-connection and session-permission guidance next to the website's
-  install instructions.
+- Added support for the **Gemini 4 Argon** (`antigravity-gemini-4-argon`) high-reasoning model with automatic local configuration fallback (`readConfiguredModels`).
+- Streamlined Connect screen with 1-tap **QR Auto-Connect** (instant credential scan & pairing without secondary taps) and smart clipboard paste.
+- Added colorful OpenCode-style ANSI terminal TUI banner in `scripts/mobile-share.mjs` with integrated terminal QR code generation.
+- Added explicit runtime-only access grants and 1-tap cross-platform dialog for individual sessions outside `ALLOWED_WORKDIRS`.
+- Simplified the one-line POSIX installation command to `curl -fsSL https://raw.githubusercontent.com/Aetherdz/opencode-mobile-dist/main/install.sh | bash`.
+
+### Improved
+
+- Completely redesigned session rows into modern elevated cards with tactile scaling feedback and smooth border curves.
+- Re-architected settings screen with grouped color-coded category cards and seamless model preferences.
+- Eliminated redundant text clutter, helper verbosity, and unnecessary security lectures across all app views.
+- Expanded native Arabic and French internationalization with modern, punchy phrasing.
 
 ### Fixed
 
-- Limited the default `ALLOWED_WORKDIRS` to `~/projects` instead of the home
-  directory.
-- Fixed keyboard dismissal and focus cleanup across navigation and overlays.
-- Reworked the application mark into a balanced square icon.
+- Fixed `ALLOWED_WORKDIRS` friction where sessions in outside directories previously showed an error and redirected to `/new-session`.
+- Fixed Web compatibility for session authorization dialogs by replacing `Alert.alert` with `DialogProvider`.
+- Resolved `qrcode-terminal` resolution in CLI scripts via scoped `createRequire`.
 
 ## [1.0.0-beta.9] - 2026-10-24
 

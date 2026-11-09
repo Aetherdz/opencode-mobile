@@ -96,6 +96,9 @@ export function ApprovalSheet({
             </AppText>
           ) : null}
           <Button
+            design="new"
+            shape="pill"
+            size="md"
             label={confirming ? t('approval.approveAnyway') : t('approval.once')}
             onPress={() => void decide('once')}
             loading={busy}
@@ -103,6 +106,9 @@ export function ApprovalSheet({
             variant={confirming ? 'secondary' : 'primary'}
           />
           <Button
+            design="new"
+            shape="pill"
+            size="md"
             label={t('approval.always')}
             onPress={() => void decide('always')}
             variant="secondary"
@@ -110,6 +116,9 @@ export function ApprovalSheet({
             disabled={busy}
           />
           <Button
+            design="new"
+            shape="pill"
+            size="md"
             label={confirmReject ? t('approval.confirmDeny') : t('approval.deny')}
             onPress={() => void decide('reject')}
             variant={confirmReject ? 'danger' : 'ghost'}

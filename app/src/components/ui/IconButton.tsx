@@ -27,7 +27,7 @@ export interface IconButtonProps {
   style?: StyleProp<ViewStyle>;
 }
 
-const SIZES: Record<IconButtonSize, number> = { sm: 36, md: 44, lg: 40 };
+const SIZES: Record<IconButtonSize, number> = { sm: 36, md: 44, lg: 48 };
 
 export function IconButton({
   icon,

@@ -32,7 +32,7 @@ export function ChatTopBar({
       <IconButton
         label={t('common.back')}
         onPress={onBack}
-        size="sm"
+        size="md"
         variant="borderless"
         hitSlop={layout.hitSlop}
         icon={<Icon name="chevron-back" size={layout.icon} color="textStrong" />}
@@ -56,7 +56,7 @@ export function ChatTopBar({
       <IconButton
         label={t('sessions.actions')}
         onPress={onActions}
-        size="sm"
+        size="md"
         variant="borderless"
         hitSlop={layout.hitSlop}
         icon={<Icon name="ellipsis-horizontal" size={layout.icon} color="textStrong" />}

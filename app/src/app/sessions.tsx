@@ -479,6 +479,7 @@ export default function SessionsScreen() {
               }}
               accessibilityRole="button"
               accessibilityLabel={t('chat.send')}
+              hitSlop={layout.hitSlop}
               style={({ pressed }) => [styles.sendButton, { backgroundColor: homePrompt.trim() ? theme.colors.primary : theme.colors.surface3, opacity: pressed ? 0.78 : 1 }]}
             >
               <Icon name="arrow-up" size={20} color={homePrompt.trim() ? 'onPrimary' : 'text3'} />
@@ -489,6 +490,7 @@ export default function SessionsScreen() {
               onPress={openNewSession}
               accessibilityRole="button"
               accessibilityLabel={t('sessions.new')}
+              hitSlop={{ top: 6, bottom: 6, left: 4, right: 4 }}
               style={({ pressed }) => [
                 styles.newChip,
                 {
@@ -507,6 +509,7 @@ export default function SessionsScreen() {
               onPress={() => setModelSheetOpen(true)}
               accessibilityRole="button"
               accessibilityLabel={`${t('model.selector')}${selectedModelName ? `: ${selectedModelName}` : ''}`}
+              hitSlop={{ top: 6, bottom: 6, left: 4, right: 4 }}
               style={({ pressed }) => [
                 styles.modelChip,
                 {
@@ -648,10 +651,10 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   sendButton: {
-    width: 40,
-    height: 40,
+    width: 44,
+    height: 44,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 20,
+    borderRadius: 22,
   },
 });

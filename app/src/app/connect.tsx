@@ -432,10 +432,12 @@ export default function ConnectScreen() {
               <Pressable
                 onPress={() => setManualOpen((v) => !v)}
                 style={styles.toggleRow}
+                hitSlop={{ top: 8, bottom: 8, left: 12, right: 12 }}
                 accessibilityRole="button"
+                accessibilityLabel={manualOpen ? t('connect.hideManual') : t('connect.showManual')}
               >
                 <AppText variant="caption" color="secondary" weight="600">
-                  {manualOpen ? '▲ Hide manual fields' : '▼ Or enter address manually'}
+                  {manualOpen ? `▲ ${t('connect.hideManual')}` : `▼ ${t('connect.showManual')}`}
                 </AppText>
               </Pressable>
 
@@ -562,7 +564,7 @@ export default function ConnectScreen() {
               {t('connect.scanQr')}
             </AppText>
             <AppText variant="caption" color="onPrimary" style={{ textAlign: 'center', opacity: 0.8 }}>
-              Point camera at the terminal QR code to connect automatically
+              {t('connect.scannerHint')}
             </AppText>
             <Button
               design="new"
@@ -670,6 +672,8 @@ const styles = StyleSheet.create({
   },
   toggleRow: {
     alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 44,
     paddingVertical: 8,
   },
   manualForm: {

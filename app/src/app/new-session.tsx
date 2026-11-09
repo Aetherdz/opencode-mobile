@@ -173,6 +173,7 @@ export default function NewSessionScreen() {
           </View>
 
           <TextField
+            design="new"
             label={t('new.custom')}
             value={custom}
             onChangeText={setCustom}
@@ -184,6 +185,7 @@ export default function NewSessionScreen() {
           />
 
           <TextField
+            design="new"
             label={t('new.sessionTitle')}
             value={title}
             onChangeText={setTitle}
@@ -196,7 +198,7 @@ export default function NewSessionScreen() {
             <View
               style={{
                 backgroundColor: theme.colors.surface1,
-                borderColor: theme.colors.line,
+                borderColor: theme.colors.border,
                 borderWidth: 1,
                 borderRadius: theme.radii.md,
                 borderCurve: 'continuous',
@@ -213,9 +215,12 @@ export default function NewSessionScreen() {
             </View>
           ) : null}
 
-          {error ? <ErrorBanner message={error} /> : null}
+          {error ? <ErrorBanner message={error} design="new" /> : null}
 
           <Button
+            design="new"
+            shape="pill"
+            size="md"
             label={creating ? t('new.creating') : t('new.create')}
             onPress={() => void create()}
             loading={creating}

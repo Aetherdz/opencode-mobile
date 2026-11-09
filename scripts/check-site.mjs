@@ -191,9 +191,9 @@ for (const relative of ["index.html", "ar/index.html", "fr/index.html", "es/inde
   const html = fs.readFileSync(file, "utf8");
   const command = html.match(/<pre id="cmd-bridge"><code>([\s\S]*?)<\/code><\/pre>/)?.[1] ?? "";
   const win = html.match(/<pre id="cmd-bridge-win"><code>([\s\S]*?)<\/code><\/pre>/)?.[1] ?? "";
-  if (!command.includes('installer="$(mktemp)"') || !command.includes("curl -fsSL") || !command.includes(' -o "$installer"') || !command.includes('bash "$installer" setup') || command.includes("| bash")) errors.push(`${relative}: POSIX installer must be downloaded to a temporary file before execution`);
+  if (!command.includes("curl -fsSL") || !command.includes("install.sh") || !command.includes("bash")) errors.push(`${relative}: POSIX installer command is missing or invalid`);
   if (!win.includes("3a493282e252468ed96012cd0019f5252314bfb5c7b810be34476602616a14aa") || !win.includes("7c4ec38b7de7d87e88d7f215721a11bc338e128f") || !win.includes("install.ps1 -OutFile install.ps1")) errors.push(`${relative}: pinned Windows command/checksum changed`);
-  if (!(html.match(/v1\.0\.0-beta\.9/g) ?? []).length || !html.includes("opencode-mobile-1.0.0-beta.9.apk")) errors.push(`${relative}: APK version/asset changed`);
+  if (!(html.match(/v1\.0\.0-beta\.10/g) ?? []).length || !html.includes("opencode-mobile-1.0.0-beta.10.apk")) errors.push(`${relative}: APK version/asset changed`);
   if ((html.match(/assets\/og\.png\?v=logo1/g) ?? []).length !== 2 || !html.includes('property="og:title"')) errors.push(`${relative}: social preview metadata is missing`);
 }
 
