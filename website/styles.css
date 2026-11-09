@@ -1158,12 +1158,6 @@ main {
   box-shadow: 0 2.5rem 5rem rgba(10, 10, 10, 0.28);
   transform-origin: center;
   transform: perspective(1100px) rotate(-7deg) rotateY(-2deg);
-  transition: transform 320ms var(--ease-fluid), box-shadow 320ms var(--ease-fluid);
-}
-
-.phone:hover {
-  transform: perspective(1100px) rotate(-5deg) rotateY(-1deg) translateY(-4px);
-  box-shadow: 0 3rem 6rem rgba(10, 10, 10, 0.38);
 }
 
 .phone-bar {
@@ -1198,7 +1192,6 @@ main {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.4rem;
   padding: 0 0.3rem 0.9rem;
   border-bottom: 1px solid #2c2c2c;
 }
@@ -1209,34 +1202,6 @@ main {
   font-size: 0.7rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-}
-
-.phone-model {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 0.15rem 0.5rem;
-  border-radius: 999px;
-  background: rgba(31, 122, 77, 0.18);
-  border: 1px solid rgba(31, 122, 77, 0.38);
-  color: #7dcfa3;
-  font-family: var(--mono);
-  font-size: 0.65rem;
-  letter-spacing: 0.04em;
-  font-weight: 500;
-  cursor: default;
-  transition: transform 180ms var(--ease-fluid), background 180ms var(--ease-fluid);
-}
-
-.phone-model:hover {
-  transform: scale(1.05);
-  background: rgba(31, 122, 77, 0.3);
-}
-
-[data-theme="dark"] .phone-model {
-  background: rgba(58, 168, 111, 0.18);
-  border-color: rgba(58, 168, 111, 0.35);
-  color: #a3e8c3;
 }
 
 .phone-status {
