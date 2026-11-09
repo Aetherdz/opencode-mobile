@@ -1,11 +1,12 @@
 import * as Clipboard from 'expo-clipboard';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useEffect, useRef, useState, type ComponentRef } from 'react';
+import { useCallback, useEffect, useRef, useState, type ComponentRef } from 'react';
 import {
   ActivityIndicator,
   Modal,
   Platform,
+  Pressable,
   ScrollView,
   StyleSheet,
   TextInput,
@@ -32,7 +33,6 @@ import { normalizeBaseUrl, useAuth } from '@/state/auth';
 import { layout } from '@/theme/layout';
 import { useTheme } from '@/theme/ThemeProvider';
 
-/** Mirror of the Bridge AUTH_TOKEN minimum. Keep helper, placeholder and check in sync. */
 const TOKEN_MIN_LENGTH = 32;
 
 const HTTP_URL =
@@ -66,7 +66,6 @@ function isPrivateHost(host: string): boolean {
   if (first === 10 || first === 127) return true;
   if (first === 172 && second >= 16 && second <= 31) return true;
   if (first === 192 && second === 168) return true;
-  // Tailscale uses 100.64.0.0/10.
   return first === 100 && second >= 64 && second <= 127;
 }
 
@@ -86,17 +85,98 @@ export default function ConnectScreen() {
   const [urlTouched, setUrlTouched] = useState(false);
   const [tokenTouched, setTokenTouched] = useState(false);
   const [attempted, setAttempted] = useState(false);
+  const [manualOpen, setManualOpen] = useState(false);
   const [scannerOpen, setScannerOpen] = useState(false);
   const [cameraPermission, requestCameraPermission] = useCameraPermissions();
   const tokenRef = useRef<ComponentRef<typeof TextInput>>(null);
+
+  const messageForError = useCallback(
+    (connectionError: unknown): string => {
+      if (connectionError instanceof ApiError) {
+        switch (connectionError.code) {
+          case 'unauthorized':
+            return t('connect.errorToken');
+          case 'timeout':
+            return t('connect.errorTimeout');
+          case 'tls':
+            return t('connect.errorTls');
+          case 'not_bridge':
+            return t('connect.errorNotBridge');
+          case 'unreachable':
+          case 'network':
+            return t('connect.errorUnreachable');
+          case 'secure_unreachable':
+            return t('connect.errorSecureUnreachable');
+          case 'server':
+            return t('connect.errorServer');
+        }
+      }
+      return t('connect.fail');
+    },
+    [t],
+  );
+
+  const connectWith = useCallback(
+    async (targetUrl: string, targetToken: string) => {
+      if (loading) return;
+      const trimmedUrl = normalizedInputUrl(targetUrl);
+      const trimmedToken = targetToken.trim();
+
+      if (!HTTP_URL.test(trimmedUrl)) {
+        hapticError();
+        setError(t('connect.urlInvalid'));
+        return;
+      }
+      if (trimmedToken.length < TOKEN_MIN_LENGTH) {
+        hapticError();
+        setError(t('connect.tokenTooShort', { min: TOKEN_MIN_LENGTH }));
+        return;
+      }
+
+      const host = hostOf(trimmedUrl);
+      const bareHost = host.replace(/^\[|\]$/g, '');
+      if (
+        Platform.OS !== 'web' &&
+        (bareHost === '127.0.0.1' || bareHost === 'localhost' || bareHost === '::1')
+      ) {
+        hapticError();
+        setError(t('connect.loopback'));
+        return;
+      }
+
+      const base = normalizeBaseUrl(trimmedUrl);
+      hapticLight();
+      setAttempted(true);
+      setLoading(true);
+      setError(null);
+      setStage('reaching');
+
+      let connected = false;
+      try {
+        await testConnection(base, trimmedToken, setStage);
+        await save(base, trimmedToken);
+        connected = true;
+        hapticSuccess();
+      } catch (connectionError) {
+        hapticError();
+        setError(messageForError(connectionError));
+      } finally {
+        setLoading(false);
+      }
+
+      if (connected) {
+        setStage('ready');
+        router.replace('/sessions' as never);
+      }
+    },
+    [loading, messageForError, save, t],
+  );
 
   useEffect(() => {
     const rawUrl = pairingParams.url;
     const rawToken = pairingParams.token;
     if (rawUrl === undefined && rawToken === undefined) return;
 
-    // Reconstruct only the narrowly-supported payload, validate it, then clear
-    // credentials from navigation state. Connecting still requires a tap.
     const payload = new URL('opencode-mobile://connect');
     if (typeof rawUrl === 'string') payload.searchParams.set('url', rawUrl);
     if (typeof rawToken === 'string') payload.searchParams.set('token', rawToken);
@@ -107,26 +187,23 @@ export default function ConnectScreen() {
       setUrlTouched(true);
       setTokenTouched(true);
       setError(null);
-      hapticSuccess();
+      void connectWith(pairing.url, pairing.token);
     } else {
       setError(t('connect.invalidQr'));
       hapticError();
     }
     router.setParams({ url: undefined, token: undefined } as never);
-  }, [pairingParams.token, pairingParams.url, t]);
+  }, [connectWith, pairingParams.token, pairingParams.url, t]);
 
   const trimmedUrl = normalizedInputUrl(url);
   const trimmedToken = token.trim();
   const urlValid = HTTP_URL.test(trimmedUrl);
   const tokenValid = trimmedToken.length >= TOKEN_MIN_LENGTH;
   const host = urlValid ? hostOf(trimmedUrl) : '';
-  const bareHost = host.replace(/^\[|\]$/g, '');
   const showHttpWarning =
     urlValid && /^http:\/\//i.test(trimmedUrl) && !!host && !isPrivateHost(host);
   const stageIndex = stage ? STAGES.indexOf(stage) : -1;
   const showSteps = loading || (attempted && Boolean(error));
-  const showUrlError = urlTouched && !urlValid;
-  const showTokenError = tokenTouched && !tokenValid;
 
   const clearError = () => {
     if (error) setError(null);
@@ -140,24 +217,6 @@ export default function ConnectScreen() {
   const handleTokenChange = (value: string) => {
     setToken(value.replace(/\s+/g, ''));
     clearError();
-  };
-
-  const pasteToken = async () => {
-    try {
-      const text = await Clipboard.getStringAsync();
-      const next = text.replace(/\s+/g, '');
-      if (!next) {
-        hapticError();
-        setError(t('connect.pasteEmpty'));
-        return;
-      }
-      setToken(next);
-      setTokenTouched(true);
-      setError(null);
-    } catch {
-      hapticError();
-      setError(t('connect.fail'));
-    }
   };
 
   const openScanner = async () => {
@@ -189,77 +248,46 @@ export default function ConnectScreen() {
     setError(null);
     setScannerOpen(false);
     hapticSuccess();
+    // Auto-connect instantly!
+    void connectWith(pairing.url, pairing.token);
   };
 
-  const messageForError = (connectionError: unknown): string => {
-    if (connectionError instanceof ApiError) {
-      switch (connectionError.code) {
-        case 'unauthorized':
-          return t('connect.errorToken');
-        case 'timeout':
-          return t('connect.errorTimeout');
-        case 'tls':
-          return t('connect.errorTls');
-        case 'not_bridge':
-          return t('connect.errorNotBridge');
-        case 'unreachable':
-        case 'network':
-          return t('connect.errorUnreachable');
-        case 'secure_unreachable':
-          return t('connect.errorSecureUnreachable');
-        case 'server':
-          return t('connect.errorServer');
-      }
-    }
-    return t('connect.fail');
-  };
-
-  const connect = async () => {
-    if (loading) return;
-    setUrlTouched(true);
-    setTokenTouched(true);
-    if (!urlValid) {
-      hapticError();
-      setError(t('connect.urlInvalid'));
-      return;
-    }
-    if (!tokenValid) {
-      hapticError();
-      setError(t('connect.tokenTooShort', { min: TOKEN_MIN_LENGTH }));
-      return;
-    }
-    if (
-      Platform.OS !== 'web' &&
-      (bareHost === '127.0.0.1' || bareHost === 'localhost' || bareHost === '::1')
-    ) {
-      hapticError();
-      setError(t('connect.loopback'));
-      return;
-    }
-
-    const base = normalizeBaseUrl(trimmedUrl);
-    hapticLight();
-    setAttempted(true);
-    setLoading(true);
-    setError(null);
-    setStage('reaching');
-
-    let connected = false;
+  const handleSmartPaste = async () => {
     try {
-      await testConnection(base, trimmedToken, setStage);
-      await save(base, trimmedToken);
-      connected = true;
-      hapticSuccess();
-    } catch (connectionError) {
-      hapticError();
-      setError(messageForError(connectionError));
-    } finally {
-      setLoading(false);
-    }
+      const text = await Clipboard.getStringAsync();
+      const pairing = parsePairingLink(text);
+      if (pairing) {
+        setUrl(pairing.url);
+        setToken(pairing.token);
+        setUrlTouched(true);
+        setTokenTouched(true);
+        setError(null);
+        void connectWith(pairing.url, pairing.token);
+        return;
+      }
 
-    if (connected) {
-      setStage('ready');
-      router.replace('/sessions' as never);
+      const trimmed = text.trim();
+      if (trimmed.length >= TOKEN_MIN_LENGTH && !trimmed.includes('://')) {
+        setToken(trimmed);
+        setTokenTouched(true);
+        setError(null);
+        hapticSuccess();
+        return;
+      }
+
+      if (HTTP_URL.test(normalizedInputUrl(trimmed))) {
+        setUrl(trimmed);
+        setUrlTouched(true);
+        setError(null);
+        hapticSuccess();
+        return;
+      }
+
+      setError(t('connect.pasteEmpty'));
+      hapticError();
+    } catch {
+      hapticError();
+      setError(t('connect.fail'));
     }
   };
 
@@ -269,239 +297,259 @@ export default function ConnectScreen() {
         <KeyboardAvoider>
           <ScrollView
             style={styles.flex}
-            contentContainerStyle={[
-              styles.content,
-              {
-                paddingHorizontal: layout.padX,
-                paddingTop: 24,
-                paddingBottom: 24,
-              },
-            ]}
+            contentContainerStyle={styles.content}
             keyboardShouldPersistTaps="handled"
             keyboardDismissMode="interactive"
             showsVerticalScrollIndicator={false}
           >
-            <View style={styles.headerGroup}>
-              <View style={styles.brandRow}>
-                <View
-                  style={[
-                    styles.brandMark,
-                    { backgroundColor: theme.colors.surface, borderColor: theme.colors.border },
-                  ]}
-                >
-                  <Icon name="code-slash-outline" size={22} color="textStrong" />
-                </View>
-                <AppText variant="eyebrow12" color="secondary">
-                  {t('appName')}
-                </AppText>
-              </View>
-              <AppText variant="connectTitle" style={{ marginTop: 22 }}>
-                {t('connect.title')}
-              </AppText>
-              <AppText
-                variant="body15"
-                color="secondary"
-                style={{ marginTop: 8 }}
-              >
-                {t('connect.subtitle')}
-              </AppText>
-            </View>
-
-            <View style={styles.formGroup}>
-              <View style={styles.scanGroup}>
-                <Button
-                  design="new"
-                  variant="secondary"
-                  label={t('connect.scanQr')}
-                  onPress={() => void openScanner()}
-                  fullWidth
-                  size="md"
-                  shape="pill"
-                />
-                <AppText variant="helper" color="secondary">
-                  {t('connect.scanHint')}
-                </AppText>
-              </View>
-              <View>
-                <TextField
-                  design="new"
-                  label={t('connect.url')}
-                  value={url}
-                  onChangeText={handleUrlChange}
-                  onBlur={() => {
-                    setUrlTouched(true);
-                    setUrl((value) => value.trim());
-                  }}
-                  placeholder={t('connect.urlPlaceholder')}
-                  keyboardType="url"
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                  spellCheck={false}
-                  autoComplete="off"
-                  importantForAutofill="no"
-                  inputMode="url"
-                  returnKeyType="next"
-                  onSubmitEditing={() => tokenRef.current?.focus()}
-                  ltr
-                  fieldMinHeight={layout.field}
-                  accessibilityLabel={t('connect.url')}
-                  hint={t('connect.urlHint')}
-                  error={showUrlError ? t('connect.urlInvalid') : undefined}
-                />
-                {showHttpWarning ? (
-                  <View style={styles.warningRow}>
-                    <Icon name="lock-open-outline" size={16} color="secondary" />
-                    <AppText
-                      variant="helper"
-                      color="secondary"
-                      style={styles.flexText}
-                    >
-                      {t('connect.httpWarning')}
-                    </AppText>
-                  </View>
-                ) : null}
-              </View>
-
-              <TextField
-                ref={tokenRef}
-                design="new"
-                label={t('connect.token')}
-                value={token}
-                onChangeText={handleTokenChange}
-                onBlur={() => setTokenTouched(true)}
-                placeholder={t('connect.tokenPlaceholder')}
-                autoCapitalize="none"
-                autoCorrect={false}
-                spellCheck={false}
-                autoComplete="off"
-                importantForAutofill="no"
-                secureTextEntry={!showToken}
-                textContentType="none"
-                returnKeyType="done"
-                onSubmitEditing={() => void connect()}
-                ltr
-                fieldMinHeight={layout.field}
-                accessibilityLabel={t('connect.token')}
-                error={
-                  showTokenError
-                    ? t('connect.tokenTooShort', { min: TOKEN_MIN_LENGTH })
-                    : undefined
-                }
-                rightAccessory={
-                  <View style={styles.accessories}>
-                    <IconButton
-                      label={t('connect.paste')}
-                      onPress={() => void pasteToken()}
-                      size="sm"
-                      variant="borderless"
-                      hitSlop={layout.hitSlop}
-                      icon={<Icon name="clipboard-outline" size={layout.icon} color="secondary" />}
-                    />
-                    <IconButton
-                      label={showToken ? t('connect.hideToken') : t('connect.showToken')}
-                      onPress={() => setShowToken((value) => !value)}
-                      size="sm"
-                      variant="borderless"
-                      hitSlop={layout.hitSlop}
-                      accessibilityState={{ selected: showToken }}
-                      icon={
-                        <Icon
-                          name={showToken ? 'eye-off-outline' : 'eye-outline'}
-                          size={layout.icon}
-                          color="secondary"
-                        />
-                      }
-                    />
-                  </View>
-                }
-              />
-            </View>
-
-            <View style={styles.footerGroup}>
-              {showSteps ? (
-                <View style={styles.steps} accessibilityLiveRegion="polite">
-                  {STAGES.map((step, index) => {
-                    const done = stageIndex > index;
-                    const active = stageIndex === index;
-                    const failedStep = active && !loading && Boolean(error);
-                    const label =
-                      step === 'reaching'
-                        ? t('connect.stageReaching')
-                        : step === 'checking'
-                          ? t('connect.stageChecking')
-                          : t('connect.stageReady');
-                    return (
-                      <View key={step} style={styles.stepRow}>
-                        <View style={styles.stepIcon}>
-                          {failedStep ? (
-                            <Icon name="alert-circle-outline" size={16} color="textStrong" />
-                          ) : done ? (
-                            <Icon name="checkmark" size={16} color="textStrong" />
-                          ) : active ? (
-                            <ActivityIndicator
-                              size="small"
-                              color={theme.colors.textStrong}
-                            />
-                          ) : (
-                            <Icon name="ellipse-outline" size={16} color="secondary" />
-                          )}
-                        </View>
-                        <AppText
-                          variant="helper"
-                          color={done || active ? 'textStrong' : 'secondary'}
-                          style={styles.flexText}
-                        >
-                          {label}
-                        </AppText>
-                      </View>
-                    );
-                  })}
-                </View>
-              ) : null}
-
-              {error ? <ErrorBanner message={error} design="new" /> : null}
-
-              <Button
-                design="new"
-                variant="secondary"
-                label={loading ? t('connect.connecting') : t('connect.connect')}
-                onPress={() => void connect()}
-                loading={loading}
-                fullWidth
-                size="md"
-                shape="pill"
-              />
-
+            {/* Header Brand */}
+            <View style={styles.header}>
               <View
                 style={[
-                  styles.note,
-                  {
-                    backgroundColor: theme.colors.surface1,
-                    borderColor: theme.colors.border,
-                  },
+                  styles.logoBadge,
+                  { backgroundColor: '#0EA5E918', borderColor: '#0EA5E940' },
                 ]}
               >
-                <View style={styles.noteRow}>
-                  <Icon name="lock-closed-outline" size={16} color="secondary" />
-                  <AppText
-                    variant="helper"
-                    color="secondary"
-                    style={styles.flexText}
-                  >
-                    {t('connect.security')}
+                <Icon name="code-slash-outline" size={28} style={{ color: '#0EA5E9' }} />
+              </View>
+              <AppText variant="connectTitle" weight="700" style={styles.title}>
+                {t('appName')}
+              </AppText>
+              <AppText variant="body15" color="secondary" style={styles.subtitle}>
+                {t('connect.title')}
+              </AppText>
+            </View>
+
+            {/* Quick Connect Actions */}
+            <View style={styles.actionSection}>
+              {/* Instant Scan QR Card */}
+              <Pressable
+                onPress={() => void openScanner()}
+                disabled={loading}
+                style={({ pressed }) => [
+                  styles.primaryCard,
+                  {
+                    backgroundColor: theme.colors.surface2,
+                    borderColor: '#0EA5E960',
+                    opacity: pressed ? 0.85 : 1,
+                    transform: [{ scale: pressed ? 0.98 : 1 }],
+                  },
+                ]}
+                accessibilityRole="button"
+                accessibilityLabel={t('connect.scanQr')}
+              >
+                <View style={[styles.actionIconBox, { backgroundColor: '#0EA5E9' }]}>
+                  <Icon name="qr-code-outline" size={26} color="onPrimary" />
+                </View>
+                <View style={styles.actionTextBox}>
+                  <AppText variant="title" weight="700" color="textStrong">
+                    {t('connect.scanQr')}
+                  </AppText>
+                  <AppText variant="caption" color="secondary" style={{ marginTop: 2 }}>
+                    {t('connect.scanHint')}
                   </AppText>
                 </View>
+                <Icon name="chevron-forward" size={18} color="secondary" />
+              </Pressable>
+
+              {/* Smart Paste Card */}
+              <Pressable
+                onPress={() => void handleSmartPaste()}
+                disabled={loading}
+                style={({ pressed }) => [
+                  styles.secondaryCard,
+                  {
+                    backgroundColor: theme.colors.surface,
+                    borderColor: theme.colors.border,
+                    opacity: pressed ? 0.8 : 1,
+                  },
+                ]}
+                accessibilityRole="button"
+                accessibilityLabel={t('connect.paste')}
+              >
+                <View style={[styles.actionIconBox, { backgroundColor: '#6366F120' }]}>
+                  <Icon name="clipboard-outline" size={20} style={{ color: '#6366F1' }} />
+                </View>
+                <View style={styles.actionTextBox}>
+                  <AppText variant="body15" weight="600" color="textStrong">
+                    {t('connect.paste')}
+                  </AppText>
+                  <AppText variant="caption" color="secondary">
+                    {url && token ? `${url}` : t('connect.pasteEmpty')}
+                  </AppText>
+                </View>
+              </Pressable>
+            </View>
+
+            {/* Error & Progress */}
+            {error ? <ErrorBanner message={error} design="new" /> : null}
+
+            {showSteps ? (
+              <View
+                style={[
+                  styles.statusBox,
+                  { backgroundColor: theme.colors.surface1, borderColor: theme.colors.border },
+                ]}
+              >
+                {STAGES.map((step, index) => {
+                  const done = stageIndex > index;
+                  const active = stageIndex === index;
+                  const failedStep = active && !loading && Boolean(error);
+                  const label =
+                    step === 'reaching'
+                      ? t('connect.stageReaching')
+                      : step === 'checking'
+                        ? t('connect.stageChecking')
+                        : t('connect.stageReady');
+                  return (
+                    <View key={step} style={styles.stepRow}>
+                      <View style={styles.stepIcon}>
+                        {failedStep ? (
+                          <Icon name="alert-circle-outline" size={16} style={{ color: '#EF4444' }} />
+                        ) : done ? (
+                          <Icon name="checkmark" size={16} style={{ color: '#10B981' }} />
+                        ) : active ? (
+                          <ActivityIndicator size="small" color="#0EA5E9" />
+                        ) : (
+                          <Icon name="ellipse-outline" size={14} color="secondary" />
+                        )}
+                      </View>
+                      <AppText
+                        variant="helper"
+                        color={done || active ? 'textStrong' : 'secondary'}
+                        weight={active ? '600' : '400'}
+                      >
+                        {label}
+                      </AppText>
+                    </View>
+                  );
+                })}
               </View>
+            ) : null}
+
+            {/* Manual Toggle */}
+            <View style={styles.manualSection}>
+              <Pressable
+                onPress={() => setManualOpen((v) => !v)}
+                style={styles.toggleRow}
+                accessibilityRole="button"
+              >
+                <AppText variant="caption" color="secondary" weight="600">
+                  {manualOpen ? '▲ Hide manual fields' : '▼ Or enter address manually'}
+                </AppText>
+              </Pressable>
+
+              {manualOpen ? (
+                <View
+                  style={[
+                    styles.manualForm,
+                    {
+                      backgroundColor: theme.colors.surface,
+                      borderColor: theme.colors.border,
+                    },
+                  ]}
+                >
+                  <TextField
+                    design="new"
+                    label={t('connect.url')}
+                    value={url}
+                    onChangeText={handleUrlChange}
+                    onBlur={() => {
+                      setUrlTouched(true);
+                      setUrl((value) => value.trim());
+                    }}
+                    placeholder="http://192.168.1.50:8787"
+                    keyboardType="url"
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    spellCheck={false}
+                    autoComplete="off"
+                    importantForAutofill="no"
+                    inputMode="url"
+                    returnKeyType="next"
+                    onSubmitEditing={() => tokenRef.current?.focus()}
+                    ltr
+                    fieldMinHeight={layout.field}
+                    accessibilityLabel={t('connect.url')}
+                    error={urlTouched && !urlValid ? t('connect.urlInvalid') : undefined}
+                  />
+
+                  {showHttpWarning ? (
+                    <View style={styles.warningRow}>
+                      <Icon name="lock-open-outline" size={14} style={{ color: '#F59E0B' }} />
+                      <AppText variant="caption" color="secondary" style={styles.flex}>
+                        {t('connect.httpWarning')}
+                      </AppText>
+                    </View>
+                  ) : null}
+
+                  <TextField
+                    ref={tokenRef}
+                    design="new"
+                    label={t('connect.token')}
+                    value={token}
+                    onChangeText={handleTokenChange}
+                    onBlur={() => setTokenTouched(true)}
+                    placeholder={t('connect.tokenPlaceholder')}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                    spellCheck={false}
+                    autoComplete="off"
+                    importantForAutofill="no"
+                    secureTextEntry={!showToken}
+                    textContentType="none"
+                    returnKeyType="done"
+                    onSubmitEditing={() => void connectWith(url, token)}
+                    ltr
+                    fieldMinHeight={layout.field}
+                    accessibilityLabel={t('connect.token')}
+                    error={
+                      tokenTouched && !tokenValid
+                        ? t('connect.tokenTooShort', { min: TOKEN_MIN_LENGTH })
+                        : undefined
+                    }
+                    rightAccessory={
+                      <IconButton
+                        label={showToken ? t('connect.hideToken') : t('connect.showToken')}
+                        onPress={() => setShowToken((value) => !value)}
+                        size="sm"
+                        variant="borderless"
+                        hitSlop={layout.hitSlop}
+                        icon={
+                          <Icon
+                            name={showToken ? 'eye-off-outline' : 'eye-outline'}
+                            size={layout.icon}
+                            color="secondary"
+                          />
+                        }
+                      />
+                    }
+                  />
+
+                  <Button
+                    design="new"
+                    variant="primary"
+                    label={loading ? t('connect.connecting') : t('connect.connect')}
+                    onPress={() => void connectWith(url, token)}
+                    loading={loading}
+                    fullWidth
+                    size="md"
+                    shape="pill"
+                  />
+                </View>
+              ) : null}
             </View>
           </ScrollView>
         </KeyboardAvoider>
       </Rtl>
+
+      {/* QR Scanner Modal */}
       <Modal
         visible={scannerOpen}
         animationType="slide"
         onRequestClose={() => setScannerOpen(false)}
       >
-        <View style={[styles.scanner, { backgroundColor: theme.colors.bg }]}>
+        <View style={styles.scannerModal}>
           <CameraView
             style={StyleSheet.absoluteFill}
             facing="back"
@@ -509,10 +557,16 @@ export default function ConnectScreen() {
             onBarcodeScanned={({ data }) => handleQr(data)}
           />
           <View style={styles.scannerOverlay}>
-            <AppText variant="connectTitle" color="textStrong">{t('connect.scanQr')}</AppText>
-            <AppText variant="body15" color="textStrong">{t('connect.scanHint')}</AppText>
+            <View style={styles.scannerTargetBox} />
+            <AppText variant="title" weight="700" color="onPrimary" style={{ textAlign: 'center' }}>
+              {t('connect.scanQr')}
+            </AppText>
+            <AppText variant="caption" color="onPrimary" style={{ textAlign: 'center', opacity: 0.8 }}>
+              Point camera at the terminal QR code to connect automatically
+            </AppText>
             <Button
               design="new"
+              variant="secondary"
               label={t('common.cancel')}
               onPress={() => setScannerOpen(false)}
               fullWidth
@@ -528,69 +582,81 @@ export default function ConnectScreen() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  flexText: { flex: 1 },
-  scanner: { flex: 1, justifyContent: 'flex-end' },
-  scannerOverlay: {
-    gap: 16,
-    padding: 24,
-    paddingBottom: 40,
-    backgroundColor: 'rgba(0,0,0,0.76)',
-  },
   content: {
     flexGrow: 1,
-    justifyContent: 'space-evenly',
-    gap: 26,
+    paddingHorizontal: 20,
+    paddingTop: 36,
+    paddingBottom: 40,
+    maxWidth: 460,
     width: '100%',
-    maxWidth: 480,
     alignSelf: 'center',
+    gap: 20,
   },
-  headerGroup: {
-    width: '100%',
-  },
-  brandRow: {
-    flexDirection: 'row',
+  header: {
     alignItems: 'center',
-    gap: 10,
+    marginBottom: 6,
   },
-  brandMark: {
-    width: 40,
-    height: 40,
+  logoBadge: {
+    width: 64,
+    height: 64,
+    borderRadius: 20,
+    borderCurve: 'continuous',
+    borderWidth: 1.5,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderRadius: 14,
-    borderCurve: 'continuous',
+    marginBottom: 12,
   },
-  formGroup: {
-    width: '100%',
-    gap: 16,
+  title: {
+    fontSize: 24,
+    textAlign: 'center',
   },
-  scanGroup: {
-    gap: 8,
+  subtitle: {
+    marginTop: 4,
+    textAlign: 'center',
   },
-  footerGroup: {
-    width: '100%',
+  actionSection: {
     gap: 12,
   },
-  warningRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 6,
-    marginTop: 8,
-  },
-  accessories: {
+  primaryCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 2,
+    padding: 16,
+    borderRadius: 18,
+    borderCurve: 'continuous',
+    borderWidth: 1.5,
+    gap: 14,
   },
-  steps: {
+  secondaryCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 14,
+    borderRadius: 16,
+    borderCurve: 'continuous',
+    borderWidth: 1,
+    gap: 14,
+  },
+  actionIconBox: {
+    width: 48,
+    height: 48,
+    borderRadius: 14,
+    borderCurve: 'continuous',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  actionTextBox: {
+    flex: 1,
+  },
+  statusBox: {
+    padding: 14,
+    borderRadius: 14,
+    borderCurve: 'continuous',
+    borderWidth: 1,
     gap: 8,
   },
   stepRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
-    minHeight: 20,
+    gap: 10,
   },
   stepIcon: {
     width: 20,
@@ -598,15 +664,44 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  note: {
-    borderWidth: 1,
-    borderRadius: layout.radiusS,
-    borderCurve: 'continuous',
-    padding: 16,
+  manualSection: {
+    marginTop: 4,
+    gap: 12,
   },
-  noteRow: {
+  toggleRow: {
+    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  manualForm: {
+    padding: 18,
+    borderRadius: 18,
+    borderCurve: 'continuous',
+    borderWidth: 1,
+    gap: 16,
+  },
+  warningRow: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 8,
+    alignItems: 'center',
+    gap: 6,
+  },
+  scannerModal: {
+    flex: 1,
+    backgroundColor: '#000000',
+    justifyContent: 'flex-end',
+  },
+  scannerOverlay: {
+    padding: 24,
+    paddingBottom: 48,
+    gap: 16,
+    backgroundColor: 'rgba(0,0,0,0.85)',
+    alignItems: 'center',
+  },
+  scannerTargetBox: {
+    width: 220,
+    height: 220,
+    borderWidth: 2,
+    borderColor: '#0EA5E9',
+    borderRadius: 24,
+    marginBottom: 16,
   },
 });

@@ -264,20 +264,6 @@ export default function SettingsScreen() {
     hapticSelection();
   };
 
-  const setArgon4 = () => {
-    const argonModel: ModelSelection = {
-      providerID: 'google',
-      modelID: 'antigravity-gemini-4-argon',
-    };
-    setSelectedModel(argonModel);
-    void setStored(MODEL_STORAGE_KEY, JSON.stringify(argonModel));
-    hapticSuccess();
-  };
-
-  const isArgon4Active =
-    selectedModel?.providerID === 'google' &&
-    selectedModel.modelID.toLowerCase().includes('argon');
-
   const selectedModelName = modelsQuery.data?.find(
     (model) => model.providerId === selectedModel?.providerID && model.modelId === selectedModel?.modelID,
   )?.name;
@@ -381,79 +367,25 @@ export default function SettingsScreen() {
       <Rtl style={{ flex: 1 }}>
         <ScreenHeader title={t('settings.title')} onBack={() => router.back()} />
         <ScrollView style={{ flex: 1 }} contentContainerStyle={{ paddingVertical: theme.spacing.md, paddingBottom: 56 }}>
-          {/* AI AGENT & TASKS / ARGON 4 */}
+          {/* AI MODEL SELECTION */}
           <CategoryCard
-            icon="flash"
-            iconBg="#F59E0B"
+            icon="hardware-chip-outline"
+            iconBg="#6366F1"
             title={t('settings.modelTitle')}
-            subtitle={t('settings.modelHint')}
             badge={
-              isArgon4Active ? (
-                <View style={styles.activePill}>
-                  <View style={[styles.pulseDot, { backgroundColor: '#F59E0B' }]} />
-                  <AppText variant="caption" weight="600" style={{ color: '#D97706' }}>
-                    Argon 4
-                  </AppText>
-                </View>
-              ) : null
+              <View style={styles.activePill}>
+                <View style={[styles.pulseDot, { backgroundColor: '#10B981' }]} />
+                <AppText variant="caption" weight="600" style={{ color: '#059669' }}>
+                  {selectedModelName ?? 'Gemini 4 Argon'}
+                </AppText>
+              </View>
             }
           >
-            {/* Quick Argon 4 Preset Card */}
-            <Pressable
-              onPress={setArgon4}
-              accessibilityRole="button"
-              accessibilityLabel={t('settings.argon4Action')}
-              style={({ pressed }) => [
-                styles.argonCard,
-                {
-                  backgroundColor: isArgon4Active ? 'rgba(245, 158, 11, 0.12)' : theme.colors.surface2,
-                  borderColor: isArgon4Active ? '#F59E0B' : theme.colors.border,
-                  opacity: pressed ? 0.8 : 1,
-                },
-              ]}
-            >
-              <View style={[styles.argonIconBox, { backgroundColor: isArgon4Active ? '#F59E0B' : '#E2E8F0' }]}>
-                <Ionicons name="flash" size={18} color={isArgon4Active ? '#FFFFFF' : '#64748B'} />
-              </View>
-              <View style={{ flex: 1, gap: 2 }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                  <AppText variant="body" weight="700">
-                    Gemini 4 Argon
-                  </AppText>
-                  <View style={styles.proTag}>
-                    <AppText variant="caption" weight="700" style={{ color: '#D97706', fontSize: 10 }}>
-                      AGY
-                    </AppText>
-                  </View>
-                </View>
-                <AppText variant="caption" color="text3">
-                  Google · High Reasoning · Tasks & Coding
-                </AppText>
-              </View>
-              <View
-                style={[
-                  styles.argonActionBtn,
-                  {
-                    backgroundColor: isArgon4Active ? '#10B981' : theme.colors.primary,
-                  },
-                ]}
-              >
-                <AppText
-                  variant="caption"
-                  weight="600"
-                  style={{ color: isArgon4Active ? '#FFFFFF' : theme.colors.onPrimary }}
-                >
-                  {isArgon4Active ? 'Active' : t('settings.argon4Action')}
-                </AppText>
-              </View>
-            </Pressable>
-
-            {/* Choose Other Models */}
             <SettingsRow
-              icon="layers-outline"
-              iconBg="#8B5CF6"
+              icon="sparkles"
+              iconBg="#F59E0B"
               label={t('model.selector')}
-              description={selectedModelName ?? (selectedModel ? selectedModel.modelID : t('model.default'))}
+              description={selectedModelName ?? (selectedModel ? selectedModel.modelID : 'Gemini 4 Argon (Antigravity)')}
               onPress={() => setModelSheetOpen(true)}
               right={<Icon name="chevron-forward" size={16} color="text3" />}
               last
