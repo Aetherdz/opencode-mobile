@@ -43,7 +43,34 @@
       content="https://aetherdz.github.io/opencode-mobile/assets/og.png?v=logo1"
     />
     <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate" type="text/plain" href="../llms.txt" title="LLM Context" />
     <link rel="stylesheet" href="../styles.css" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "OpenCode Mobile",
+      "operatingSystem": "Android, iOS, Web, Linux, macOS, Windows",
+      "applicationCategory": "DeveloperApplication",
+      "softwareVersion": "1.0.0-beta.10",
+      "downloadUrl": "https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.10/opencode-mobile-1.0.0-beta.10.apk",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "featureList": [
+        "1-command bridge install",
+        "Instant QR auto-connect",
+        "Universal model selector (DeepSeek, Claude, Gemini, OpenAI, Ollama)",
+        "120fps fluid mobile UI",
+        "Live WebSocket and SSE streaming",
+        "Interactive diff approvals",
+        "Zero telemetry & loopback security",
+        "Four languages: English, Arabic, French, Spanish"
+      ]
+    }
+    </script>
   </head>
   <body>
     <a class="skip-link" href="#main">Saltar al contenido</a>
@@ -163,9 +190,7 @@
             <em>Tu bolsillo.</em>
           </h1>
           <p class="lede">
-            Instala el bridge una vez en el equipo de OpenCode y crea un enlace
-            temporal al móvil cuando lo necesites. Sin cuenta ni relay, y sin
-            telemetría en la app.
+            Controla OpenCode desde tu móvil. Instalación en 1 comando, emparejamiento instantáneo por QR, cero telemetría y seguridad local.
           </p>
           <div class="actions">
             <a class="button button-primary" href="#install">Instalar el puente</a>
@@ -201,8 +226,7 @@
           <p class="eyebrow">01 / La instalación</p>
           <h2 class="display">Tres pasos. Sin cuenta.</h2>
           <p>
-            Instálalo una vez y usa después un comando corto cuando quieras un
-            enlace temporal para el móvil. El bridge queda en loopback.
+            Ejecuta un comando en tu equipo, escanea el código QR con el móvil y ponte a programar al instante sin registrarte.
           </p>
         </div>
         <div class="install-grid">
@@ -211,21 +235,21 @@
               <span class="step-number">01</span>
               <div>
                 <h3>Instalar el puente</h3>
-                <p>Instala el bridge verificado y crea una configuración privada.</p>
+                <p>Una línea de comando para configurar el puente local seguro.</p>
               </div>
             </li>
             <li>
               <span class="step-number">02</span>
               <div>
-                <h3>Crea un enlace cuando lo necesites</h3>
-                <p>Ejecuta <code>opencode-mobile</code> para crear un enlace público temporal tras el aviso y la confirmación.</p>
+                <h3>Emparejar tu móvil</h3>
+                <p>Ejecuta <code>opencode-mobile</code> para mostrar un código QR seguro en la terminal.</p>
               </div>
             </li>
             <li>
               <span class="step-number">03</span>
               <div>
-                <h3>Conecta la aplicación</h3>
-                <p>Escanea el QR de la terminal o introduce la URL y el token; inicia sesión después.</p>
+                <h3>Empezar a programar</h3>
+                <p>Escanea el QR en la app para revisar diffs, seguir la transmisión y cambiar de modelo.</p>
               </div>
             </li>
           </ol>

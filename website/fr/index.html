@@ -43,7 +43,34 @@
       content="https://aetherdz.github.io/opencode-mobile/assets/og.png?v=logo1"
     />
     <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate" type="text/plain" href="../llms.txt" title="LLM Context" />
     <link rel="stylesheet" href="../styles.css" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "OpenCode Mobile",
+      "operatingSystem": "Android, iOS, Web, Linux, macOS, Windows",
+      "applicationCategory": "DeveloperApplication",
+      "softwareVersion": "1.0.0-beta.10",
+      "downloadUrl": "https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.10/opencode-mobile-1.0.0-beta.10.apk",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "featureList": [
+        "1-command bridge install",
+        "Instant QR auto-connect",
+        "Universal model selector (DeepSeek, Claude, Gemini, OpenAI, Ollama)",
+        "120fps fluid mobile UI",
+        "Live WebSocket and SSE streaming",
+        "Interactive diff approvals",
+        "Zero telemetry & loopback security",
+        "Four languages: English, Arabic, French, Spanish"
+      ]
+    }
+    </script>
   </head>
   <body>
     <a class="skip-link" href="#main">Aller au contenu</a>
@@ -163,9 +190,7 @@
             <em>Votre poche.</em>
           </h1>
           <p class="lede">
-            Installez la passerelle une fois sur la machine OpenCode, puis créez
-            un lien temporaire vers le téléphone au besoin. Sans compte ni relais,
-            et sans télémétrie dans l’application.
+            Pilotez OpenCode depuis votre téléphone. Installation en 1 commande, appairage instantané par QR, zéro télémétrie et sécurité locale.
           </p>
           <div class="actions">
             <a class="button button-primary" href="#install">Installer la passerelle</a>
@@ -201,8 +226,7 @@
           <p class="eyebrow">01 / L’installation</p>
           <h2 class="display">Trois étapes. Aucun compte.</h2>
           <p>
-            Installez une fois, puis lancez une commande courte pour obtenir un
-            lien temporaire vers le téléphone. La passerelle reste sur loopback.
+            Lancez une commande sur votre machine, scannez le code QR avec votre téléphone et commencez à coder sans créer de compte.
           </p>
         </div>
         <div class="install-grid">
@@ -211,21 +235,21 @@
               <span class="step-number">01</span>
               <div>
                 <h3>Installer la passerelle</h3>
-                <p>Installez la passerelle vérifiée et créez une configuration privée.</p>
+                <p>Une ligne de commande pour configurer la passerelle locale sécurisée.</p>
               </div>
             </li>
             <li>
               <span class="step-number">02</span>
               <div>
-                <h3>Créez un lien au besoin</h3>
-                <p>Lancez <code>opencode-mobile</code> pour créer un lien public temporaire après avertissement et confirmation.</p>
+                <h3>Appairer votre téléphone</h3>
+                <p>Lancez <code>opencode-mobile</code> pour afficher un QR code chiffré dans le terminal.</p>
               </div>
             </li>
             <li>
               <span class="step-number">03</span>
               <div>
-                <h3>Connectez l’application</h3>
-                <p>Scannez le QR du terminal ou saisissez l’URL et le jeton. Connectez-vous ensuite.</p>
+                <h3>Coder directement</h3>
+                <p>Scannez le code QR pour inspecter les diffs, suivre le flux et changer de modèle.</p>
               </div>
             </li>
           </ol>

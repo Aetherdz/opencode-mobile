@@ -1,0 +1,55 @@
+# OpenCode Mobile
+
+> OpenCode Mobile is an unofficial, self-hosted mobile, tablet, and web client for the OpenCode AI coding agent. It connects directly to your development workstation with 1-command setup, terminal ANSI QR pairing, a universal model selector (DeepSeek, Claude 3.7, Gemini 4 Argon, OpenAI, Ollama), a Claude-inspired 120fps fluid UI, and zero telemetry.
+
+## Quickstart (1-Command Install)
+
+### Linux & macOS
+```bash
+curl -fsSL https://raw.githubusercontent.com/Aetherdz/opencode-mobile-dist/main/install.sh | bash
+```
+
+### Windows (PowerShell)
+```powershell
+$h = "3a493282e252468ed96012cd0019f5252314bfb5c7b810be34476602616a14aa"
+irm https://raw.githubusercontent.com/Aetherdz/opencode-mobile-dist/7c4ec38b7de7d87e88d7f215721a11bc338e128f/install.ps1 -OutFile install.ps1
+if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksum mismatch" }
+.\install.ps1 -Command install -WorkDir "$env:USERPROFILE\projects"
+```
+
+After installation, run `opencode-mobile` on your host machine to output an ANSI QR code in your terminal, then scan it with the mobile app for instant auto-connection.
+
+## Releases & Downloads
+
+- [Android APK v1.0.0-beta.10](https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.10/opencode-mobile-1.0.0-beta.10.apk): Release-signed arm64-v8a APK for Android 7.0+.
+- [GitHub Releases](https://github.com/Aetherdz/opencode-mobile/releases): All tagged releases, release notes, and SHA256 checksums.
+- [Source Code](https://github.com/Aetherdz/opencode-mobile): Full source for Expo mobile client, Fastify bridge, and deployment scripts.
+
+## Core Capabilities
+
+1. **Universal Model Selector**: Switch seamlessly between any model configured in OpenCode, including Gemini 4 Argon, DeepSeek V3/R1, Claude 3.7 Sonnet, OpenAI GPT-4o, and local Ollama models directly in the chat composer.
+2. **Dual-Transport Streaming**: High-frequency primary WebSocket connection (`/ws`) delivering sub-50ms message latency, heartbeat keepalive, and automatic fallback to Server-Sent Events (SSE).
+3. **120fps Fluid Mobile UI**: Ergonomics inspired by Claude mobile with native spring physics (`cubic-bezier(0.22, 1, 0.36, 1)`), tactile press dynamics, high-contrast dark and light themes, and smooth sheet transitions.
+4. **Interactive Tool Approvals**: Review command executions, file writes, and web fetches with collapsible syntax-highlighted diffs and safety confirmations.
+5. **Attachments & Camera**: Upload photos, screenshots, and source documents directly into active sessions with strict MIME and magic-byte validation.
+6. **Zero Telemetry & Local Isolation**: Zero tracking libraries, no Firebase analytics, no external relays. The bridge binds strictly to loopback (`127.0.0.1:8787`) with constant-time token validation and workspace confinement (`ALLOWED_WORKDIRS`).
+7. **Four Languages**: Native internationalization in English, Arabic (with full right-to-left layout), French, and Spanish.
+
+## Documentation Links
+
+- [Installation Guide](https://aetherdz.github.io/opencode-mobile/): 1-command installer, prerequisites, and setup steps.
+- [Features Overview](https://aetherdz.github.io/opencode-mobile/features/): Core features, session management, and platform support.
+- [User Guide](https://aetherdz.github.io/opencode-mobile/guide/): Detailed bridge configuration, environment variables, and remote access via Tailscale.
+- [Security Model](https://aetherdz.github.io/opencode-mobile/security/): Trust boundaries, token authentication, and threat model.
+- [FAQ](https://aetherdz.github.io/opencode-mobile/faq/): Short answers to common deployment and usage questions.
+- [Documentation Index](https://aetherdz.github.io/opencode-mobile/docs/): Hub for all website and repository documentation.
+
+### Localized Documentation
+
+- [العربية (Arabic)](https://aetherdz.github.io/opencode-mobile/ar/): التوثيق الكامل باللغة العربية مع دعم RTL.
+- [Français (French)](https://aetherdz.github.io/opencode-mobile/fr/): Documentation complète en français.
+- [Español (Spanish)](https://aetherdz.github.io/opencode-mobile/es/): Documentación completa en español.
+
+## Optional & Full Context
+
+- [Full LLM Context (llms-full.txt)](https://aetherdz.github.io/opencode-mobile/llms-full.txt): Complete consolidated documentation, configuration variables, API endpoints, and troubleshooting instructions.

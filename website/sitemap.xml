@@ -264,4 +264,16 @@
     <xhtml:link rel="alternate" hreflang="es" href="https://aetherdz.github.io/opencode-mobile/es/docs/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://aetherdz.github.io/opencode-mobile/docs/" />
   </url>
+  <url>
+    <loc>https://aetherdz.github.io/opencode-mobile/llms.txt</loc>
+    <lastmod>2026-11-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://aetherdz.github.io/opencode-mobile/llms-full.txt</loc>
+    <lastmod>2026-11-09</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
 </urlset>

@@ -1,0 +1,140 @@
+# OpenCode Mobile — Full Documentation & System Context
+
+> OpenCode Mobile is an unofficial, self-hosted mobile, tablet, and web client for the OpenCode AI coding agent. It connects directly to your development workstation with 1-command setup, terminal ANSI QR pairing, a universal model selector (DeepSeek, Claude 3.7, Gemini 4 Argon, OpenAI, Ollama), a Claude-inspired 120fps fluid UI, and zero telemetry.
+
+Version: 1.0.0-beta.10  
+Repository: https://github.com/Aetherdz/opencode-mobile  
+Website: https://aetherdz.github.io/opencode-mobile/  
+Latest Release APK: https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.10/opencode-mobile-1.0.0-beta.10.apk  
+
+---
+
+## 1. Quick Installation & Pairing
+
+### Linux & macOS (Automated)
+```bash
+curl -fsSL https://raw.githubusercontent.com/Aetherdz/opencode-mobile-dist/main/install.sh | bash
+```
+
+### Windows (Automated PowerShell)
+```powershell
+$h = "3a493282e252468ed96012cd0019f5252314bfb5c7b810be34476602616a14aa"
+irm https://raw.githubusercontent.com/Aetherdz/opencode-mobile-dist/7c4ec38b7de7d87e88d7f215721a11bc338e128f/install.ps1 -OutFile install.ps1
+if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksum mismatch" }
+.\install.ps1 -Command install -WorkDir "$env:USERPROFILE\projects"
+```
+
+### Pairing with Mobile App
+1. Run `opencode-mobile` in your terminal on the workstation.
+2. The CLI generates an ANSI terminal QR code containing the pairing URL (`opencode-mobile://connect?url=...&token=...`).
+3. Open OpenCode Mobile on your phone and tap **Auto-Connect (QR Scan)** or paste from clipboard.
+4. The app verifies credentials, establishes a secure WebSocket connection, and lists your sessions.
+
+---
+
+## 2. Architecture & Transport Engine
+
+OpenCode Mobile operates around a defense-in-depth model that connects your mobile device directly to your workstation without third-party intermediary servers:
+
+```text
+[Mobile App / PWA] 
+       │
+       ▼ (Encrypted WireGuard / HTTPS / LAN)
+[Fastify Bridge @ 127.0.0.1:8787]
+  • Bearer Token Authentication (crypto.timingSafeEqual)
+  • Scoped Confinement (ALLOWED_WORKDIRS = ~/projects)
+  • Magic-byte verification & upload limits
+  • Dual Transport: Primary WebSocket (/ws) + SSE Fallback (/event)
+       │
+       ▼ (Loopback HTTP REST + SSE)
+[OpenCode Local Core @ 127.0.0.1]
+  • Discovered via ~/.local/state/opencode/service.json
+  • Tool execution (bash, edit, read, web)
+  • LLM Providers (DeepSeek, Claude 3.7, Gemini 4 Argon, OpenAI, Ollama)
+```
+
+### Key Architectural Capabilities
+- **Dual-Transport Streaming**: High-frequency primary WebSocket connection (`/ws`) delivering sub-50ms message latency, heartbeat keepalive ping/pong, and automatic fallback to Server-Sent Events (SSE).
+- **Universal Model Selector**: Switch seamlessly between any model configured in OpenCode directly in the composer:
+  - Gemini 4 Argon (`antigravity-gemini-4-argon`)
+  - DeepSeek V3 / R1 (`deepseek/deepseek-chat`, `deepseek/deepseek-reasoner`)
+  - Anthropic Claude (`anthropic/claude-3-7-sonnet-latest`, `claude-3-5-sonnet`)
+  - OpenAI (`openai/gpt-4o`, `o3-mini`)
+  - Local Ollama instances (`ollama/...`)
+- **120fps Fluid Mobile UI**: Native fluid physics (`cubic-bezier(0.22, 1, 0.36, 1)`), tactile `PressableScale` spring interactions, interactive tool cards, and dark/light modes.
+- **Approvals & Diffs**: Interactive approval sheets for tool permissions with collapsible diff reviews and double confirmation for destructive actions.
+
+---
+
+## 3. Bridge Configuration & Environment Variables
+
+All settings are configured via `bridge/.env`:
+
+| Variable | Default | Purpose |
+| :--- | :--- | :--- |
+| `AUTH_TOKEN` | *required* | High-entropy bearer secret (minimum 32 characters). Tested via constant-time comparison. |
+| `HOST` | `127.0.0.1` | Local IP bind address. Always keep on loopback. |
+| `PORT` | `8787` | HTTP & WebSocket server port. |
+| `ALLOWED_WORKDIRS` | `~/projects` | Colon-separated directory allowlist for workspace confinement. Prevents path traversal. |
+| `OPENCODE_URL` | Auto-discovered | Loopback URL of local OpenCode daemon (from service.json). |
+| `OPENCODE_PASSWORD`| Auto-discovered | Local OpenCode authentication secret. |
+| `CORS_ORIGINS` | *empty* | Exact browser origins permitted for web client (e.g. `http://localhost:8081`). Wildcards rejected. |
+| `MAX_UPLOAD_MB` | `25` | Maximum upload size per individual attachment file. |
+| `MAX_SESSION_UPLOAD_MB` | `1024` | Cumulative upload limit per session. |
+| `RATE_LIMIT_PER_MINUTE` | `180` | IP-based unauthenticated request rate limit. |
+
+---
+
+## 4. Security & Isolation Specification
+
+- **Loopback Enforcement**: The bridge binds exclusively to `127.0.0.1`. Remote access is routed via end-to-end encrypted networks (Tailscale WireGuard mesh or authenticated reverse proxies).
+- **Constant-Time Authentication**: Uses `crypto.timingSafeEqual` for bearer token validation to prevent timing side-channel attacks.
+- **One-Time WebSocket Tickets**: Token credentials never appear in WebSocket URLs or access logs. The app requests a 30-second ticket that is consumed upon handshake.
+- **Directory Traversal Prevention**: All file paths are strictly resolved against `ALLOWED_WORKDIRS`. Any traversal escape (`../`) is immediately rejected. Out-of-bounds sessions require explicit 1-tap runtime grants.
+- **Strict File Upload Validation**: Uploads verify declared MIME types against binary magic bytes (JPEG, PNG, GIF, WebP, PDF) and reject executable extensions.
+- **Zero Telemetry Guarantee**: No tracking libraries, no Firebase analytics, no external crash reporting.
+
+---
+
+## 5. Site Map & Documentation URLs
+
+### English (Primary)
+- Home & Install: https://aetherdz.github.io/opencode-mobile/
+- Features: https://aetherdz.github.io/opencode-mobile/features/
+- User Guide: https://aetherdz.github.io/opencode-mobile/guide/
+- Security Model: https://aetherdz.github.io/opencode-mobile/security/
+- FAQ: https://aetherdz.github.io/opencode-mobile/faq/
+- Docs Hub: https://aetherdz.github.io/opencode-mobile/docs/
+
+### Arabic (العربية - RTL)
+- الرئيسية والتثبيت: https://aetherdz.github.io/opencode-mobile/ar/
+- الميزات: https://aetherdz.github.io/opencode-mobile/ar/features/
+- الدليل الشامل: https://aetherdz.github.io/opencode-mobile/ar/guide/
+- نموذج الأمان: https://aetherdz.github.io/opencode-mobile/ar/security/
+- الأسئلة الشائعة: https://aetherdz.github.io/opencode-mobile/ar/faq/
+- مركز التوثيق: https://aetherdz.github.io/opencode-mobile/ar/docs/
+
+### French (Français)
+- Accueil & Installation: https://aetherdz.github.io/opencode-mobile/fr/
+- Fonctionnalités: https://aetherdz.github.io/opencode-mobile/fr/features/
+- Guide d'utilisation: https://aetherdz.github.io/opencode-mobile/fr/guide/
+- Modèle de sécurité: https://aetherdz.github.io/opencode-mobile/fr/security/
+- FAQ: https://aetherdz.github.io/opencode-mobile/fr/faq/
+- Hub de documentation: https://aetherdz.github.io/opencode-mobile/fr/docs/
+
+### Spanish (Español)
+- Inicio e Instalación: https://aetherdz.github.io/opencode-mobile/es/
+- Funciones: https://aetherdz.github.io/opencode-mobile/es/features/
+- Guía de usuario: https://aetherdz.github.io/opencode-mobile/es/guide/
+- Modelo de seguridad: https://aetherdz.github.io/opencode-mobile/es/security/
+- Preguntas frecuentes: https://aetherdz.github.io/opencode-mobile/es/faq/
+- Centro de documentación: https://aetherdz.github.io/opencode-mobile/es/docs/
+
+---
+
+## 6. Common Troubleshooting
+
+1. **`ECONNREFUSED 127.0.0.1:8787`**: Ensure the bridge service is running (`cd bridge && npm start` or `systemctl --user status opencode-mobile-bridge`).
+2. **OpenCode Core Not Found**: Run `opencode service start` to ensure the local OpenCode core is running on loopback.
+3. **Session Outside Workdir**: The session directory is outside `ALLOWED_WORKDIRS`. Tap "Authorize Once" on the mobile dialog to grant runtime access.
+4. **WebSocket Handshake 401**: Verify that the authentication token is configured properly in the mobile client or re-scan the terminal QR code.
