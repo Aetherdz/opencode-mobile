@@ -1,15 +1,16 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
 import {
-  Pressable,
   ScrollView,
   StyleSheet,
   View,
   useWindowDimensions,
 } from 'react-native';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import type { QuestionItem, QuestionRequest } from '@/api/types';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
+import { PressableScale } from '@/components/ui/PressableScale';
 import { Sheet } from '@/components/ui/Sheet';
 import { TextField } from '@/components/ui/TextField';
 import {
@@ -58,7 +59,7 @@ function isComplete(question: QuestionItem, answer: AnswerState | undefined): bo
   return true;
 }
 
-export function QuestionSheet({
+export const QuestionSheet = memo(function QuestionSheet({
   request,
   onClose,
   onSubmit,
@@ -249,7 +250,7 @@ export function QuestionSheet({
             </AppText>
           ) : null}
           {confirmSkip ? (
-            <>
+            <Animated.View entering={FadeIn.duration(160)} exiting={FadeOut.duration(120)} style={{ gap: theme.spacing.sm }}>
               <AppText variant="meta" color="danger">
                 {t('questions.skipBody')}
               </AppText>
@@ -267,7 +268,7 @@ export function QuestionSheet({
                 disabled={submitting}
                 onPress={() => setConfirmSkip(false)}
               />
-            </>
+            </Animated.View>
           ) : (
             <>
               <Button
@@ -362,25 +363,25 @@ export function QuestionSheet({
             {current.options.map((option) => {
               const selected = currentAnswer?.selected.includes(option.value) ?? false;
               return (
-                <Pressable
+                <PressableScale
                   key={option.value}
                   onPress={() => selectOption(option.value)}
                   disabled={submitting}
+                  scaleTo={0.985}
                   accessibilityRole={current.multiple ? 'checkbox' : 'radio'}
                   accessibilityState={{ checked: selected, disabled: submitting }}
                   accessibilityLabel={`${option.label}${
                     option.description ? `. ${option.description}` : ''
                   }`}
-                  style={({ pressed }) => [
+                  style={[
                     styles.option,
                     {
                       borderColor: selected ? theme.colors.accent : theme.colors.line,
                       backgroundColor: selected
                         ? theme.colors.surface2
-                        : pressed
-                          ? theme.colors.surface1
-                          : 'transparent',
+                        : 'transparent',
                       borderRadius: theme.radii.md,
+                      borderCurve: 'continuous',
                       padding: theme.spacing.md,
                       gap: theme.spacing.md,
                     },
@@ -413,27 +414,27 @@ export function QuestionSheet({
                       </AppText>
                     ) : null}
                   </View>
-                </Pressable>
+                </PressableScale>
               );
             })}
 
             {customVisible && current.options.length > 0 ? (
-              <Pressable
+              <PressableScale
                 onPress={toggleCustom}
                 disabled={submitting}
+                scaleTo={0.985}
                 accessibilityRole={current.multiple ? 'checkbox' : 'radio'}
                 accessibilityState={{ checked: customActive, disabled: submitting }}
                 accessibilityLabel={t('questions.custom')}
-                style={({ pressed }) => [
+                style={[
                   styles.option,
                   {
                     borderColor: customActive ? theme.colors.accent : theme.colors.line,
                     backgroundColor: customActive
                       ? theme.colors.surface2
-                      : pressed
-                        ? theme.colors.surface1
-                        : 'transparent',
+                      : 'transparent',
                     borderRadius: theme.radii.md,
+                    borderCurve: 'continuous',
                     padding: theme.spacing.md,
                     gap: theme.spacing.md,
                   },
@@ -459,7 +460,7 @@ export function QuestionSheet({
                 <AppText variant="body" style={{ flex: 1 }}>
                   {t('questions.custom')}
                 </AppText>
-              </Pressable>
+              </PressableScale>
             ) : null}
 
             {customVisible && customActive ? (
@@ -478,7 +479,7 @@ export function QuestionSheet({
       </View>
     </Sheet>
   );
-}
+});
 
 const styles = StyleSheet.create({
   titleRow: {

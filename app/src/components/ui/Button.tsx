@@ -116,7 +116,7 @@ export function Button({
       accessibilityState={{ disabled: inactive, busy: loading }}
       accessibilityLabel={label}
       accessibilityHint={accessibilityHint}
-      pressedOpacity={isNew ? 0.82 : undefined}
+      pressedOpacity={isNew ? 0.82 : 0.88}
       containerStyle={fullWidth ? styles.stretch : undefined}
       style={[
         styles.base,

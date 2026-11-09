@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 
 import { AppText } from '@/components/ui/AppText';
 import { fileIcon } from '@/lib/fileIcon';
 import { Icon } from '@/components/ui/Icon';
+import { PressableScale } from '@/components/ui/PressableScale';
 import { hapticSelection } from '@/lib/haptics';
 import { useI18n } from '@/lib/i18n';
 import { useTheme } from '@/theme/ThemeProvider';
@@ -119,26 +120,27 @@ export function FileChip(props: {
       ]}
     >
       {onPress ? (
-        <Pressable
+        <PressableScale
+          scaleTo={0.97}
+          pressedOpacity={0.7}
           onPress={() => {
             hapticSelection();
             onPress();
           }}
           accessibilityRole="button"
           accessibilityLabel={accessibilityLabel}
-          style={({ pressed }) => [
-            styles.content,
-            pressed && styles.contentPressed,
-          ]}
+          style={styles.content}
         >
           {body}
-        </Pressable>
+        </PressableScale>
       ) : (
         <View style={styles.content}>{body}</View>
       )}
 
       {onRemove ? (
-        <Pressable
+        <PressableScale
+          scaleTo={0.9}
+          pressedOpacity={0.7}
           onPress={() => {
             hapticSelection();
             onRemove();
@@ -148,7 +150,7 @@ export function FileChip(props: {
           style={({ pressed }) => [styles.removeButton, pressed && styles.removePressed]}
         >
           <Icon name="close" size="xs" color="text2" />
-        </Pressable>
+        </PressableScale>
       ) : null}
     </View>
   );

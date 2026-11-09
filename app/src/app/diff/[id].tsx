@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { router, useLocalSearchParams } from 'expo-router';
 import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
@@ -11,7 +12,7 @@ import { useI18n } from '@/lib/i18n';
 import { useChat } from '@/state/chat';
 import { useTheme } from '@/theme/ThemeProvider';
 
-export default function DiffScreen() {
+export default memo(function DiffScreen() {
   const theme = useTheme();
   const { t } = useI18n();
   const params = useLocalSearchParams<{ id: string | string[] }>();
@@ -40,6 +41,7 @@ export default function DiffScreen() {
                 borderWidth: StyleSheet.hairlineWidth,
                 borderColor: theme.colors.line,
                 borderRadius: theme.radii.lg,
+                borderCurve: 'continuous',
                 backgroundColor: theme.colors.surface1,
                 padding: theme.spacing.md,
                 gap: theme.spacing.sm,
@@ -74,6 +76,8 @@ export default function DiffScreen() {
         </View>
       ) : (
         <ScrollView
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
           contentContainerStyle={{ padding: theme.spacing.lg, paddingBottom: 48 }}
           refreshControl={
             <RefreshControl
@@ -93,4 +97,4 @@ export default function DiffScreen() {
       )}
     </Screen>
   );
-}
+});

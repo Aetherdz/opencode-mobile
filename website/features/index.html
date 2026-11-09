@@ -144,11 +144,11 @@
             </ul>
             <div class="stat-strip">
               <div class="stat">
-                <span class="stat-value">6</span>
+                <span class="stat-value">8</span>
                 <span class="stat-label">Core surfaces</span>
               </div>
               <div class="stat">
-                <span class="stat-value">3</span>
+                <span class="stat-value">4</span>
                 <span class="stat-label">Languages · RTL</span>
               </div>
               <div class="stat">
@@ -170,14 +170,22 @@
             </article>
             <article class="feature">
               <span class="feature-index">02</span>
-              <h3>Streaming that reconnects</h3>
+              <h3>Universal model selector</h3>
               <p>
-                Follow a turn as it happens, page through older messages, and
-                return to the latest message without losing the thread.
+                Switch seamlessly between Gemini 4 Argon, DeepSeek (V3/R1),
+                Claude 3.7 Sonnet, OpenAI GPT-4o, and local Ollama models on the fly.
               </p>
             </article>
             <article class="feature">
               <span class="feature-index">03</span>
+              <h3>Dual-transport streaming</h3>
+              <p>
+                High-frequency WebSocket streaming with sub-50ms turn delivery,
+                heartbeat keepalive, and automatic fallback to Server-Sent Events (SSE).
+              </p>
+            </article>
+            <article class="feature">
+              <span class="feature-index">04</span>
               <h3>Approvals with context</h3>
               <p>
                 Review the tool, the target, and the diff before you allow it.
@@ -185,7 +193,7 @@
               </p>
             </article>
             <article class="feature">
-              <span class="feature-index">04</span>
+              <span class="feature-index">05</span>
               <h3>Files, not screenshots</h3>
               <p>
                 Attach images, camera captures, and documents. Validation happens
@@ -193,7 +201,7 @@
               </p>
             </article>
             <article class="feature">
-              <span class="feature-index">05</span>
+              <span class="feature-index">06</span>
               <h3>Quiet notifications</h3>
               <p>
                 Optional push for finished turns, questions, and approvals.
@@ -201,11 +209,19 @@
               </p>
             </article>
             <article class="feature">
-              <span class="feature-index">06</span>
-              <h3>Three languages</h3>
+              <span class="feature-index">07</span>
+              <h3>120fps fluid physics</h3>
               <p>
-                English, Arabic, and French, with an RTL layout, mixed-direction
-                text, and a monochrome theme that gets out of the way.
+                Claude-inspired native fluid physics, tactile press dynamics,
+                spring-animated sheets, and refined high-contrast themes.
+              </p>
+            </article>
+            <article class="feature">
+              <span class="feature-index">08</span>
+              <h3>Four languages</h3>
+              <p>
+                English, Arabic, French, and Spanish, with an RTL layout,
+                mixed-direction text, and a monochrome theme that gets out of the way.
               </p>
             </article>
           </div>
@@ -243,8 +259,8 @@
             <strong class="callout-title">Deliberately out of scope</strong>
             <p>
               A bundled Telegram bot and a native desktop wrapper. The app focuses
-              on your direct mobile connection with quick model selection (including
-              Gemini 4 Argon), session oversight, and secure bridge permissions.
+              on your direct mobile connection with universal model selection (including
+              Gemini 4 Argon, DeepSeek, and Claude 3.7 Sonnet), session oversight, and secure bridge permissions.
               The app shows a <code>telegram</code> source when another OpenCode client is used,
               but it does not implement one.
             </p>

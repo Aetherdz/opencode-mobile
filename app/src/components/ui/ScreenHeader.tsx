@@ -23,6 +23,7 @@ export function ScreenHeader({ title, subtitle, onBack, right, showBorder = true
       style={[
         styles.root,
         {
+          backgroundColor: theme.colors.canvas,
           borderBottomColor: theme.colors.line,
           borderBottomWidth: showBorder ? StyleSheet.hairlineWidth : 0,
           paddingStart: theme.spacing.sm,

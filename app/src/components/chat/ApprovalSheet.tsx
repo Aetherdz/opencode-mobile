@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import type { ApprovalRequest } from '@/api/types';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
@@ -30,7 +31,7 @@ const riskMeta: Record<Risk, { key: string; icon: IconName }> = {
   destructive: { key: 'approval.destructive', icon: 'warning-outline' },
 };
 
-export function ApprovalSheet({
+export const ApprovalSheet = memo(function ApprovalSheet({
   request,
   onClose,
   onDecision,
@@ -87,13 +88,17 @@ export function ApprovalSheet({
       footer={
         <View style={{ gap: theme.spacing.md }}>
           {confirming ? (
-            <AppText variant="meta" color="danger">
-              {t('approval.confirmDestructive')}
-            </AppText>
+            <Animated.View entering={FadeIn.duration(160)} exiting={FadeOut.duration(120)}>
+              <AppText variant="meta" color="danger">
+                {t('approval.confirmDestructive')}
+              </AppText>
+            </Animated.View>
           ) : confirmReject ? (
-            <AppText variant="meta" color="danger">
-              {t('approval.confirmReject')}
-            </AppText>
+            <Animated.View entering={FadeIn.duration(160)} exiting={FadeOut.duration(120)}>
+              <AppText variant="meta" color="danger">
+                {t('approval.confirmReject')}
+              </AppText>
+            </Animated.View>
           ) : null}
           <Button
             design="new"
@@ -171,6 +176,7 @@ export function ApprovalSheet({
               borderColor: theme.colors.line,
               borderWidth: 1,
               borderRadius: theme.radii.md,
+              borderCurve: 'continuous',
               padding: theme.spacing.md,
               maxHeight: 160,
             }}
@@ -197,7 +203,7 @@ export function ApprovalSheet({
       </View>
     </Sheet>
   );
-}
+});
 
 const styles = StyleSheet.create({
   risk: {

@@ -2,12 +2,12 @@ import { Image, type ImageLoadEventData } from 'expo-image';
 import * as React from 'react';
 import {
   Modal,
-  Pressable,
   StyleSheet,
   View,
   type LayoutChangeEvent,
 } from 'react-native';
 import { Icon } from '@/components/ui/Icon';
+import { PressableScale } from '@/components/ui/PressableScale';
 import {
   GestureDetector,
   GestureHandlerRootView,
@@ -29,15 +29,15 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { hapticSelection } from '@/lib/haptics';
 import { useI18n } from '@/lib/i18n';
 import { useTheme } from '@/theme/ThemeProvider';
-import { radii, spacing } from '@/theme/tokens';
+import { motion, radii, spacing } from '@/theme/tokens';
 
 const MIN_SCALE = 1;
 const MAX_SCALE = 4;
 const DOUBLE_TAP_SCALE = 2;
 const SWIPE_CLOSE_DISTANCE = 120;
 const SWIPE_CLOSE_VELOCITY = 900;
-const RESET_DURATION = 160;
-const ZOOM_DURATION = 180;
+const RESET_DURATION = motion.duration.fast;
+const ZOOM_DURATION = motion.duration.normal;
 
 function clampValue(value: number, min: number, max: number): number {
   'worklet';
@@ -274,26 +274,25 @@ export function ImageViewer(props: {
             </Animated.View>
           </GestureDetector>
 
-          <Pressable
+          <PressableScale
+            scaleTo={0.92}
             onPress={() => {
               hapticSelection();
               onClose();
             }}
-            style={({ pressed }) => [
+            containerStyle={[styles.closeButtonContainer, { top: closeTop, end: spacing.lg }]}
+            style={[
               styles.closeButton,
               {
-                top: closeTop,
-                end: spacing.lg,
                 borderColor: theme.colors.line,
                 backgroundColor: theme.colors.surface2,
               },
-              pressed && styles.closeButtonPressed,
             ]}
             accessibilityRole="button"
             accessibilityLabel={t('chat.closeImage')}
           >
             <Icon name="close" size="md" color="text" />
-          </Pressable>
+          </PressableScale>
         </View>
       </GestureHandlerRootView>
     </Modal>
@@ -314,17 +313,16 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
   },
-  closeButton: {
+  closeButtonContainer: {
     position: 'absolute',
     zIndex: 2,
+  },
+  closeButton: {
     width: 44,
     height: 44,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: radii.full,
     borderWidth: StyleSheet.hairlineWidth,
-  },
-  closeButtonPressed: {
-    opacity: 0.62,
   },
 });
