@@ -1,4 +1,4 @@
-import { ActivityIndicator, Pressable, StyleSheet } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
 import { bridgeSocket, useConnection } from '@/api/ws';
 import { hapticSelection } from '@/lib/haptics';
 import { useI18n } from '@/lib/i18n';
@@ -11,6 +11,14 @@ export function ConnectionBanner() {
   const { t } = useI18n();
   const state = useConnection((value) => value.state);
   if (state !== 'reconnecting' && state !== 'offline') return null;
+
+  const isReconnecting = state === 'reconnecting';
+  const bannerBg = isReconnecting
+    ? 'rgba(245, 158, 11, 0.12)'
+    : 'rgba(239, 68, 68, 0.12)';
+  const bannerBorder = isReconnecting ? '#F59E0B' : '#EF4444';
+  const textColor = isReconnecting ? '#D97706' : '#DC2626';
+
   return (
     <Pressable
       onPress={() => {
@@ -18,26 +26,31 @@ export function ConnectionBanner() {
         bridgeSocket.reconnect();
       }}
       accessibilityRole="button"
-      accessibilityLabel={`${state === 'offline' ? t('chat.offline') : t('chat.reconnect')}. ${t('chat.reconnectNow')}`}
+      accessibilityLabel={`${isReconnecting ? t('chat.reconnect') : t('chat.offline')}. ${t('chat.reconnectNow')}`}
       accessibilityHint={t('chat.reconnectNow')}
-      accessibilityState={{ busy: state === 'reconnecting' }}
+      accessibilityState={{ busy: isReconnecting }}
       style={({ pressed }) => [
         styles.root,
         {
-          backgroundColor: pressed ? theme.colors.surface2 : theme.colors.surface1,
-          borderBottomColor: theme.colors.line,
+          backgroundColor: pressed ? (isReconnecting ? 'rgba(245, 158, 11, 0.2)' : 'rgba(239, 68, 68, 0.2)') : bannerBg,
+          borderBottomColor: bannerBorder,
+          borderBottomWidth: 1,
           paddingHorizontal: theme.spacing.lg,
           gap: theme.spacing.sm,
         },
       ]}
     >
-      {state === 'reconnecting' ? (
-        <ActivityIndicator size="small" color={theme.colors.text2} />
+      <View style={[styles.dot, { backgroundColor: bannerBorder }]} />
+      {isReconnecting ? (
+        <ActivityIndicator size="small" color={bannerBorder} />
       ) : (
-        <Icon name="cloud-offline-outline" size="sm" color="text2" />
+        <Icon name="cloud-offline" size="sm" color="danger" />
       )}
-      <AppText variant="caption" color="text2">
+      <AppText variant="caption" weight="600" style={{ color: textColor, flex: 1 }}>
         {state === 'offline' ? t('chat.offline') : t('chat.reconnect')}
+      </AppText>
+      <AppText variant="caption" color="text3">
+        {t('common.retry')}
       </AppText>
     </Pressable>
   );
@@ -45,9 +58,13 @@ export function ConnectionBanner() {
 
 const styles = StyleSheet.create({
   root: {
-    minHeight: 44,
-    borderBottomWidth: StyleSheet.hairlineWidth,
+    minHeight: 46,
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
   },
 });

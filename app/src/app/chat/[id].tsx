@@ -4,7 +4,6 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
-  Alert,
   Platform,
   Pressable,
   StyleSheet,
@@ -532,22 +531,26 @@ export default function ChatScreen() {
   const outsideWorkdir = chatError === 'outside_workdir';
   const showWorkdirBanner = outsideWorkdir && messages.length > 0;
   const authorizeOutsideSession = () => {
-    Alert.alert(t('chat.authorizeTitle'), t('chat.authorizeWarning'), [
-      { text: t('common.cancel'), style: 'cancel' },
-      {
-        text: t('chat.authorizeConfirm'),
-        style: 'destructive',
-        onPress: () => {
-          void authorizeSessionAccess(id)
-            .then(() => useChat.getState().load(id))
-            .catch((error: unknown) => {
-              useChat.setState({
-                error: error instanceof Error ? error.message : t('common.error'),
+    showDialog({
+      title: t('chat.authorizeTitle'),
+      message: t('chat.authorizeWarning'),
+      actions: [
+        { label: t('common.cancel'), variant: 'cancel' },
+        {
+          label: t('chat.authorizeConfirm'),
+          variant: 'default',
+          onPress: () => {
+            void authorizeSessionAccess(id)
+              .then(() => useChat.getState().load(id))
+              .catch((error: unknown) => {
+                useChat.setState({
+                  error: error instanceof Error ? error.message : t('common.error'),
+                });
               });
-            });
+          },
         },
-      },
-    ]);
+      ],
+    });
   };
   const handleInitialErrorAction = () => {
     if (outsideWorkdir) {
@@ -575,13 +578,13 @@ export default function ChatScreen() {
           <View style={{ paddingHorizontal: layout.padX, paddingTop: theme.spacing.sm }}>
             <ErrorBanner
               message={t('chat.workdirError')}
-              onRetry={() => {
+              onRetry={authorizeOutsideSession}
+              retryLabel={t('chat.authorizeSession')}
+              onSecondaryAction={() => {
                 dismissKeyboard();
                 router.push('/new-session' as never);
               }}
-              retryLabel={t('chat.chooseWorkdir')}
-              onSecondaryAction={authorizeOutsideSession}
-              secondaryLabel={t('chat.authorizeSession')}
+              secondaryLabel={t('chat.chooseWorkdir')}
               design="new"
             />
           </View>
@@ -624,10 +627,17 @@ export default function ChatScreen() {
                     ? t('chat.workdirError')
                     : chatError
                 }
-                onRetry={handleInitialErrorAction}
-                retryLabel={outsideWorkdir ? t('chat.chooseWorkdir') : t('common.retry')}
-                onSecondaryAction={outsideWorkdir ? authorizeOutsideSession : undefined}
-                secondaryLabel={t('chat.authorizeSession')}
+                onRetry={outsideWorkdir ? authorizeOutsideSession : handleInitialErrorAction}
+                retryLabel={outsideWorkdir ? t('chat.authorizeSession') : t('common.retry')}
+                onSecondaryAction={
+                  outsideWorkdir
+                    ? () => {
+                        dismissKeyboard();
+                        router.push('/new-session' as never);
+                      }
+                    : undefined
+                }
+                secondaryLabel={outsideWorkdir ? t('chat.chooseWorkdir') : undefined}
                 design="new"
               />
             </View>

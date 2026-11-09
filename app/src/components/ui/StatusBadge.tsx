@@ -7,33 +7,35 @@ import { AppText } from './AppText';
 export function StatusBadge({ status }: { status: SessionStatus }) {
   const theme = useTheme();
   const { t } = useI18n();
-  const config: Record<SessionStatus, { key: string; color: string; dot: string }> = {
-    idle: { key: 'sessions.idle', color: theme.colors.text3, dot: theme.colors.text3 },
-    running: { key: 'sessions.running', color: theme.colors.accent, dot: theme.colors.accent },
+  const config: Record<SessionStatus, { key: string; color: string; dot: string; bg: string }> = {
+    idle: { key: 'sessions.idle', color: theme.colors.text3, dot: theme.colors.text3, bg: theme.colors.surface2 },
+    running: { key: 'sessions.running', color: theme.colors.primary === '#0A0A0A' ? '#0284C7' : '#38BDF8', dot: '#0EA5E9', bg: 'rgba(14, 165, 233, 0.12)' },
     needs_approval: {
       key: 'sessions.approval',
-      color: theme.colors.text,
-      dot: theme.colors.accent,
+      color: theme.colors.primary === '#0A0A0A' ? '#D97706' : '#FBBF24',
+      dot: '#F59E0B',
+      bg: 'rgba(245, 158, 11, 0.12)',
     },
     waiting_input: {
       key: 'sessions.waitingInput',
-      color: theme.colors.text,
-      dot: theme.colors.accent,
+      color: theme.colors.primary === '#0A0A0A' ? '#7C3AED' : '#A78BFA',
+      dot: '#8B5CF6',
+      bg: 'rgba(139, 92, 246, 0.12)',
     },
-    error: { key: 'sessions.error', color: theme.colors.danger, dot: theme.colors.danger },
+    error: { key: 'sessions.error', color: theme.colors.danger, dot: theme.colors.danger, bg: theme.colors.dangerSurface },
   };
   const item = config[status];
   return (
     <View
       style={[
         styles.pill,
-        { backgroundColor: theme.colors.surface2, borderColor: theme.colors.line },
+        { backgroundColor: item.bg, borderColor: theme.colors.line },
       ]}
       accessible
       accessibilityLabel={t(item.key)}
     >
       <View style={[styles.dot, { backgroundColor: item.dot }]} />
-      <AppText variant="caption" style={{ color: item.color }}>
+      <AppText variant="caption" weight="500" style={{ color: item.color }}>
         {t(item.key)}
       </AppText>
     </View>

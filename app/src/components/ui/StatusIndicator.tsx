@@ -68,11 +68,11 @@ export function StatusIndicator({
         <Animated.View
           style={[
             styles.halo,
-            { borderColor: theme.colors.primary },
+            { borderColor: '#0EA5E9' },
             haloStyle,
           ]}
         />
-        <View style={[styles.dot, { backgroundColor: theme.colors.primary }]} />
+        <View style={[styles.dot, { backgroundColor: '#0EA5E9' }]} />
       </View>
     );
   }
@@ -81,7 +81,7 @@ export function StatusIndicator({
     return (
       <View
         accessible={false}
-        style={[styles.ring, { borderColor: theme.colors.textStrong }, style]}
+        style={[styles.ring, { borderColor: '#8B5CF6' }, style]}
       />
     );
   }
@@ -90,9 +90,9 @@ export function StatusIndicator({
     return (
       <View
         accessible={false}
-        style={[styles.ring, { borderColor: theme.colors.danger }, style]}
+        style={[styles.ring, { borderColor: '#F59E0B' }, style]}
       >
-        <View style={[styles.centerDot, { backgroundColor: theme.colors.danger }]} />
+        <View style={[styles.centerDot, { backgroundColor: '#F59E0B' }]} />
       </View>
     );
   }

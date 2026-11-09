@@ -99,7 +99,25 @@ export function ModelSheet({
                     ]}
                   >
                     <View style={styles.labels}>
-                      <AppText variant="body" numberOfLines={1}>{item.name}</AppText>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                        <AppText variant="body" numberOfLines={1} style={{ flexShrink: 1 }}>{item.name}</AppText>
+                        {item.modelId.toLowerCase().includes('argon') || item.name.toLowerCase().includes('argon') ? (
+                          <View
+                            style={{
+                              backgroundColor: 'rgba(245, 158, 11, 0.15)',
+                              borderColor: '#F59E0B',
+                              borderWidth: 1,
+                              borderRadius: 4,
+                              paddingHorizontal: 6,
+                              paddingVertical: 1,
+                            }}
+                          >
+                            <AppText variant="caption" weight="600" style={{ color: '#D97706', fontSize: 10 }}>
+                              ARGON 4
+                            </AppText>
+                          </View>
+                        ) : null}
+                      </View>
                       <AppText variant="caption" color="secondary" numberOfLines={1}>
                         {item.providerName} · {item.modelId}
                       </AppText>

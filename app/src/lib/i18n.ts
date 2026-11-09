@@ -359,6 +359,18 @@ const strings: Record<string, Entry> = {
   },
 
   'settings.title': { en: 'Settings', ar: 'الإعدادات' },
+  'settings.modelTitle': { en: 'Default Model & Tasks', ar: 'النموذج الافتراضي والمهام' },
+  'settings.modelHint': {
+    en: 'Preferred model for new sessions and tasks.',
+    ar: 'النموذج المفضل للجلسات والمهام الجديدة.',
+  },
+  'settings.argon4Action': { en: 'Use Gemini 4 Argon', ar: 'استخدام Gemini 4 Argon' },
+  'settings.workdirsTitle': { en: 'Allowed Workspaces', ar: 'مجلدات العمل المسموحة' },
+  'settings.workdirsHint': {
+    en: 'Directories accessible by the bridge.',
+    ar: 'المجلدات التي يمكن للجسر الوصول إليها.',
+  },
+  'settings.workdirsScoped': { en: 'Protected & Scoped', ar: 'محمية ومحددة' },
   'settings.appearance': { en: 'Appearance', ar: 'المظهر' },
   'settings.dark': { en: 'Dark', ar: 'داكن' },
   'settings.light': { en: 'Light', ar: 'فاتح' },
