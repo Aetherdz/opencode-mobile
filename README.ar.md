@@ -2,213 +2,359 @@
 
 # OpenCode Mobile
 
-**وكيلك البرمجي. جهازك الشخصي. في جيبك.**
+### *وكيلك البرمجي. جهازك الشخصي. في جيبك.*
 
-عميل غير رسمي للهاتف المحمول والويب لوكيل البرمجة [OpenCode](https://github.com/anomalyco/opencode)، مدعوم بهندسة **Gemini 4 Argon**. يعمل بالاستضافة الذاتية، وموثّق برمز Bearer، وخالٍ تماماً من التتبع (Zero Telemetry)، ومصمم للمواقف التي تكون فيها بعيداً عن لوحة المفاتيح وتحتاج إلى توجيه الوكيل.
+عميل غير رسمي للهواتف الذكية والأجهزة اللوحية والويب، مصمم خصيصاً لوكيل البرمجة الذكي [OpenCode](https://github.com/anomalyco/opencode)، ومدعوم بهندسة **Gemini 4 Argon** فائقة الاستدلال من Google DeepMind. يعمل بالاستضافة الذاتية، ومؤمّن بالكامل برموز Bearer، وخالٍ تماماً من التتبع (Zero Telemetry)، ومصمم لتوجيه وكيلك البرمجي ومتابعته أينما كنت بعيداً عن محطة عملك.
 
-[الموقع](https://aetherdz.github.io/opencode-mobile/) ·
-[التثبيت](https://aetherdz.github.io/opencode-mobile/#install) ·
-[توثيق الموقع](https://aetherdz.github.io/opencode-mobile/docs/) ·
-[الإصدارات](https://github.com/Aetherdz/opencode-mobile/releases) ·
-[التوثيق](docs/) ·
-[English](README.md)
+[الموقع الرسمي](https://aetherdz.github.io/opencode-mobile/) ·
+[دليل التثبيت](https://aetherdz.github.io/opencode-mobile/#install) ·
+[التوثيق التقني](docs/) ·
+[الهندسة المعمارية](docs/architecture.md) ·
+[نموذج الأمان](docs/security.md) ·
+[إصدارات GitHub](https://github.com/Aetherdz/opencode-mobile/releases) ·
+[English (الإنجليزية)](README.md)
 
-[![Stars](https://img.shields.io/github/stars/Aetherdz/opencode-mobile?style=flat-square&label=stars&color=000000)](https://github.com/Aetherdz/opencode-mobile/stargazers)
-[![Release](https://img.shields.io/github/v/release/Aetherdz/opencode-mobile?include_prereleases&style=flat-square&color=000000)](https://github.com/Aetherdz/opencode-mobile/releases)
-[![CI](https://github.com/Aetherdz/opencode-mobile/actions/workflows/ci.yml/badge.svg)](https://github.com/Aetherdz/opencode-mobile/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/license-MIT-black.svg)](LICENSE)
+<br/>
+
+[![الإصدار](https://img.shields.io/badge/release-v1.0.0--beta.10-0EA5E9?style=flat-square&logo=github&labelColor=0F172A)](https://github.com/Aetherdz/opencode-mobile/releases)
+[![المحرك: Argon 4](https://img.shields.io/badge/engine-Gemini%204%20Argon-6366F1?style=flat-square&logo=google&labelColor=0F172A)](https://deepmind.google/)
+[![حالة البناء](https://img.shields.io/badge/build-passing-10B981?style=flat-square&logo=githubactions&logoColor=white&labelColor=0F172A)](https://github.com/Aetherdz/opencode-mobile/actions)
+[![TypeScript](https://img.shields.io/badge/typescript-%5E5.8-3178C6?style=flat-square&logo=typescript&logoColor=white&labelColor=0F172A)](https://www.typescriptlang.org/)
+[![Expo SDK 58](https://img.shields.io/badge/expo-SDK%2058-000000?style=flat-square&logo=expo&labelColor=0F172A)](https://expo.dev/)
+[![Fastify](https://img.shields.io/badge/bridge-Fastify%205-000000?style=flat-square&logo=fastify&labelColor=0F172A)](https://fastify.dev/)
+[![صفر تتبع](https://img.shields.io/badge/telemetry-zero%20tracking-success?style=flat-square&logo=shield&labelColor=0F172A)](#نموذج-الأمان-والخصوصية-والسيادة-على-البيانات)
+[![الترخيص: MIT](https://img.shields.io/badge/license-MIT-blue?style=flat-square&labelColor=0F172A)](LICENSE)
 
 </div>
 
+<br/>
+
+---
+
 ## ما هو المشروع
 
-يعمل OpenCode مباشرة على جهاز التطوير الخاص بك. يربط OpenCode Mobile حلقة التفاعل البشري بهاتفك: قراءة الإجابات المتدفقة فوراً، الرد على استفسارات الوكيل، منح صلاحيات تشغيل الأدوات، فحص الفروقات البرمجية (diff)، وإرفاق الصور والمستندات.
+يعمل **OpenCode** مباشرة على محطة عملك البرمجية أو خادمك الخاص مع وصول مباشر لأدواتك المحلية ومستودعات Git والمترجمات ونماذج الذكاء الاصطناعي. ينقل **OpenCode Mobile** هذه القدرات بالكامل إلى جيبك.
 
-التطبيق **لا** يشغّل وكيلاً سحابياً ثانياً ولا يعرض طرفية مفتوحة غير منضبطة. يقوم جسر (Bridge) خفيف وموثّق بربط تطبيق الهاتف بخدمة OpenCode المشغّلة بالفعل على جهازك.
+يربط التطبيق حلقة التفاعل البشري بالوكيل كلما ابتعدت عن لوحة المفاتيح:
+- ⚡ **متابعة الإجابات المتدفقة فورياً** بتقنية Server-Sent Events (SSE) مع تلوين حي للكود المصدري.
+- 💬 **الإجابة على استفسارات الوكيل المدمجة** عبر خيارات تفاعلية متعددة وحقول إدخال مخصصة.
+- 🛡️ **منح وتأكيد صلاحيات الأدوات** (تعديل الملفات، تشغيل الأوامر بالطرفية، جلب بيانات الويب) مع تأكيد صريح للعمليات التدميرية.
+- 🎴 **إدارة مساحات العمل ومستودعات المشاريع** عبر بطاقات جلسات مرتفعة ناعمة الملمس والحركة.
+- 📎 **إرفاق السياق البصري والمستندات** عبر التقاط الصور بالكاميرا أو اختيار لقطات الشاشة والملفات المصدرية ورفعها مباشرة للجلسة.
 
-## استعراض المزايا المعمارية (بمحرك Argon 4)
+> [!NOTE]
+> لا يشغّل OpenCode Mobile وكيلاً ثانياً على السحابة، ولا يعرض طرفية شل غير مقيدة على الهاتف. يعمل النظام عبر جسر Fastify محلي مؤمّن وموثّق يرتبط حصرياً بواجهة loopback المحلية على جهازك.
 
-يمثل الإصدار **v1.0.0-beta.10** نقلة معمارية نوعية هندسية بدقة متناهية:
+---
 
-- ⚡ **تكامل محرك Gemini 4 Argon فائق الاستدلال**: دعم مدمج لنموذج Argon 4 (`antigravity-gemini-4-argon`) مع اكتشاف تلقائي للنماذج المحلية وتبديل سلس من شريط الأدوات السفلي.
-- 🚀 **تثبيت بأمر واحد مبسط**: إعداد البيئة بالكامل عبر أمر واحد في الطرفية:
-  ```bash
-  curl -fsSL https://raw.githubusercontent.com/Aetherdz/opencode-mobile-dist/main/install.sh | bash
-  ```
-- 📲 **اتصال تلقائي بلمسة واحدة عبر QR**: ربط هاتفك في ثوانٍ. امسح رمز QR المرسوم في الطرفية بواسطة أداة `opencode-mobile` لملء البيانات والاتصال المباشر دون الحاجة لضغط أزرار إضافية.
-- 🎴 **بطاقات جلسات مرتفعة وسلسة**: تصميم مطوّر لقائمة الجلسات ببطاقات حديثة elevated مع تفاعل لمسي ناعم (tactile scaling)، وحواف منحنية أنيقة، ومؤشرات حالة واضحة.
-- 🛡️ **وصول مقيّد لمجلدات العمل**: حماية صارمة تحصر العمل داخل `ALLOWED_WORKDIRS` (`~/projects`)، مع حوارات تفاعلية فورية تتيح منح أذونات تشغيل للجلسات الخارجية بلمسة واحدة.
-- 🔒 **صفر تتبع وسيادة تامة على البيانات (Zero Telemetry)**: استضافة ذاتية 100%، وتواصل مباشر peer-to-peer عبر الشبكة المحلية أو شبكة Tailscale الخاصة، بدون أي مراقبة أو تحليلات سحابية خارجية.
-- 🌐 **دعم كامل للغات العربية والإنجليزية والفرنسية وRTL**: دعم أصيل للاتجاه من اليمين لليسار، مع عرض ذكي للنصوص ثنائية الاتجاه (العربية RTL والإنجليزية/الفرنسية LTR) ومصطلحات معرّبة بدقة.
+## تجربة الطرفية والتثبيت بأمر واحد
 
-## لقطات الشاشة (بيانات تجريبية)
-
-لقطات حقيقية من واجهة العميل (Expo Web) على واجهة برمجة تجريبية محلية:
-
-| الجلسات | المحادثة | اختيار النموذج |
-| --- | --- | --- |
-| <img src="docs/images/sessions.png" alt="شاشة الجلسات" width="210" /> | <img src="docs/images/chat.png" alt="شاشة المحادثة" width="210" /> | <img src="docs/images/model-picker.png" alt="منتقي النماذج" width="210" /> |
-
-## أهم المزايا
-
-- **الاتصال عبر LAN أو Tailscale** باستخدام رمز Bearer واحد واكتشاف تلقائي.
-- **إدارة كاملة للجلسات**: بحث، تجميع، مؤشرات الحالة (خامل، قيد العمل، بانتظار إجابة)، إنشاء وإعادة تسمية وحذف.
-- **محادثة متدفقة في الوقت الفعلي**: معالجة انقطاع الاتصال التلقائية، تصفح الرسائل السابقة، والتمرير السريع لآخر رسالة.
-- **تفاعل متكامل مع الوكيل**: أسئلة داخل المحادثة، طلبات صلاحيات الأدوات، وتأكيد صريح للعمليات التدميرية.
-- **مرفقات متعددة**: التقاط بالكاميرا، اختيار من معرض الصور، ورفع المستندات مع تنزيل موثّق وآمن.
-- **ملخصات الأدوات وفروقات الكود**: عروض تفاعلية لـ diff مع تلوين نحوي أحادي اللون مريح للعين.
-- **إشعارات Push اختيارية**: تنبيهات عبر Expo عند اكتمال مهام الوكيل أو الحاجة لموافقة.
-- **نسخة ويب (Expo Web)**: عميل ويب متكامل يدعم حصر نطاقات الـ CORS بأمان (`CORS_ORIGINS`).
-
-## البدء السريع
-
-### التثبيت بأمر واحد (Linux / macOS)
-
-ثبّت الـ Bridge وأدوات الطرفية بأمر واحد:
+يستغرق الإعداد ثوانٍ معدودة. ثبّت الجسر وأداة الطرفية التفاعلية بأمر واحد:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Aetherdz/opencode-mobile-dist/main/install.sh | bash
 ```
 
-بعد انتهاء الإعداد، شغّل أداة الربط:
+بعد اكتمال التثبيت، شغّل الأمر لعرض شاشة الاقتران الفوري ورمز الاستجابة السريعة (ANSI QR Code) في طرفيتك:
 
 ```bash
 opencode-mobile
 ```
 
-يقوم الأمر بفحص الخدمة وعرض رمز QR ملون في الطرفية للربط الفوري. على أجهزة Linux المتصلة بـ Tailscale، يتم تفعيل ميزة Tailscale Serve الخاصة والمستمرة تلقائياً.
+```text
+╭──────────────────────────────────────────────────────────────╮
+│  ✦ OpenCode Mobile · Quick Connect                           │
+├──────────────────────────────────────────────────────────────┤
+│  Bridge Service:    ● Online (Port 8787)                     │
+│  OpenCode Agent:    ● Connected                              │
+│  Connection Mode:   Secure Tailscale Serve / Local Loopback  │
+│                                                              │
+│  Connection URL:                                             │
+│  https://workstation.tailnet.ts.net                          │
+│                                                              │
+│  Pairing Token:                                              │
+│  e4b17a8c3d90f251a842de561c9b4e07... (32+ chars)            │
+│                                                              │
+│  Workdir: /home/developer/projects                           │
+├──────────────────────────────────────────────────────────────┤
+│  ▄▄▄▄▄▄▄ ▄ ▄▄ ▄▄▄▄ ▄▄▄▄▄▄▄                                   │
+│  █ ▄▄▄ █ █▄█ █▄███ █ ▄▄▄ █   الاتصال التلقائي بلمسة واحدة:     │
+│  █ ███ █ ▄▀█▄█▀▄ █ █ ███ █   وجّه كاميرا الهاتف نحو رمز QR    │
+│  █▄▄▄▄▄█ █ █ █ █ █ █▄▄▄▄▄█   للاقتران المباشر وحفظ البيانات    │
+│  ▄▄ ▄  ▄▄▀▄▀▄▀▄▄██▄▄  ▄ ▄▄   تلقائياً دون أي كتابة يدوية!     │
+│  █▄▄▄▄▄█ █▀▀██▄▀ █ █ ▄ █▄█                                   │
+│  ▀▀▀▀▀▀▀ ▀   ▀▀▀▀▀ ▀▀▀  ▀▀                                   │
+├──────────────────────────────────────────────────────────────┤
+│  امسح الرمز بكاميرا التطبيق للاتصال الفوري والآمن.           │
+│  اضغط Ctrl+C لإيقاف الاتصال وإغلاق الجلسة في أي وقت.         │
+╰──────────────────────────────────────────────────────────────╯
+```
 
-### التثبيت اليدوي من المصدر
+---
 
-إذا كنت تفضل البناء والتشغيل من الكود المصدري:
+## معرض الواجهات المرئي (Screenshots Gallery)
 
-#### 1. تشغيل OpenCode
+صُممت واجهة المستخدم بعناية فائقة، مع حركة لمسية فيزيائية مرنة، ووضع مظلم وفاتح عالي التباين، ودعم كامل أصيل للغة العربية والاتجاه من اليمين إلى اليسار (RTL):
+
+| 1. الاتصال التلقائي | 2. بطاقات الجلسات | 3. المحادثة الفورية | 4. اختيار نموذج Argon 4 | 5. الموافقة والأسئلة |
+| :---: | :---: | :---: | :---: | :---: |
+| <img src="docs/images/connect.png" width="175" alt="شاشة الاتصال التلقائي عبر QR ولصق الحافظة" /> | <img src="docs/images/sessions.png" width="175" alt="بطاقات الجلسات التفاعلية المرتفعة" /> | <img src="docs/images/chat.png" width="175" alt="شاشة المحادثة المتدفقة والـ Diff" /> | <img src="docs/images/model-picker.png" width="175" alt="منتقي النماذج ودعم Argon 4" /> | <img src="docs/images/question.png" width="175" alt="بطاقة أسئلة وموافقات الوكيل المدمجة" /> |
+| **اقتران فوري عبر QR**<br/>مسح بالكاميرا واكتشاف ذكي لروابط الحافظة | **بطاقات جلسات مرتفعة**<br/>تفاعل حركي لمسي، مؤشرات الحالة، وتجميع زمني | **محادثة حية وفروقات الكود**<br/>تدفق حي عبر SSE، عروض diff مدمجة وقابلة للطي | **استدلال فائق مع Argon 4**<br/>اكتشاف تلقائي للنماذج وتبديل فوري في الشريط السفلي | **استفسارات الوكيل المدمجة**<br/>خيارات متعددة تفاعلية وتأكيد أمني للصلاحيات |
+
+---
+
+## الهندسة المعمارية للنظام
+
+يعتمد OpenCode Mobile على نموذج دفاعي معماري متعدد الطبقات يربط هاتفك مباشرة بمحطة عملك دون أي خوادم وسيطة خارجية:
+
+```mermaid
+flowchart TD
+  subgraph ClientLayer["1. طبقة العميل (Expo Mobile & Web)"]
+    App["تطبيق الهواتف الذكية<br/>(Android arm64 / iOS)"]
+    WebApp["عميل الويب المتقدم<br/>(تطبيق PWA وتصدير ثابت)"]
+    CLI["أداة سطر الأوامر للاقتران<br/>(opencode-mobile)"]
+  end
+
+  subgraph NetworkLayer["2. طبقة النقل والشبكة المشفرة"]
+    TS["شبكة Tailscale الخاصة<br/>(تشفير WireGuard مباشر من نقطة لنقطة)"]
+    LAN["الشبكة المحلية Wi-Fi<br/>(اتصال مباشر عبر HTTPS / mDNS)"]
+    CF["نفق Cloudflare المؤقت الاختياري<br/>(جلسات تجريبية سريعة)"]
+  end
+
+  subgraph BridgeLayer["3. جسر Fastify الآمن (127.0.0.1:8787)"]
+    AuthGate["بوابة توثيق الرموز (Bearer Auth)<br/>• مقارنة بزمن ثابت Timing-Safe<br/>• حظر مؤقت وتحديد معدل الطلبات<br/>• حفظ آمن في مخزن المفاتيح المشفر"]
+    Confinement["حصر مساحات العمل والمجلدات<br/>• فرض قيود مجلدات ALLOWED_WORKDIRS<br/>• منح أذونات تشغيل فورية للجلسات الخارجية<br/>• منع هجمات Path Traversal"]
+    EventEngine["محرك الأحداث والمرفقات<br/>• تحويل أحداث SSE إلى WebSockets<br/>• التحقق من نوع MIME والبصمة الرقمية<br/>• سجل محلي لإدارة المرفقات"]
+  end
+
+  subgraph HostLayer["4. نواة محطة العمل (Loopback المضيف)"]
+    OpenCode["خدمة OpenCode المحلية<br/>(اكتشاف تلقائي عبر 127.0.0.1)"]
+    Argon4Engine["محرك Gemini 4 Argon<br/>(antigravity-gemini-4-argon)"]
+    Workspaces["مستودعات المشاريع المصرح بها<br/>(~/projects)"]
+  end
+
+  CLI -.->|"توليد رمز اقتران QR في الطرفية"| App
+  App -->|"مسح QR / توثيق Bearer"| TS
+  App -->|"توثيق Bearer محلي"| LAN
+  WebApp -->|"واجهة برمجية مقيدة بـ CORS"| LAN
+
+  TS --> AuthGate
+  LAN --> AuthGate
+  CF --> AuthGate
+
+  AuthGate --> Confinement
+  Confinement --> EventEngine
+  EventEngine -->|"HTTP REST + SSE (محلياً Loopback)"| OpenCode
+  OpenCode --> Argon4Engine
+  OpenCode -->|"تنفيذ الأدوات المصرّح بها"| Workspaces
+```
+
+### أبرز المزايا المعمارية
+
+1. **تكامل محرك Gemini 4 Argon فائق الاستدلال**: دعم أصيل لعائلة نماذج `antigravity-gemini-4-argon`. يكتشف التطبيق تلقائياً النماذج المتاحة عبر دالة `readConfiguredModels`، مما يتيح التبديل الفوري بين النماذج مباشرة من شريط الأدوات السفلي أثناء المحادثة.
+2. **اتصال تلقائي بلمسة واحدة عبر QR**: تصدّر أداة الطرفية رابط اقتران مشفر `opencode-mobile://connect` مرسوماً برمز QR داخل الطرفية. بمجرد توجيه الكاميرا نحوه، يتعرف التطبيق على البيانات فورياً ويتحقق من الاتصال ويحفظه دون أي حاجة للإدخال اليدوي.
+3. **بطاقات جلسات مرتفعة**: إعادة هندسة قائمة الجلسات ببطاقات حديثة ذات حواف دائرية مستمرة وتأثير لمسي ناعم، ومؤشرات واضحة لحالة الجلسة (خاملة، قيد المعالجة، بانتظار إجابة)، مع أدوات متكاملة للبحث والتسمية والحذف.
+4. **عزل المجلدات وأذونات التشغيل الآمنة**: حماية افتراضية تحصر نشاط الوكيل داخل `ALLOWED_WORKDIRS` (`~/projects`). وعند فتح مستودع يقع خارج هذا النطاق، يعرض التطبيق حواراً أصيلاً لمنح إذن تشغيل مؤقت بلمسة واحدة بأمان تام.
+5. **ضمان صفر تتبع (Zero Telemetry)**: لا توجد أي مكتبات تتبع، ولا تحليلات Firebase، ولا تقارير أعطال خارجية. كل البيانات تنتقل مباشرة بين هاتفك وجهازك عبر شبكتك الخاصة والمشفرة.
+
+---
+
+## دليل البدء السريع
+
+### الخيار أ: الإعداد التلقائي عبر الطرفية (الموصى به)
+
+1. **التثبيت بأمر واحد** (أنظمة Linux / macOS):
+   ```bash
+   curl -fsSL https://raw.githubusercontent.com/Aetherdz/opencode-mobile-dist/main/install.sh | bash
+   ```
+2. **الاقتران بهاتفك**:
+   ```bash
+   opencode-mobile
+   ```
+   وجّه كاميرا الهاتف نحو رمز QR في الطرفية للاتصال المباشر.
+
+أوامر الطرفية المتاحة:
+```bash
+opencode-mobile status   # فحص سلامة الجسر والوكيل
+opencode-mobile doctor   # تشخيص مشاكل الشبكة والأذونات
+opencode-mobile down     # إيقاف الجسر والأنفاق النشطة بأمان
+opencode-mobile apk      # تنزيل وفحص بصمة ملف APK الموقّع للأندرويد
+```
+
+### الخيار ب: الإعداد اليدوي من الكود المصدري
+
+إذا كنت تفضل بناء المشروع وتشغيله مباشرة من المصدر:
+
+#### 1. تشغيل خدمة OpenCode
 ```bash
 opencode service start
 ```
-يكتشف الـ Bridge الخدمة المحلية تلقائياً عبر `~/.local/state/opencode/service.json`.
+يكتشف الجسر الخدمة تلقائياً عبر `~/.local/state/opencode/service.json`.
 
-#### 2. تشغيل الـ Bridge
+#### 2. تشغيل الجسر (Bridge)
 ```bash
 cd bridge
 npm ci
 cp .env.example .env
-openssl rand -hex 32   # ضع هذه القيمة في AUTH_TOKEN
+openssl rand -hex 32   # ضع القيمة الناتجة في AUTH_TOKEN
 npm run build
 npm start
 ```
-
-افتراضياً، يتم ضبط `ALLOWED_WORKDIRS` على `~/projects`. يستمع الـ Bridge على `127.0.0.1:8787`.
-
-فحص سلامة الخدمة:
+فحص استجابة الجسر:
 ```bash
 curl http://127.0.0.1:8787/health
 # {"ok":true}
 ```
 
-#### 3. تشغيل التطبيق
+#### 3. تشغيل التطبيق (App)
 ```bash
 cd app
 npm ci
 npx expo start
 ```
-
-لتشغيل نسخة الويب:
+لتشغيل نسخة المتصفح:
 ```bash
 npm run web
 ```
-أضف رابط الويب إلى `bridge/.env`:
-```dotenv
-CORS_ORIGINS=http://localhost:8081,http://127.0.0.1:8081
-```
+*(أضف `CORS_ORIGINS=http://localhost:8081` في ملف `bridge/.env` عند تصفح التطبيق من المتصفح).*
 
-## التنزيل
+---
 
-الإصدار **`1.0.0-beta.10`** هو الإصدار العام الحالي. ملف الـ APK الموقّع مخصص لمعمارية `arm64-v8a`.
+## مرجع متغيرات البيئة والإعدادات
 
-| الملف | ملاحظات |
-| --- | --- |
-| [APK أندرويد](https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.10/opencode-mobile-1.0.0-beta.10.apk) | [بصمة SHA-256](https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.10/opencode-mobile-1.0.0-beta.10.apk.sha256)؛ arm64-v8a |
-| [حزم Bridge](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.10) | ملفات `.tar.gz` و `.zip` مع بصمات `SHA256SUMS` |
-| [حزم الويب](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.10) | تصدير ثابت لـ Expo Web مع بصمات `SHA256SUMS` |
-| [مثبّت الطرفية](https://github.com/Aetherdz/opencode-mobile-dist) | مثبّت أنظمة Linux و macOS و Windows |
+يتم ضبط إعدادات الجسر عبر متغيرات البيئة أو داخل ملف `bridge/.env`:
 
-## آلية العمل
+| المتغير | القيمة الافتراضية | إلزامي؟ | الوصف والدلالة الأمنية |
+| :--- | :--- | :---: | :--- |
+| `AUTH_TOKEN` | *لا يوجد* | **نعم** | رمز Bearer السري المشترك. يجب ألا يقل عن **32 حرفاً** بدرجة إنتروبيا عشوائية عالية. يُعامل هذا الرمز كصلاحية وصول للطرفية. |
+| `HOST` | `127.0.0.1` | لا | عنوان واجهة الشبكة التي يستمع عليها الجسر. **يجب إبقاؤه loopback دائماً**. يُمنع منعاً باتاً ربطه بـ `0.0.0.0` دون جدار حماية شبكي. |
+| `PORT` | `8787` | لا | منفذ HTTP و WebSocket الذي يستمع عليه الجسر. |
+| `ALLOWED_WORKDIRS` | `~/projects` | لا | قائمة مسارات مطلقة مفصولة بفواصل مسموح للجلسات والملفات المرفوعة بالوصول إليها. اضبط هذا النطاق بدقة. |
+| `CORS_ORIGINS` | *فارغ* | لا | عناوين origins للمتصفح المصرح لها بالاتصال بالجسر (مثل `http://localhost:8081`). الفراغ يعطّل طلبات المتصفح تماماً. |
+| `MAX_UPLOAD_MB` | `25` | لا | الحد الأقصى لحجم الملف الواحد المرفوع بالميغابايت. |
+| `MAX_UPLOAD_TOTAL_MB` | `100` | لا | الحد الأقصى لإجمالي حجم الملفات المرفوعة في رسالة واحدة بالميغابايت. |
+| `MAX_FILES_PER_MESSAGE`| `10` | لا | الحد الأقصى لعدد المرفقات المسموح بها في رسالة واحدة. |
+| `ALLOWED_UPLOAD_TYPES` | *مدمج* | لا | أنواع MIME والامتدادات المسموح برفعها، مع حظر البرمجيات التنفيذية والملفات الخطرة تلقائياً. |
+| `DATA_DIR` | `./data` | لا | المجلد المحلي المستخدم لحفظ سجل المرفقات ورموز إشعارات Push. |
+| `BAN_AFTER` | `10` | لا | عدد المحاولات الفاشلة المتتالية للتوثيق قبل فرض حظر مؤقت على عنوان IP. |
+| `BAN_MINUTES` | `15` | لا | مدة الحظر المؤقت بالدقائق لعناوين IP المشبوهة. |
+| `RATE_LIMIT_PER_MINUTE`| `180` | لا | الحد الأقصى لعدد طلبات HTTP المسموح بها في الدقيقة لكل عنوان IP. |
+| `LOG_LEVEL` | `info` | لا | مستوى تفصيل سجلات Pino (`fatal`, `error`, `warn`, `info`, `debug`, `trace`). يتم إخفاء ترويسات التوثيق تلقائياً. |
+| `PUSH_ENABLED` | `1` | لا | اجعله `1` لتفعيل إشعارات Expo Push، أو `0` لتعطيلها نهائياً. |
+| `OPENCODE_URL` | *تلقائي* | لا | عنوان loopback الصريح لخدمة OpenCode. يُكتشف تلقائياً من `service.json` إذا تُرك فارغاً. |
+| `OPENCODE_PASSWORD` | *تلقائي* | لا | كلمة مرور التوثيق لخدمة OpenCode. تُكتشف تلقائياً عند تركها فارغة. |
 
-```mermaid
-flowchart LR
-  Phone["تطبيق Expo<br/>Android, iOS, Web"] -->|"HTTPS + Bearer Token"| Bridge["جسر الـ Bridge<br/>Fastify"]
-  Bridge -->|"OpenCode HTTP + SSE"| OpenCode["خدمة OpenCode<br/>127.0.0.1"]
-  Terminal["أداة الطرفية<br/>opencode-mobile"] -.->|"رمز اقتران QR"| Phone
-```
+---
 
-يتصل الـ Bridge بخدمة OpenCode عبر الـ loopback، ويتحقق من رموز Bearer، ويوفر واجهة REST و WebSocket مؤمّنة لتطبيق الهاتف. كما يدير سجل المرفقات، والتحقق من الجلسات، وإشعارات Push دون تعديل كود OpenCode الأصلي.
+## نموذج الأمان والخصوصية والسيادة على البيانات
 
-## نموذج الأمان
+يتبع OpenCode Mobile معايير أمنية صارمة تضمن الحماية الكاملة لجهازك ومستودعاتك:
 
-- **توثيق رمز Bearer**: مقارنة بزمن ثابت (constant-time)، وحدود لمعدل المحاولات، وحظر مؤقت تلقائي لعناوين IP المشبوهة.
-- **صفر تتبع**: جميع الاتصالات تتم مباشرة بين جهازك وهاتفك عبر شبكتك المحلية أو Tailscale دون تسريب أي بيانات.
-- **تخزين آمن**: حفظ الرموز في `SecureStore` للأنظمة الأصلية (iOS Keychain / Android KeyStore) و `sessionStorage` للويب.
-- **حصر الوصول لنظام الملفات**: حصر العمليات داخل `ALLOWED_WORKDIRS` مع طلب موافقة صريحة ومؤقتة لأي جلسة خارجية.
-- **مرفقات موثّقة**: فحص نوع الملف وامتداده، وضع حدود قصوى للحجم، وتنقية الأسماء، وتنزيل آمن بترويسات تمنع الثغرات (`nosniff`, `X-Frame-Options: DENY`).
+### 1. صفر تتبع وسيادة كاملة على البيانات (Zero Telemetry)
+- لا يحتوي الكود على أي مكتبات تتبع أو تحليلات خارجية أو خوادم قياس عن بُعد.
+- رسائل الجلسات، وفروقات الكود، والأوامر، والرموز السرية لا تغادر أجهزتك إطلاقاً إلى أي سحابة خارجية.
+- تظل جميع الاتصالات من نقطة لنقطة مباشرة عبر شبكتك المحلية أو شبكة Tailscale المشفرة ببروتوكول WireGuard.
 
-راجع [SECURITY.md](SECURITY.md) و [docs/security.md](docs/security.md) للاطلاع على نموذج التهديدات الكامل.
+### 2. حصر مساحات العمل والأذونات المؤقتة الآمنة
+- يفرض الجسر حدوداً صارمة على مسارات الملفات المسموح بها عبر `ALLOWED_WORKDIRS`.
+- لا يمكن استعراض أو التفاعل مع الجلسات خارج المجلدات المصرح بها إلا بعد منح إذن مؤقت صريح عبر حوار أصيل داخل التطبيق.
+- يتم فحص وتنقية مسارات الملفات المرفوعة لمنع أي هجمات لتخطي المسارات (`../`).
 
-## الوصول عن بعد
+### 3. توثيق محكم ومقاوم لهجمات التوقيت
+- كل مسار برمجيات (باستثناء `/health`) واتصالات WebSocket تتطلب رمز Bearer صالحاً.
+- تتم مقارنة الرموز بدالة `crypto.timingSafeEqual` لمنع هجمات التوقيت (Timing Attacks).
+- يتم حظر عناوين IP تلقائياً لمدة 15 دقيقة عند تجاوز 10 محاولات دخول فاشلة.
+- تستخدم اتصالات WebSocket تذاكر مؤقتة لمرة واحدة لمنع ظهور الرموز السرية في سجلات الوكلاء المعكوسين.
 
-الخيار الآمن والموصى به هو استخدام Loopback مع شبكة Tailscale:
+### 4. تخزين آمن لبيانات الاعتماد
+- تخزن تطبيقات الهواتف الذكية رموز الاتصال حصرياً داخل مخازن المفاتيح المشفرة عتادياً (`Expo SecureStore` / iOS Keychain / Android KeyStore).
+- تخزن نسخة المتصفح الرموز حصرياً في `sessionStorage` المؤقت الذي يُمسح تلقائياً بمجرد إغلاق علامة التبويب.
 
+---
+
+## خيارات الوصول عن بُعد
+
+### الخيار الموصى به: شبكة Tailscale الخاصة والمشفرة
+الأسلوب الأكثر أماناً وموثوقية للاتصال عن بُعد هو استخدام [Tailscale](https://tailscale.com):
 ```bash
 tailscale serve --bg http://127.0.0.1:8787
 ```
+ينتج هذا الأمر رابطاً مشفراً وخاصاً (`https://<workstation>.<tailnet>.ts.net`) لا يمكن الوصول إليه إلا من أجهزتك المشتركة في شبكة Tailnet نفسها.
 
-ثم الاتصال عبر عنوان Tailnet الخاص: `https://<machine>.<tailnet>.ts.net`.
+### نفق Cloudflare المؤقت (للعروض السريعة فقط)
+للمشاركة المؤقتة والسريعة، توفر أداة `opencode-mobile` نفق Cloudflare مؤقتاً:
+- يولّد رابط HTTPS عاماً مؤقتاً يعيد التوجيه إلى جهازك المحلي.
+- يظل الوصول محمياً برمز Bearer المشترك.
+- ينتهي تشفير TLS عند Cloudflare، لذا يجب إنهاء النفق فوراً عند الانتهاء عبر أمر `opencode-mobile down`.
 
-### نفق Cloudflare المؤقت
+---
 
-للعروض السريعة، توفر الأداة نفقاً مؤقتاً اختيارياً. ينتهي تشفير TLS عند Cloudflare ويتطلب الوصول توكن Bearer المشترك. أوقف النفق دائماً عند الانتهاء باستخدام `opencode-mobile down`.
+## التنزيلات والإصدارات
+
+الإصدار **`v1.0.0-beta.10`** هو الإصدار العام الحالي المعتمد.
+
+| الملف والمنصة | المعمارية / النظام | التحقق من البصمة الرقمية |
+| :--- | :--- | :--- |
+| [APK أندرويد (arm64-v8a)](https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.10/opencode-mobile-1.0.0-beta.10.apk) | Android 7.0+ (API 24+) | [بصمة SHA-256](https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.10/opencode-mobile-1.0.0-beta.10.apk.sha256) |
+| [حزمة الجسر (.tar.gz)](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.10) | Node.js >=22.13 (Linux/macOS/Win) | [ملف SHA256SUMS](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.10) |
+| [تصدير الويب الثابت (.zip)](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.10) | متصفحات حديثة (جاهز كـ PWA) | [ملف SHA256SUMS](https://github.com/Aetherdz/opencode-mobile/releases/tag/v1.0.0-beta.10) |
+| [مثبّت التوزيعة](https://github.com/Aetherdz/opencode-mobile-dist) | Linux, macOS, Windows | موثّق عبر `SHA256SUMS` |
+
+---
 
 ## التطوير والاختبار
 
 ```bash
+# تثبيت الاعتماديات
 npm run install:app
 npm run install:bridge
+
+# تشغيل حزمة الفحص الشاملة
 npm run check
 ```
 
-يشغّل أمر `npm run check` حزمة التحقق الكاملة:
-- فحص الأنواع لتطبيق الهاتف (`tsc --noEmit`)
-- فحص الأنواع للـ Bridge (`tsc --noEmit`)
-- فحص الكود بأداة ESLint
-- اختبارات Bridge عبر Vitest (107 اختبارات)
-- اختبارات وحدة أدوات التثبيت (4 اختبارات)
+تضمن حزمة التحقق خلو المشروع التام من أي أخطاء:
+- **فحص أنواع التطبيق**: `tsc --noEmit` لكامل كود تطبيق Expo.
+- **فحص أنواع الجسر**: `tsc --noEmit` لكامل كود جسر Fastify.
+- **فحص التنسيق والجودة (ESLint)**: تطبيق معايير برمجية صارمة على مكونات React Native.
+- **اختبارات وحدة Vitest**: 107 اختبارات تلقائية تشمل الأمان، المرفقات، تحويل الأحداث، وعزل المجلدات.
+- **اختبارات وحدة سطر الأوامر**: 4 اختبارات لسلامة أداة التثبيت وتوليد الرموز وفحص المجلدات.
 
-أوامر البناء:
+### أوامر البناء
 ```bash
-npm run dev:bridge       # تشغيل Bridge في وضع المراقبة
+npm run dev:bridge       # تشغيل الجسر في وضع التطوير والمراقبة الحية
 npm run dev:app          # تشغيل خادم تطوير Expo
-npm run build:bridge     # بناء Bridge إلى مجلد bridge/dist
-npm run web:export       # تصدير ثابت لتطبيق الويب إلى app/dist
+npm run build:bridge     # تصدير وبناء كود TypeScript للجسر في مجلد bridge/dist
+npm run web:export       # تصدير إنتاجي ثابت لنسخة الويب في مجلد app/dist
+node scripts/check-site.mjs # فحص سلامة روابط ومستندات الموقع الثابت
 ```
 
-## التوثيق
+---
 
-- [الهندسة المعمارية](docs/architecture.md) — تصميم النظام وتدفق الأحداث.
-- [الأمان](docs/security.md) — نموذج التهديدات والضوابط الأمنية.
-- [دليل التطوير](docs/development.md) — الإعداد عبر Linux و macOS و Windows.
-- [عميل الويب](docs/web.md) — إعدادات CORS والـ Reverse Proxy و PWA.
-- [دليل الإصدار](docs/release.md) — بناء وتوقيع وحزم الإصدارات والتحقق من البصمات.
-- [استكشاف الأخطاء](docs/troubleshooting.md) — حلول المشاكل الشائعة في الاتصال والإعداد.
-- [خارطة الطريق](ROADMAP.md) — المراحل التطويرية والخطط المستقبلية.
+## فهرس التوثيق التقني
 
-## المساهمة
+- [الهندسة المعمارية للنظام](docs/architecture.md) — طبقات النظام، تدفق الأحداث، ومواصفات البروتوكول.
+- [دليل نموذج الأمان](docs/security.md) — نموذج التهديدات، الضوابط الأمنية، وقوائم التحقق.
+- [دليل التطوير والبناء](docs/development.md) — متطلبات الأجهزة، بناء EAS، وملاحظات المنصات.
+- [دليل عميل الويب](docs/web.md) — إعدادات CORS، البروكسي العكسي، ونشر تطبيقات PWA.
+- [إجراءات الإصدار والنشر](docs/release.md) — توقيع الملفات، توليد بصمات التجزئة، ودورة الإصدارات.
+- [استكشاف الأخطاء وحلها](docs/troubleshooting.md) — تشخيص مشاكل الاتصال والأذونات وشبكات Tailscale.
+- [خارطة طريق المشروع](ROADMAP.md) — المراحل المكتملة والمزايا القادمة.
 
-يرجى مراجعة [CONTRIBUTING.md](CONTRIBUTING.md) قبل تقديم مساهماتك. شغّل دائماً `npm run check` قبل فتح طلبات السحب (PRs).
+---
 
-## الترخيص
+## المساهمة في المشروع
 
-مرخص تحت رخصة MIT. راجع [LICENSE](LICENSE).
+نرحب بمساهمات المطورين! يُرجى قراءة [CONTRIBUTING.md](CONTRIBUTING.md) قبل فتح أي طلب سحب (PR). يُشترط اجتياز أمر `npm run check` بنجاح تام دون أي أخطاء أو تحذيرات.
 
-## تنويه
+---
 
-مشروع OpenCode Mobile هو مشروع مجتمعي غير رسمي وليس جزءاً من مشروع OpenCode ولا مدعوماً منه بشكل مباشر. كافة العلامات التجارية وأسماء المنتجات مملوكة لأصحابها.
+## ترخيص المشروع
+
+هذا المشروع مرخص ومتاح بموجب [رخصة MIT](LICENSE).
+
+---
+
+## تنويه وإخلاء مسؤولية
+
+مشروع OpenCode Mobile هو مشروع مجتمعي حر ومفتوح المصدر ومستقل، وليس جزءاً رسمياً من فريق OpenCode ولا مدعوماً منه بشكل مباشر. جميع العلامات التجارية وحقوق التسمية مملوكة لأصحابها الشرعيين.
