@@ -43,7 +43,34 @@
       content="https://aetherdz.github.io/opencode-mobile/assets/og.png?v=logo1"
     />
     <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate" type="text/plain" href="../llms.txt" title="LLM Context" />
     <link rel="stylesheet" href="../styles.css" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "OpenCode Mobile",
+      "operatingSystem": "Android, iOS, Web, Linux, macOS, Windows",
+      "applicationCategory": "DeveloperApplication",
+      "softwareVersion": "1.0.0-beta.10",
+      "downloadUrl": "https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.10/opencode-mobile-1.0.0-beta.10.apk",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "featureList": [
+        "1-command bridge install",
+        "Instant QR auto-connect",
+        "Universal model selector (DeepSeek, Claude, Gemini, OpenAI, Ollama)",
+        "120fps fluid mobile UI",
+        "Live WebSocket and SSE streaming",
+        "Interactive diff approvals",
+        "Zero telemetry & loopback security",
+        "Four languages: English, Arabic, French, Spanish"
+      ]
+    }
+    </script>
   </head>
   <body>
     <a class="skip-link" href="#main">تجاوز إلى المحتوى</a>
@@ -163,8 +190,7 @@
             <em>في جيبك.</em>
           </h1>
           <p class="lede">
-            ثبّت الجسر مرة واحدة على جهاز OpenCode، ثم أنشئ رابطًا مؤقتًا لهاتفك
-            عند الحاجة. بلا حساب أو خادم وسيط، وبلا تتبّع في التطبيق.
+            تحكّم في وكيلك OpenCode مباشرة من هاتفك. تثبيت بأمر واحد، اقتران فوري عبر QR، صفر تتبع، وأمان تام على شبكتك المحلية.
           </p>
           <div class="actions">
             <a class="button button-primary" href="#install">ثبّت الجسر</a>
@@ -200,8 +226,7 @@
           <p class="eyebrow">01 / التثبيت</p>
           <h2 class="display">ثلاث خطوات. بلا حساب.</h2>
           <p>
-            ثبّت مرة واحدة، ثم استخدم أمرًا قصيرًا كلما احتجت رابطًا مؤقتًا
-            للهاتف. يتحقق المثبّت من الحزمة ويبقي الجسر على loopback.
+            نفّذ أمراً واحداً على جهازك، امسح رمز QR من هاتفك، وابدأ العمل فوراً بلا أي حسابات.
           </p>
         </div>
         <div class="install-grid">
@@ -210,21 +235,21 @@
               <span class="step-number">01</span>
               <div>
                 <h3>ثبّت الجسر</h3>
-                <p>ثبّت الجسر بعد التحقق وأنشئ إعدادًا خاصًا.</p>
+                <p>أمر سطري واحد لتجهيز الجسر المحلي الآمن.</p>
               </div>
             </li>
             <li>
               <span class="step-number">02</span>
               <div>
-                <h3>أنشئ رابط الهاتف عند الحاجة</h3>
-                <p>شغّل <code>opencode-mobile</code> لإنشاء رابط عام مؤقت بعد التحذير والموافقة.</p>
+                <h3>اقترن بهاتفك</h3>
+                <p>شغّل <code>opencode-mobile</code> لإظهار رمز QR مشفر في الطرفية.</p>
               </div>
             </li>
             <li>
               <span class="step-number">03</span>
               <div>
-                <h3>اربط التطبيق</h3>
-                <p>امسح QR الظاهر في الطرفية أو أدخل الرابط والرمز يدويًا؛ سجّل الدخول بعد الاتصال.</p>
+                <h3>أنجز مهامك</h3>
+                <p>امسح الرمز بالتطبيق لمراجعة الفروقات، متابعة البث، وتبديل النماذج.</p>
               </div>
             </li>
           </ol>

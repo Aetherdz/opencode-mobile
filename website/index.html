@@ -43,7 +43,34 @@
       content="https://aetherdz.github.io/opencode-mobile/assets/og.png?v=logo1"
     />
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate" type="text/plain" href="llms.txt" title="LLM Context" />
     <link rel="stylesheet" href="styles.css" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "OpenCode Mobile",
+      "operatingSystem": "Android, iOS, Web, Linux, macOS, Windows",
+      "applicationCategory": "DeveloperApplication",
+      "softwareVersion": "1.0.0-beta.10",
+      "downloadUrl": "https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.10/opencode-mobile-1.0.0-beta.10.apk",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "featureList": [
+        "1-command bridge install",
+        "Instant QR auto-connect",
+        "Universal model selector (DeepSeek, Claude, Gemini, OpenAI, Ollama)",
+        "120fps fluid mobile UI",
+        "Live WebSocket and SSE streaming",
+        "Interactive diff approvals",
+        "Zero telemetry & loopback security",
+        "Four languages: English, Arabic, French, Spanish"
+      ]
+    }
+    </script>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -163,8 +190,7 @@
             <em>Your pocket.</em>
           </h1>
           <p class="lede">
-            Install a small bridge on the machine that already runs OpenCode,
-            then connect from your phone. No account or relay, and no app telemetry.
+            Control OpenCode from your phone. 1-command setup, instant QR pairing, zero telemetry, and direct loopback security.
           </p>
           <div class="actions">
             <a class="button button-primary" href="#install">Install the bridge</a>
@@ -200,9 +226,7 @@
           <p class="eyebrow">01 / The install</p>
           <h2 class="display">Three steps. No account.</h2>
           <p>
-            Install once, then use a short command whenever you want a temporary
-            phone link. The one-time setup is verified and keeps the bridge on
-            loopback.
+            Run one command on your machine, scan the terminal QR from your phone, and start coding immediately.
           </p>
         </div>
         <div class="install-grid">
@@ -211,21 +235,21 @@
               <span class="step-number">01</span>
               <div>
                 <h3>Install the bridge</h3>
-                <p>Install the verified bridge and create a private config.</p>
+                <p>Run the 1-line script to configure the private local bridge.</p>
               </div>
             </li>
             <li>
               <span class="step-number">02</span>
               <div>
-                <h3>Start a phone link when needed</h3>
-                <p>Run <code>opencode-mobile</code> to create a public temporary link after a clear warning and confirmation.</p>
+                <h3>Pair your phone</h3>
+                <p>Run <code>opencode-mobile</code> to show a secure QR code in your terminal.</p>
               </div>
             </li>
             <li>
               <span class="step-number">03</span>
               <div>
-                <h3>Connect the app</h3>
-                <p>Scan the terminal QR or enter its URL and token manually; sign in after connecting.</p>
+                <h3>Start coding</h3>
+                <p>Scan the QR in the app to review diffs, stream turns, and switch models.</p>
               </div>
             </li>
           </ol>
