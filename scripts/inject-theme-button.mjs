@@ -2,6 +2,9 @@
 // Inject theme-toggle button into every page that doesn't have it yet.
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
 const buttonHTML = `
         <button class="theme-toggle" type="button" aria-pressed="false" aria-label="Toggle dark mode">
@@ -25,7 +28,7 @@ const files = [
 ];
 
 for (const rel of files) {
-  const p = path.join("/home/zaikabdou1/opencode-mobile-repo", rel);
+  const p = path.join(root, rel);
   if (!fs.existsSync(p)) continue;
   let html = fs.readFileSync(p, "utf8");
   if (html.includes("theme-toggle")) continue; // Already has it

@@ -120,6 +120,7 @@
             <div class="phone-screen">
               <div class="phone-head">
                 <span class="phone-kicker">الجلسة 04</span>
+                <span class="phone-model" title="مبدّل النماذج الشامل نشط">Argon 4 · 120fps</span>
                 <span class="phone-status">قيد العمل</span>
               </div>
               <div class="bubble bubble-user">
@@ -177,19 +178,19 @@
           <div class="ticker-group">
             <p class="ticker-label">أنجز مع وكيلك</p>
             <ul class="ticker-list">
-              <li>جلسات وسجل العمل</li>
-              <li>استجابات مباشرة</li>
-              <li>موافقات ومراجعة الفروقات</li>
-              <li>ملفات وإشعارات فورية</li>
+              <li>واجهة سلسة 120fps فائقة الاستجابة</li>
+              <li>مبدّل النماذج الشامل</li>
+              <li>بطاقات أنشطة الأدوات والفروقات</li>
+              <li>بث مزدوج عبر WebSocket و SSE</li>
             </ul>
           </div>
           <div class="ticker-group">
             <p class="ticker-label">خصوصية من البداية</p>
             <ul class="ticker-list">
-              <li>جسر اتصال خاص</li>
-              <li>بلا خادم وسيط</li>
-              <li>بلا تتبع للاستخدام</li>
-              <li>مظهر فاتح وداكن</li>
+              <li>جسر اتصال محلي خاص</li>
+              <li>بلا خادم وسيط وبلا تتبع</li>
+              <li>مصادقة آمنة ضد هجمات التوقيت</li>
+              <li>مظهر فاتح وداكن مريح</li>
             </ul>
           </div>
         </section>
@@ -245,7 +246,6 @@
               </div>
               <pre id="cmd-bridge"><code>curl -fsSL https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>main/<wbr>install.sh | bash</code></pre>
             </div>
-            <p class="cmd-note">بعد الإعداد، شغّل <code>opencode-mobile</code> لإنشاء رابط اتصال للهاتف.</p>
             <div class="cmd-panel" id="install-panel-win">
               <div class="cmd-bar">
                 <span class="cmd-prompt" aria-hidden="true">&gt;</span>
@@ -259,6 +259,7 @@ irm https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobi
 if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksum mismatch" }
 .\install.ps1 -Command install -WorkDir "$env:USERPROFILE\projects"</code></pre>
             </div>
+            <p class="cmd-note">بعد الإعداد، شغّل <code>opencode-mobile</code> لإنشاء رابط اتصال للهاتف.</p>
             </div>
             <div class="docs-note">
               <strong>الاتصال الأول · Linux وmacOS</strong>

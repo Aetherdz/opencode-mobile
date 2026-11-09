@@ -40,6 +40,15 @@ class BridgeSocket {
     if (this.socket && this.baseUrl === normalized && this.token === token) {
       if (this.socket.readyState === WebSocket.OPEN) return;
     }
+    if (this.socket && (this.baseUrl !== normalized || this.token !== token)) {
+      this.clearTimers();
+      try {
+        this.socket.close();
+      } catch {
+        // ignore
+      }
+      this.socket = null;
+    }
     this.baseUrl = normalized;
     this.httpBaseUrl = httpBaseUrl;
     this.token = token;
@@ -139,9 +148,11 @@ class BridgeSocket {
     }
     this.clearTimers();
     this.opening = true;
-    void this.openWithTicket().finally(() => {
-      this.opening = false;
-    });
+    void this.openWithTicket()
+      .catch(() => undefined)
+      .finally(() => {
+        this.opening = false;
+      });
   }
 
   private async openWithTicket(): Promise<void> {
@@ -152,20 +163,32 @@ class BridgeSocket {
       state: this.attempt === 0 ? 'connecting' : 'reconnecting',
       lastError: null,
     });
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15_000);
     try {
       // Fetch a one-time, short-lived ticket instead of putting the bearer
       // token in the WebSocket URL, where proxies and access logs can see it.
-      const response = await fetch(`${httpBaseUrl}/ws-ticket`, {
-        method: 'POST',
-        headers: { authorization: `Bearer ${token}` },
-      });
+      let response: Response;
+      try {
+        response = await fetch(`${httpBaseUrl}/ws-ticket`, {
+          method: 'POST',
+          headers: { authorization: `Bearer ${token}` },
+          signal: controller.signal,
+        });
+      } finally {
+        clearTimeout(timeout);
+      }
       if (!response.ok) throw new Error(`Ticket request failed (${response.status}).`);
       const body = (await response.json()) as { ticket?: unknown };
       if (typeof body.ticket !== 'string' || !body.ticket) {
         throw new Error('Ticket request returned no ticket.');
       }
       if (this.closedByUser) return;
-      if (this.token !== token) {
+      if (this.appState !== 'active') {
+        useConnection.setState({ state: 'idle' });
+        return;
+      }
+      if (this.token !== token || this.httpBaseUrl !== httpBaseUrl) {
         this.scheduleReconnect();
         return;
       }
@@ -177,9 +200,17 @@ class BridgeSocket {
         this.scheduleReconnect();
         return;
       }
+      if (this.socket) {
+        try {
+          this.socket.close();
+        } catch {
+          // ignore
+        }
+      }
       this.socket = socket;
 
       socket.onopen = () => {
+        if (this.socket !== socket) return;
         this.attempt = 0;
         useConnection.setState({ state: 'open', lastError: null });
         for (const sessionId of this.subscriptions) {
@@ -196,6 +227,7 @@ class BridgeSocket {
       };
 
       socket.onmessage = (message) => {
+        if (this.socket !== socket) return;
         let event: ServerWsEvent;
         try {
           event = JSON.parse(String(message.data)) as ServerWsEvent;
@@ -214,15 +246,18 @@ class BridgeSocket {
       };
 
       socket.onerror = () => {
+        if (this.socket !== socket) return;
         useConnection.setState({ lastError: 'WebSocket error' });
       };
 
       socket.onclose = () => {
+        if (this.socket !== socket) return;
         this.socket = null;
         if (this.pingTimer) {
           clearInterval(this.pingTimer);
           this.pingTimer = null;
         }
+        useConnection.setState({ latency: null });
         if (this.closedByUser) return;
         this.scheduleReconnect();
       };
@@ -233,6 +268,7 @@ class BridgeSocket {
 
   private scheduleReconnect(): void {
     if (this.closedByUser) return;
+    this.clearTimers();
     if (this.appState !== 'active') {
       useConnection.setState({ state: 'idle' });
       return;

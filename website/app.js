@@ -62,11 +62,16 @@
 
   const root = document.documentElement;
   const themeToggle = document.querySelector(".theme-toggle");
-  const savedTheme = localStorage.getItem("ocm.theme");
+  let savedTheme = null;
+  try {
+    savedTheme = localStorage.getItem("ocm.theme");
+  } catch {
+    // localStorage unavailable in private contexts
+  }
 
   if (savedTheme) {
     root.setAttribute("data-theme", savedTheme);
-    themeToggle?.setAttribute("aria-pressed", savedTheme === "dark");
+    themeToggle?.setAttribute("aria-pressed", String(savedTheme === "dark"));
   } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
     root.setAttribute("data-theme", "dark");
     themeToggle?.setAttribute("aria-pressed", "true");
@@ -131,10 +136,9 @@
 
     let resetTimer = 0;
     copyButton.addEventListener("click", async () => {
-      const text = copySource.textContent
-        .replace(/\/\*([\s\S]*?)\*\/|<!--[\s\S]*?-->/g, "")
-        .replace(/\s+/g, " ")
-        .trim();
+      const rawText = copySource.textContent.replace(/\/\*([\s\S]*?)\*\/|<!--[\s\S]*?-->/g, "");
+      const lines = rawText.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+      const text = lines.length > 1 ? lines.join("\n") : (lines[0] || "").replace(/\s+/g, " ").trim();
       let copied = false;
       try {
         await navigator.clipboard.writeText(text);
@@ -159,6 +163,13 @@
         else delete copyButton.dataset.state;
       };
       setLabel(copied ? copy.copied : copy.failed, copied ? "copied" : "failed");
+      if (copied && typeof navigator.vibrate === "function") {
+        try {
+          navigator.vibrate(12);
+        } catch {
+          // Vibration not supported or blocked
+        }
+      }
       // One shared timer per button: a second click must not be reset early
       // by the timer left over from the first one.
       window.clearTimeout(resetTimer);
@@ -323,6 +334,40 @@
       });
     });
   });
+
+  // Lightweight 120fps-fluid scroll reveal for interactive cards and sections
+  if (
+    "IntersectionObserver" in window &&
+    !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+  ) {
+    const revealTargets = document.querySelectorAll(
+      ".feature, .platform, .docs-card, .docs-note, .ticker-group, .hero-release"
+    );
+    if (revealTargets.length > 0) {
+      const revealObserver = new IntersectionObserver(
+        (entries, observer) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-revealed");
+              observer.unobserve(entry.target);
+              entry.target.addEventListener(
+                "transitionend",
+                () => {
+                  entry.target.classList.remove("reveal-init", "is-revealed");
+                },
+                { once: true },
+              );
+            }
+          });
+        },
+        { rootMargin: "0px 0px -6% 0px", threshold: 0.05 },
+      );
+      revealTargets.forEach((target) => {
+        target.classList.add("reveal-init");
+        revealObserver.observe(target);
+      });
+    }
+  }
 
   const year = document.querySelector("#year");
   if (year) year.textContent = String(new Date().getFullYear());

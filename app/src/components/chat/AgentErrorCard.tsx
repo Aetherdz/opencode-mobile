@@ -4,6 +4,7 @@ import { Pressable, StyleSheet, View } from 'react-native';
 import type { ChatError } from '@/api/types';
 import { AppText } from '@/components/ui/AppText';
 import { Icon } from '@/components/ui/Icon';
+import { PressableScale } from '@/components/ui/PressableScale';
 import { hapticSelection } from '@/lib/haptics';
 import { useI18n } from '@/lib/i18n';
 import { useTheme } from '@/theme/ThemeProvider';
@@ -123,16 +124,16 @@ export function AgentErrorCard({ error, onRetry }: AgentErrorCardProps) {
       ) : null}
 
       <View style={[styles.actions, { borderTopColor: theme.colors.line }]}>
-        <Pressable
+        <PressableScale
           onPress={() => void copy()}
+          scaleTo={0.96}
           accessibilityRole="button"
           accessibilityLabel={copied ? t('common.copied') : t('chat.copyErrorDetails')}
-          style={({ pressed }) => [
+          style={[
             styles.action,
             {
               paddingHorizontal: theme.spacing.md,
               gap: theme.spacing.xs,
-              opacity: pressed ? 0.65 : 1,
             },
           ]}
         >
@@ -140,20 +141,21 @@ export function AgentErrorCard({ error, onRetry }: AgentErrorCardProps) {
           <AppText variant="caption" color="text2">
             {copied ? t('common.copied') : t('chat.copyErrorDetails')}
           </AppText>
-        </Pressable>
+        </PressableScale>
         {onRetry ? (
-          <Pressable
+          <PressableScale
             onPress={() => void retry()}
             disabled={retrying}
+            scaleTo={0.96}
             accessibilityRole="button"
             accessibilityLabel={retrying ? t('chat.retrying') : t('chat.retryLast')}
             accessibilityState={{ disabled: retrying, busy: retrying }}
-            style={({ pressed }) => [
+            style={[
               styles.action,
               {
                 paddingHorizontal: theme.spacing.md,
                 gap: theme.spacing.xs,
-                opacity: retrying ? 0.5 : pressed ? 0.65 : 1,
+                opacity: retrying ? 0.5 : 1,
               },
             ]}
           >
@@ -161,7 +163,7 @@ export function AgentErrorCard({ error, onRetry }: AgentErrorCardProps) {
             <AppText variant="caption" color="text2">
               {retrying ? t('chat.retrying') : t('chat.retryLast')}
             </AppText>
-          </Pressable>
+          </PressableScale>
         ) : null}
       </View>
     </View>

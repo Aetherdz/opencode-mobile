@@ -21,6 +21,7 @@ interface ResolvedQuestion {
 interface ResolvedPermission {
   sessionId: string;
   at: number;
+  decision?: "once" | "always" | "reject";
 }
 
 export interface QuestionLookup {
@@ -208,13 +209,25 @@ export class RuntimeState {
     this.setStatus(sessionId, "needs_approval");
   }
 
-  resolvePermission(sessionId: string, requestId: string): void {
+  permissionDecision(requestId: string): ("once" | "always" | "reject") | undefined {
+    return this.resolvedPermissions.get(requestId)?.decision;
+  }
+
+  resolvePermission(
+    sessionId: string,
+    requestId: string,
+    decision?: "once" | "always" | "reject",
+  ): void {
     const set = this.approvals.get(sessionId);
     if (set && requestId) set.delete(requestId);
     if (!set || set.size === 0) this.approvals.delete(sessionId);
     if (requestId) {
       this.permissionSessions.delete(requestId);
-      this.resolvedPermissions.set(requestId, { sessionId, at: Date.now() });
+      this.resolvedPermissions.set(requestId, {
+        sessionId,
+        at: Date.now(),
+        ...(decision ? { decision } : {}),
+      });
       this.pruneResolved();
     }
     if (!this.questions.get(sessionId)?.size && !this.approvals.get(sessionId)?.size) {

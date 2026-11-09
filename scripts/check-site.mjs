@@ -41,21 +41,26 @@ for (const file of htmlFiles) {
     const footerStart = html.indexOf('<footer class="site-footer">');
     const footerEnd = html.indexOf("</footer>", footerStart);
     const footer = html.slice(footerStart, footerEnd < 0 ? html.length : footerEnd);
-    if (!footer.includes("footer-brand-copy")) errors.push(`${path.relative(root, file)}: footer brand copy is missing`);
-    if (path.relative(root, file) !== "404.html" && [...footer.matchAll(/class="footer-link-group"/g)].length !== 3) errors.push(`${path.relative(root, file)}: expected three distinct footer navigation groups`);
-    if (path.relative(root, file) !== "404.html") {
+    const relPath = path.relative(root, file).split(path.sep).join("/");
+    if (!footer.includes("footer-brand-copy")) errors.push(`${relPath}: footer brand copy is missing`);
+    if (relPath !== "404.html" && [...footer.matchAll(/class="footer-link-group"/g)].length !== 3) errors.push(`${relPath}: expected three distinct footer navigation groups`);
+    if (relPath !== "404.html") {
       for (const group of footer.matchAll(/<nav class="footer-link-group"[^>]*aria-labelledby="([^"]+)"[\s\S]*?<h2 id="([^"]+)"/g)) {
-        if (group[1] !== group[2]) errors.push(`${path.relative(root, file)}: footer group navigation label does not resolve`);
+        if (group[1] !== group[2]) errors.push(`${relPath}: footer group navigation label does not resolve`);
       }
     }
     const opens = [...footer.matchAll(/<div\b/g)].length;
     const closes = [...footer.matchAll(/<\/div>/g)].length;
-    if (opens !== closes) errors.push(`${path.relative(root, file)}: unbalanced footer div markup (${opens} open, ${closes} close)`);
-    if (!footer.includes("footer-legal")) errors.push(`${path.relative(root, file)}: footer legal notice is missing`);
+    if (opens !== closes) errors.push(`${relPath}: unbalanced footer div markup (${opens} open, ${closes} close)`);
+    if (!footer.includes("footer-legal")) errors.push(`${relPath}: footer legal notice is missing`);
   }
-  for (const match of html.matchAll(/<img\b[^>]*src="([^"]+)"[^>]*class="brand-mark"[^>]*>/g)) {
-    const src = match[1];
-    const resolved = src.startsWith("https://") ? null : path.resolve(path.dirname(file), src);
+  for (const match of html.matchAll(/<img\b[^>]*class="brand-mark"[^>]*>/g)) {
+    const tag = match[0];
+    const srcMatch = tag.match(/\bsrc="([^"]+)"/);
+    if (!srcMatch) continue;
+    const src = srcMatch[1];
+    const cleanSrc = src.split("?")[0];
+    const resolved = cleanSrc.startsWith("https://") ? null : path.resolve(path.dirname(file), cleanSrc);
     if (resolved && !fs.existsSync(resolved)) errors.push(`${path.relative(root, file)}: missing brand asset ${src}`);
   }
   const refs = [...html.matchAll(/\s(?:href|src)="([^"]+)"/g)].map((match) => match[1]);

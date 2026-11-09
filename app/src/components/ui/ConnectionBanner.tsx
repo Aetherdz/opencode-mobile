@@ -1,10 +1,11 @@
-import { ActivityIndicator, Pressable, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { bridgeSocket, useConnection } from '@/api/ws';
 import { hapticSelection } from '@/lib/haptics';
 import { useI18n } from '@/lib/i18n';
 import { useTheme } from '@/theme/ThemeProvider';
 import { AppText } from './AppText';
 import { Icon } from './Icon';
+import { PressableScale } from './PressableScale';
 
 export function ConnectionBanner() {
   const theme = useTheme();
@@ -20,7 +21,8 @@ export function ConnectionBanner() {
   const textColor = isReconnecting ? '#D97706' : '#DC2626';
 
   return (
-    <Pressable
+    <PressableScale
+      scaleTo={0.98}
       onPress={() => {
         hapticSelection();
         bridgeSocket.reconnect();
@@ -52,7 +54,7 @@ export function ConnectionBanner() {
       <AppText variant="caption" color="text3">
         {t('common.retry')}
       </AppText>
-    </Pressable>
+    </PressableScale>
   );
 }
 

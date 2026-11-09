@@ -19,6 +19,7 @@ import { ErrorBanner } from '@/components/ui/ErrorBanner';
 import { Icon } from '@/components/ui/Icon';
 import { IconButton } from '@/components/ui/IconButton';
 import { KeyboardAvoider } from '@/components/ui/KeyboardAvoider';
+import { PressableScale } from '@/components/ui/PressableScale';
 import { Rtl } from '@/components/ui/Rtl';
 import { Screen } from '@/components/ui/Screen';
 import { TextField } from '@/components/ui/TextField';
@@ -323,16 +324,15 @@ export default function ConnectScreen() {
             {/* Quick Connect Actions */}
             <View style={styles.actionSection}>
               {/* Instant Scan QR Card */}
-              <Pressable
+              <PressableScale
                 onPress={() => void openScanner()}
                 disabled={loading}
-                style={({ pressed }) => [
+                scaleTo={0.98}
+                style={[
                   styles.primaryCard,
                   {
                     backgroundColor: theme.colors.surface2,
                     borderColor: '#0EA5E960',
-                    opacity: pressed ? 0.85 : 1,
-                    transform: [{ scale: pressed ? 0.98 : 1 }],
                   },
                 ]}
                 accessibilityRole="button"
@@ -350,18 +350,18 @@ export default function ConnectScreen() {
                   </AppText>
                 </View>
                 <Icon name="chevron-forward" size={18} color="secondary" />
-              </Pressable>
+              </PressableScale>
 
               {/* Smart Paste Card */}
-              <Pressable
+              <PressableScale
                 onPress={() => void handleSmartPaste()}
                 disabled={loading}
-                style={({ pressed }) => [
+                scaleTo={0.98}
+                style={[
                   styles.secondaryCard,
                   {
                     backgroundColor: theme.colors.surface,
                     borderColor: theme.colors.border,
-                    opacity: pressed ? 0.8 : 1,
                   },
                 ]}
                 accessibilityRole="button"
@@ -378,7 +378,7 @@ export default function ConnectScreen() {
                     {url && token ? `${url}` : t('connect.pasteEmpty')}
                   </AppText>
                 </View>
-              </Pressable>
+              </PressableScale>
             </View>
 
             {/* Error & Progress */}

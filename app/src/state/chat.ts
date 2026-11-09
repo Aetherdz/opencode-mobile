@@ -43,7 +43,7 @@ function mergeById(existing: ChatMessage[], incoming: ChatMessage[]): ChatMessag
   for (const message of existing) map.set(message.id, message);
   for (const message of incoming) {
     const current = map.get(message.id);
-    map.set(message.id, current ? { ...current, ...message, pending: false } : message);
+    map.set(message.id, current ? { ...current, ...message } : message);
   }
   return [...map.values()].sort((a, b) => a.createdAt - b.createdAt);
 }
@@ -119,10 +119,13 @@ const initialState = {
   lastErrorCode: null as string | null,
 };
 
+let loadGeneration = 0;
+
 export const useChat = create<ChatState>((set, get) => ({
   ...initialState,
 
   load: async (sessionId) => {
+    const generation = ++loadGeneration;
     if (get().sessionId !== sessionId) {
       set({ ...initialState, sessionId, loading: true });
     } else {
@@ -130,16 +133,18 @@ export const useChat = create<ChatState>((set, get) => ({
     }
     try {
       const page = await listMessages(sessionId, { limit: 100, order: 'desc' });
-      const messages = page.data.slice().reverse();
+      const incoming = page.data.slice().reverse();
       const cursor = page.cursor?.next ?? null;
       const [diff, pending, questions] = await Promise.all([
-        getDiff(sessionId).catch(() => []),
-        listPermissions().catch(() => []),
-        listQuestions(sessionId).catch(() => []),
+        getDiff(sessionId).catch(() => get().diff),
+        listPermissions().catch(() => get().approvals),
+        listQuestions(sessionId).catch(() => get().questions),
       ]);
       const session = await getSession(sessionId).catch(() => null);
       const approvals = pending.filter((request) => request.sessionId === sessionId);
-      if (get().sessionId !== sessionId) return;
+      if (get().sessionId !== sessionId || generation !== loadGeneration) return;
+      const pendingMessages = get().messages.filter((message) => message.pending);
+      const messages = mergeById(incoming, pendingMessages);
       set({
         messages,
         hasOlder: Boolean(cursor),
@@ -153,7 +158,7 @@ export const useChat = create<ChatState>((set, get) => ({
         error: null,
       });
     } catch (error) {
-      if (get().sessionId !== sessionId) return;
+      if (get().sessionId !== sessionId || generation !== loadGeneration) return;
       const workdirBlocked =
         error instanceof ApiError && error.code === 'outside_workdir';
       set({
@@ -195,8 +200,7 @@ export const useChat = create<ChatState>((set, get) => ({
       if (get().sessionId !== sessionId) return;
       set((state) => {
         const pending = state.messages.filter((message) => message.pending);
-        const merged = mergeById([], [...incoming, ...pending]);
-        return { messages: merged };
+        return { messages: mergeById(incoming, pending) };
       });
     } catch {
       // the socket will retry; keep the current transcript
@@ -263,9 +267,10 @@ export const useChat = create<ChatState>((set, get) => ({
         if (event.sessionId !== sessionId) return;
         set((state) => {
           const approvals = state.approvals.filter((request) => request.id !== event.requestId);
+          const nextBase = state.status === 'needs_approval' ? 'running' : state.status;
           return {
             approvals,
-            status: deriveStatus('running', state.questions, approvals),
+            status: deriveStatus(nextBase, state.questions, approvals),
           };
         });
         return;
@@ -288,9 +293,10 @@ export const useChat = create<ChatState>((set, get) => ({
           const questions = state.questions.filter(
             (question) => question.id !== event.questionId,
           );
+          const nextBase = state.status === 'waiting_input' ? 'running' : state.status;
           return {
             questions,
-            status: deriveStatus('running', questions, state.approvals),
+            status: deriveStatus(nextBase, questions, state.approvals),
           };
         });
         return;
@@ -301,7 +307,7 @@ export const useChat = create<ChatState>((set, get) => ({
         set((state) => {
           if (message.role === 'user') {
             const pendingIndex = state.messages.findIndex(
-              (item) => item.pending && item.role === 'user',
+              (item) => item.pending && item.role === 'user' && (item.text === message.text || !item.text),
             );
             if (pendingIndex >= 0) {
               const copy = state.messages.slice();
@@ -383,20 +389,46 @@ export const useChat = create<ChatState>((set, get) => ({
         return;
       }
       case 'error': {
+        if ('sessionId' in event && typeof (event as { sessionId?: unknown }).sessionId === 'string') {
+          if ((event as { sessionId: string }).sessionId !== sessionId) return;
+        }
+        const optimisticId = event.requestId?.startsWith('req_local_')
+          ? event.requestId.slice(4)
+          : null;
         if (event.code === 'outside_workdir') {
-          set({ error: 'outside_workdir', lastErrorCode: event.code });
+          set((state) => ({
+            messages: optimisticId
+              ? state.messages.filter((message) => message.id !== optimisticId)
+              : state.messages,
+            error: 'outside_workdir',
+            lastErrorCode: event.code,
+            status: deriveStatus('idle', state.questions, state.approvals),
+          }));
         } else if (event.code === 'upstream_disconnected') {
-          set({ error: event.message, lastErrorCode: event.code });
-        } else if (event.code === 'model_unavailable') {
-          const optimisticId = event.requestId?.startsWith('req_local_')
-            ? event.requestId.slice(4)
-            : null;
           set((state) => ({
             messages: optimisticId
               ? state.messages.filter((message) => message.id !== optimisticId)
               : state.messages,
             error: event.message,
             lastErrorCode: event.code,
+          }));
+        } else if (event.code === 'model_unavailable') {
+          set((state) => ({
+            messages: optimisticId
+              ? state.messages.filter((message) => message.id !== optimisticId)
+              : state.messages,
+            error: event.message,
+            lastErrorCode: event.code,
+            status: deriveStatus('idle', state.questions, state.approvals),
+          }));
+        } else {
+          set((state) => ({
+            messages: optimisticId
+              ? state.messages.filter((message) => message.id !== optimisticId)
+              : state.messages,
+            error: event.message || 'An error occurred.',
+            lastErrorCode: event.code,
+            status: deriveStatus(state.status === 'running' ? 'idle' : state.status, state.questions, state.approvals),
           }));
         }
         return;
@@ -432,6 +464,7 @@ export const useChat = create<ChatState>((set, get) => ({
     };
     set((state) => ({
       messages: [...state.messages, optimistic],
+      status: deriveStatus('running', state.questions, state.approvals),
       error: null,
       lastErrorCode: null,
     }));
@@ -448,14 +481,12 @@ export const useChat = create<ChatState>((set, get) => ({
     if (!sent) {
       set((state) => ({
         messages: state.messages.filter((message) => message.id !== tempId),
+        status: deriveStatus('idle', state.questions, state.approvals),
         error: 'Not connected to the bridge.',
         lastErrorCode: 'offline',
       }));
       return { ok: false, reason: 'offline' };
     }
-    set((state) => ({
-      status: deriveStatus('running', state.questions, state.approvals),
-    }));
     return { ok: true };
   },
 

@@ -3,7 +3,6 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import {
   Platform,
-  Pressable,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -18,6 +17,7 @@ import { Icon } from '@/components/ui/Icon';
 import { KeyboardAvoider } from '@/components/ui/KeyboardAvoider';
 import { Screen } from '@/components/ui/Screen';
 import { ScreenHeader } from '@/components/ui/ScreenHeader';
+import { PressableScale } from '@/components/ui/PressableScale';
 import { TextField } from '@/components/ui/TextField';
 import { hapticSelection, hapticSuccess } from '@/lib/haptics';
 import { useI18n } from '@/lib/i18n';
@@ -131,29 +131,28 @@ export default function NewSessionScreen() {
               {workdirs.map((workdir, index) => {
                 const isActive = active === workdir;
                 return (
-                  <Pressable
+                  <PressableScale
                     key={workdir}
                     onPress={() => {
                       hapticSelection();
                       setSelected(workdir);
                     }}
+                    scaleTo={0.985}
                     accessibilityRole="radio"
                     accessibilityState={{ checked: isActive }}
                     accessibilityLabel={workdir}
-                    style={({ pressed }) => ({
+                    style={{
                       minHeight: 58,
                       paddingHorizontal: theme.spacing.md,
                       flexDirection: 'row',
                       alignItems: 'center',
                       gap: theme.spacing.md,
-                      backgroundColor: pressed
-                        ? theme.colors.surface2
-                        : isActive
-                          ? theme.colors.surface1
-                          : 'transparent',
+                      backgroundColor: isActive
+                        ? theme.colors.surface1
+                        : 'transparent',
                       borderTopWidth: index === 0 ? 0 : StyleSheet.hairlineWidth,
                       borderTopColor: theme.colors.line,
-                    })}
+                    }}
                   >
                     <Icon
                       name={isActive ? 'radio-button-on' : 'radio-button-off'}
@@ -163,7 +162,7 @@ export default function NewSessionScreen() {
                     <AppText variant="meta" mono numberOfLines={1} style={{ flex: 1 }}>
                       {workdir}
                     </AppText>
-                  </Pressable>
+                  </PressableScale>
                 );
               })}
             </View>

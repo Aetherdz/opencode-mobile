@@ -36,8 +36,8 @@ export function StatusIndicator({
     }
     pulse.value = withRepeat(
       withSequence(
-        withTiming(1, { duration: 900, easing: Easing.out(Easing.quad) }),
-        withTiming(0, { duration: 900, easing: Easing.in(Easing.quad) }),
+        withTiming(1, { duration: 850, easing: Easing.out(Easing.cubic) }),
+        withTiming(0, { duration: 850, easing: Easing.in(Easing.cubic) }),
       ),
       -1,
       false,
@@ -45,8 +45,8 @@ export function StatusIndicator({
   }, [pulse, reduced, status]);
 
   const haloStyle = useAnimatedStyle(() => ({
-    opacity: 0.35 * (1 - pulse.value),
-    transform: [{ scale: 1 + pulse.value * 0.7 }],
+    opacity: 0.42 * (1 - pulse.value),
+    transform: [{ scale: 1 + pulse.value * 0.72 }],
   }));
 
   if (status === 'idle') {

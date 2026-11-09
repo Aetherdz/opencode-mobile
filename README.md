@@ -74,7 +74,7 @@ The user interface is crafted with precision, native fluid physics, high-contras
 | 1. Auto-Connect | 2. Elevated Sessions | 3. Streamed Chat | 4. Universal Model Selector | 5. Inline Questions |
 | :---: | :---: | :---: | :---: | :---: |
 | <img src="docs/images/connect.png" width="175" alt="Connect Screen with 1-Tap QR Scan & Smart Paste" /> | <img src="docs/images/sessions.png" width="175" alt="Elevated Session Cards" /> | <img src="docs/images/chat.png" width="175" alt="Streamed Real-Time Chat" /> | <img src="docs/images/model-picker.png" width="175" alt="Universal Model Selector" /> | <img src="docs/images/question.png" width="175" alt="Inline Question & Approval Card" /> |
-| **Instant QR Auto-Connect**<br/>One-tap camera scan & smart clipboard detection | **Elevated Session Cards**<br/>Tactile scaling physics, status dots, and grouping | **Streamed Chat & Diffs**<br/>Live SSE updates, collapsible diffs, code highlight | **Universal Model Selector**<br/>Supports all OpenCode models (Claude, GPT, Gemini, Ollama) | **Agent Question Prompts**<br/>Inline multi-choice options & safety approvals |
+| **Instant QR Auto-Connect**<br/>One-tap camera scan & smart clipboard detection | **Elevated Session Cards**<br/>Tactile scaling physics, status dots, and grouping | **Streamed Chat & Diffs**<br/>Live WebSocket/SSE, collapsible diffs, code highlight | **Universal Model Selector**<br/>Supports all OpenCode models (DeepSeek, Claude 3.7, Gemini 4 Argon) | **Agent Question Prompts**<br/>Inline multi-choice options & safety approvals |
 
 ---
 
@@ -126,11 +126,12 @@ flowchart TD
 
 ### Architectural Highlights
 
-1. **Engineered by Gemini 4 Argon**: OpenCode Mobile v1.0.0-beta.10 was architected, refactored, and audited under the lead direction of **Gemini 4 Argon** (Google DeepMind), introducing zero-friction 1-command installation, calibrated touch ergonomics, and hardened bridge security. The app's bottom composer features a universal **Model Selector** supporting all configured OpenCode models (including `antigravity-gemini-4-argon`, Claude, GPT, and local Ollama models) with automatic local discovery (`readConfiguredModels`).
-2. **1-Tap QR Auto-Connect**: The CLI outputs an encrypted `opencode-mobile://connect` pairing payload embedded into an ANSI terminal QR code. Scanning with the app immediately verifies the connection and saves credentials without manual keying.
-3. **Elevated Session Cards**: Session rows feature continuous corner curves, micro-scale press animations, clear status indicators (idle, active turn, waiting for answer), and comprehensive session management (search, create, rename, delete).
-4. **Scoped Directory Access**: Out-of-the-box isolation confining agent activity strictly to `ALLOWED_WORKDIRS` (`~/projects`). Out-of-bounds repositories require explicit 1-tap runtime authorization grants via native dialogs.
-5. **Zero Telemetry Guarantee**: No tracking libraries, no Firebase analytics, no external crash reporting. All communication flows directly over private network tunnels.
+1. **Engineered by Gemini 4 Argon & Claude Fluid UI**: OpenCode Mobile v1.0.0-beta.10 was architected, refactored, and audited under the lead direction of **Gemini 4 Argon** (Google DeepMind) and infused with 120fps fluid spring ergonomics inspired by Claude mobile (`cubic-bezier(0.22, 1, 0.36, 1)`). The app features a universal **Model Selector** supporting all configured OpenCode models (including `antigravity-gemini-4-argon`, DeepSeek V3/R1, Claude 3.7 Sonnet, GPT-4o, and local Ollama models) with automatic local discovery (`readConfiguredModels`).
+2. **Dual-Transport Streaming Engine**: Real-time communication runs over a primary high-frequency WebSocket (`/ws`) with sub-50ms turn delivery, background reconnection, and automatic fallback to Server-Sent Events (SSE).
+3. **1-Tap QR Auto-Connect**: The CLI outputs an encrypted `opencode-mobile://connect` pairing payload embedded into an ANSI terminal QR code. Scanning with the app immediately verifies the connection and saves credentials without manual keying.
+4. **Elevated Session Cards**: Session rows feature continuous corner curves, micro-scale press animations, clear status indicators (idle, active turn, waiting for answer), and comprehensive session management (search, create, rename, delete).
+5. **Scoped Directory Access**: Out-of-the-box isolation confining agent activity strictly to `ALLOWED_WORKDIRS` (`~/projects`). Out-of-bounds repositories require explicit 1-tap runtime authorization grants via native dialogs.
+6. **Zero Telemetry Guarantee**: No tracking libraries, no Firebase analytics, no external crash reporting. All communication flows directly over private network tunnels.
 
 ---
 

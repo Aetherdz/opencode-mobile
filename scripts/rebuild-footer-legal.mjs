@@ -2,8 +2,9 @@
 // Turn the footer copyright line into a proper legal bar: © line + disclaimer.
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-const root = "/home/zaikabdou1/opencode-mobile-repo/website";
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "website");
 
 const legal = {
   en: "MIT licensed · Not affiliated with or endorsed by the OpenCode team.",

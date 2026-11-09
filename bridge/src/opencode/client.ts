@@ -66,13 +66,14 @@ export class OpenCodeHttp {
         const { value, done } = await reader.read();
         if (done) break;
         buffer += decoder.decode(value, { stream: true });
-        let boundary = buffer.indexOf("\n\n");
-        while (boundary >= 0) {
+        while (true) {
+          const match = /\r?\n\r?\n/.exec(buffer);
+          if (!match) break;
+          const boundary = match.index;
           const frame = buffer.slice(0, boundary);
-          buffer = buffer.slice(boundary + 2);
+          buffer = buffer.slice(boundary + match[0].length);
           const event = parseFrame(frame);
           if (event) yield event;
-          boundary = buffer.indexOf("\n\n");
         }
       }
     } finally {

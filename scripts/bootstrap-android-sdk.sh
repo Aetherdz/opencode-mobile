@@ -5,7 +5,7 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 APP_DIR="${APP_DIR:-$ROOT_DIR/app}"
-SDK_ROOT="${ANDROID_SDK_ROOT:-${ANDROID_HOME:-$HOME/android-sdk}}"
+SDK_ROOT="${ANDROID_HOME:-${ANDROID_SDK_ROOT:-$HOME/android-sdk}}"
 CMDLINE_ZIP="commandlinetools-linux-13114758_latest.zip"
 CMDLINE_URL="https://dl.google.com/android/repository/${CMDLINE_ZIP}"
 PACKAGES=(
@@ -43,7 +43,7 @@ if [ ! -x "$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" ] \
   yes | "$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" \
     --sdk_root="$SDK_ROOT" --licenses >/dev/null 2>&1 || true
 
-  yes | "$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" \
+  { yes || true; } | "$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" \
     --sdk_root="$SDK_ROOT" "${PACKAGES[@]}"
 else
   echo "Android SDK already present at $SDK_ROOT"

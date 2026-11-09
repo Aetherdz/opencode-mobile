@@ -3,6 +3,7 @@ import { FlatList, Pressable, StyleSheet, View } from 'react-native';
 import type { AvailableModel, ModelSelection } from '@/api/types';
 import { AppText } from '@/components/ui/AppText';
 import { Icon } from '@/components/ui/Icon';
+import { PressableScale } from '@/components/ui/PressableScale';
 import { Sheet } from '@/components/ui/Sheet';
 import { TextField } from '@/components/ui/TextField';
 import { useI18n } from '@/lib/i18n';
@@ -82,19 +83,20 @@ export function ModelSheet({
               renderItem={({ item }) => {
                 const isSelected = selected?.providerID === item.providerId && selected.modelID === item.modelId;
                 return (
-                  <Pressable
+                  <PressableScale
                     onPress={() => {
                       dismissKeyboard();
                       onSelect({ providerID: item.providerId, modelID: item.modelId });
                     }}
+                    scaleTo={0.985}
                     accessibilityRole="radio"
                     accessibilityState={{ selected: isSelected }}
                     accessibilityLabel={`${item.name}, ${item.providerName}`}
-                    style={({ pressed }) => [
+                    style={[
                       styles.row,
                       {
                         borderBottomColor: theme.colors.divider,
-                        backgroundColor: pressed ? theme.colors.surface2 : 'transparent',
+                        backgroundColor: isSelected ? theme.colors.surface2 : 'transparent',
                       },
                     ]}
                   >
@@ -123,27 +125,28 @@ export function ModelSheet({
                       </AppText>
                     </View>
                     {isSelected ? <Icon name="checkmark" size={layout.icon} color="accent" /> : null}
-                  </Pressable>
+                  </PressableScale>
                 );
               }}
             />
           )}
         </View>
-        <Pressable
+        <PressableScale
           onPress={() => {
             dismissKeyboard();
             onSelect(null);
           }}
+          scaleTo={0.985}
           accessibilityRole="radio"
           accessibilityState={{ selected: selected === null }}
-          style={({ pressed }) => [
+          style={[
             styles.row,
-            { borderTopColor: theme.colors.divider, backgroundColor: pressed ? theme.colors.surface2 : 'transparent' },
+            { borderTopColor: theme.colors.divider, backgroundColor: selected === null ? theme.colors.surface2 : 'transparent' },
           ]}
         >
           <AppText variant="body">{t('model.default')}</AppText>
           {selected === null ? <Icon name="checkmark" size={layout.icon} color="accent" /> : null}
-        </Pressable>
+        </PressableScale>
       </View>
     </Sheet>
   );

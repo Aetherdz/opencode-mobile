@@ -18,6 +18,11 @@ for (const name of required) {
   }
 }
 
+if (!fs.existsSync(gradlePath)) {
+  console.error(`::error::${gradlePath} not found. Run expo prebuild first.`);
+  process.exit(1);
+}
+
 let gradle = fs.readFileSync(gradlePath, 'utf8');
 
 if (!gradle.includes('signingConfigs {')) {

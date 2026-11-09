@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 // Rebuild the footer facts as a clean spec strip and drop duplicate licensing text.
 import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-const root = "/home/zaikabdou1/opencode-mobile-repo/website";
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "website");
 
 const data = {
   "index.html": {

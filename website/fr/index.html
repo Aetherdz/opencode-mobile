@@ -85,7 +85,7 @@
             <li><a href="../es/" hreflang="es" lang="es">Español</a></li>
           </ul>
         </details>
-        <button class="theme-toggle" type="button" aria-pressed="false" aria-label="Toggle dark mode">
+        <button class="theme-toggle" type="button" aria-pressed="false" aria-label="Basculer le mode sombre">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <g class="sun">
               <circle cx="12" cy="12" r="4.2" />
@@ -120,6 +120,7 @@
             <div class="phone-screen">
               <div class="phone-head">
                 <span class="phone-kicker">Session 04</span>
+                <span class="phone-model" title="Sélecteur universel de modèles actif">Argon 4 · 120fps</span>
                 <span class="phone-status">En cours</span>
               </div>
               <div class="bubble bubble-user">
@@ -178,18 +179,18 @@
           <div class="ticker-group">
             <p class="ticker-label">Travaillez avec votre agent</p>
             <ul class="ticker-list">
-              <li>Historique des sessions</li>
-              <li>Réponses en direct</li>
-              <li>Approbations et diffs</li>
-              <li>Fichiers et notifications push</li>
+              <li>Interface fluide 120fps ultra-réactive</li>
+              <li>Sélecteur universel de modèles</li>
+              <li>Cartes d’outils et diffs en direct</li>
+              <li>Double transport WebSocket et SSE</li>
             </ul>
           </div>
           <div class="ticker-group">
             <p class="ticker-label">La confidentialité avant tout</p>
             <ul class="ticker-list">
-              <li>Passerelle privée</li>
-              <li>Aucun serveur relais</li>
-              <li>Aucune télémétrie dans l’app</li>
+              <li>Passerelle locale privée</li>
+              <li>Zéro télémétrie et sans relais</li>
+              <li>Validation de jeton à temps constant</li>
               <li>Thèmes clair et sombre</li>
             </ul>
           </div>
@@ -246,7 +247,6 @@
               </div>
               <pre id="cmd-bridge"><code>curl -fsSL https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>main/<wbr>install.sh | bash</code></pre>
             </div>
-            <p class="cmd-note">Après l’installation, lancez <code>opencode-mobile</code> pour créer le lien de connexion du téléphone.</p>
             <div class="cmd-panel" id="install-panel-win">
               <div class="cmd-bar">
                 <span class="cmd-prompt" aria-hidden="true">&gt;</span>
@@ -260,6 +260,7 @@ irm https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobi
 if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksum mismatch" }
 .\install.ps1 -Command install -WorkDir "$env:USERPROFILE\projects"</code></pre>
             </div>
+            <p class="cmd-note">Après l’installation, lancez <code>opencode-mobile</code> pour créer le lien de connexion du téléphone.</p>
             </div>
             <div class="docs-note">
               <strong>Première connexion · Linux et macOS</strong>

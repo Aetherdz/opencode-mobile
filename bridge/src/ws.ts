@@ -1,3 +1,4 @@
+import crypto from "node:crypto";
 import type { FastifyInstance, FastifyRequest } from "fastify";
 import type { WebSocket } from "ws";
 import { z } from "zod";
@@ -11,6 +12,7 @@ import { RuntimeState } from "./state.js";
 import { mapMessage, mapPermission, mapQuestion, mapSession, toolActivity } from "./mapping.js";
 import { fromFileUri, toFileUri } from "./fileUri.js";
 import { withReadInstructions } from "./prompt.js";
+import { sleep } from "./util.js";
 import type {
   ChatMessage,
   ClientWsEvent,
@@ -36,7 +38,7 @@ const ClientEventSchema = z.discriminatedUnion("type", [
   z.object({
     type: z.literal("message.send"),
     sessionId: z.string().regex(/^[A-Za-z0-9_-]+$/),
-    text: z.string().min(1).max(100_000),
+    text: z.string().max(100_000).optional(),
     fileIds: z.array(z.string().max(100)).max(50).optional(),
     model: z.object({
       providerID: z.string().min(1).max(200),
@@ -77,6 +79,7 @@ export class WsHub {
   private readonly sessionCache = new Map<string, RawSession>();
   private readonly toolNames = new Map<string, string>();
   private readonly toolInputs = new Map<string, Record<string, unknown>>();
+  private readonly inFlightPrompts = new Set<string>();
   private readonly maxSubscriptionsPerSocket = 5;
   private readonly maxRooms = 200;
   private stopped = false;
@@ -140,6 +143,15 @@ export class WsHub {
     });
   }
 
+  private cacheSession(sessionId: string, session: RawSession): void {
+    this.sessionCache.delete(sessionId);
+    this.sessionCache.set(sessionId, session);
+    if (this.sessionCache.size > 200) {
+      const oldest = this.sessionCache.keys().next().value;
+      if (oldest) this.sessionCache.delete(oldest);
+    }
+  }
+
   private async sessionAllowed(sessionId: string): Promise<boolean> {
     const cached = this.sessionCache.get(sessionId);
     if (cached?.location?.directory) {
@@ -147,7 +159,7 @@ export class WsHub {
     }
     try {
       const session = await this.adapter.getSession(sessionId);
-      this.sessionCache.set(sessionId, session);
+      this.cacheSession(sessionId, session);
       const directory = session.location?.directory;
       return Boolean(directory && (this.access?.directory(session) ?? isInsideWorkdir(this.workdirs, directory)));
     } catch {
@@ -228,8 +240,11 @@ export class WsHub {
           const room = this.rooms.get(event.sessionId) ?? new Set<WebSocket>();
           room.add(socket);
           this.rooms.set(event.sessionId, room);
-          this.send(socket, { type: "resume", sessionId: event.sessionId, replayed: 0 });
-          if (event.lastEventId) this.replay(socket, event.sessionId, event.lastEventId);
+          if (event.lastEventId) {
+            this.replay(socket, event.sessionId, event.lastEventId);
+          } else {
+            this.send(socket, { type: "resume", sessionId: event.sessionId, replayed: 0 });
+          }
           break;
         }
         case "unsubscribe": {
@@ -248,23 +263,38 @@ export class WsHub {
             });
             return;
           }
+          const text = event.text ?? "";
+          const fileIds = event.fileIds ?? [];
+          if (text.trim().length === 0 && fileIds.length === 0) {
+            this.send(socket, {
+              type: "error",
+              code: "empty_message",
+              message: "Message text or a file is required.",
+              ...(event.requestId ? { requestId: event.requestId } : {}),
+            });
+            return;
+          }
           const runtime = this.state.statusOf(event.sessionId);
-          if (runtime.status === "running" && !event.delivery) {
+          if (
+            (runtime.status === "running" || this.inFlightPrompts.has(event.sessionId)) &&
+            !event.delivery
+          ) {
             this.send(socket, {
               type: "error",
               code: "busy",
               message: runtime.busyOrigin
                 ? `Busy (started from ${runtime.busyOrigin})`
                 : "Session is busy",
+              ...(event.requestId ? { requestId: event.requestId } : {}),
             });
             return;
           }
-          const fileIds = event.fileIds ?? [];
           if (fileIds.length > this.maxFiles) {
             this.send(socket, {
               type: "error",
               code: "too_many_files",
               message: `At most ${this.maxFiles} files per message.`,
+              ...(event.requestId ? { requestId: event.requestId } : {}),
             });
             return;
           }
@@ -272,7 +302,12 @@ export class WsHub {
           for (const fileId of fileIds) {
             const record = this.files.get(fileId);
             if (!record || record.sessionId !== event.sessionId) {
-              this.send(socket, { type: "error", code: "file_not_found", message: "Unknown attachment." });
+              this.send(socket, {
+                type: "error",
+                code: "file_not_found",
+                message: "Unknown attachment.",
+                ...(event.requestId ? { requestId: event.requestId } : {}),
+              });
               return;
             }
             records.push(record);
@@ -295,13 +330,18 @@ export class WsHub {
               return;
             }
           }
-          await this.adapter.sendPrompt(event.sessionId, {
-            text: withReadInstructions(event.text, records),
-            ...(fileRefs.length > 0 ? { files: fileRefs } : {}),
-            metadata: { source: "app" },
-            delivery: event.delivery ?? "queue",
-            ...(event.model ? { model: event.model } : {}),
-          });
+          try {
+            this.inFlightPrompts.add(event.sessionId);
+            await this.adapter.sendPrompt(event.sessionId, {
+              text: withReadInstructions(text, records),
+              ...(fileRefs.length > 0 ? { files: fileRefs } : {}),
+              metadata: { source: "app" },
+              delivery: event.delivery ?? "queue",
+              ...(event.model ? { model: event.model } : {}),
+            });
+          } finally {
+            this.inFlightPrompts.delete(event.sessionId);
+          }
           if (event.requestId) {
             this.send(socket, {
               type: "ack",
@@ -321,6 +361,7 @@ export class WsHub {
             return;
           }
           await this.adapter.replyPermission(event.sessionId, event.requestId, event.decision);
+          this.state.resolvePermission(event.sessionId, event.requestId, event.decision);
           this.broadcast(event.sessionId, {
             type: "approval.resolved",
             sessionId: event.sessionId,
@@ -338,12 +379,14 @@ export class WsHub {
             });
             return;
           }
-          await this.adapter.interrupt(event.sessionId);
-          this.broadcast(event.sessionId, {
-            type: "status",
-            sessionId: event.sessionId,
-            status: "idle",
-          });
+          const interrupted = await this.adapter.interrupt(event.sessionId);
+          if (interrupted) {
+            this.broadcast(event.sessionId, {
+              type: "status",
+              sessionId: event.sessionId,
+              status: "idle",
+            });
+          }
           break;
         }
         case "ping":
@@ -375,7 +418,7 @@ export class WsHub {
         code: "upstream_disconnected",
         message: "Lost connection to OpenCode. Reconnecting.",
       });
-      await sleep(backoff);
+      await sleep(backoff, this.abort.signal);
       backoff = Math.min(backoff * 2, 15_000);
       this.reconcileSubscribed();
     }
@@ -400,6 +443,12 @@ export class WsHub {
         this.broadcastAll({ type: "error", code: "session_changed", message: event.type });
       }
       return;
+    }
+
+    if (event.type === "session.deleted") {
+      this.sessionCache.delete(sessionId);
+      this.buffers.delete(sessionId);
+      this.rooms.delete(sessionId);
     }
 
     const status = this.state.statusOf(sessionId);
@@ -463,11 +512,16 @@ export class WsHub {
             (typeof data.requestID === "string" && data.requestID) ||
             "";
           if (requestId) {
+            const rawDecision = typeof data.decision === "string" ? data.decision : "";
+            const decision =
+              rawDecision === "always" || rawDecision === "reject" || rawDecision === "once"
+                ? rawDecision
+                : this.state.permissionDecision(requestId) ?? "once";
             this.broadcast(sessionId, {
               type: "approval.resolved",
               sessionId,
               requestId,
-              decision: "once",
+              decision,
             });
           }
         }
@@ -703,10 +757,11 @@ export class WsHub {
     }
   }
 
-  private broadcastSessionUpdated(sessionId: string): void {    void (async () => {
+  private broadcastSessionUpdated(sessionId: string): void {
+    void (async () => {
       try {
         const raw = await this.adapter.getSession(sessionId);
-        this.sessionCache.set(sessionId, raw);
+        this.cacheSession(sessionId, raw);
         const runtime = this.state.statusOf(sessionId);
         this.broadcast(sessionId, {
           type: "session.updated",
@@ -735,20 +790,23 @@ export class WsHub {
     const eventId = cryptoRandomId();
     const wrapped = { ...event, eventId };
     const room = this.rooms.get(sessionId);
-    if (room) {
-      for (const socket of room) this.send(socket, wrapped);
+    if (room && room.size > 0) {
+      const payload = JSON.stringify(wrapped);
+      for (const socket of room) this.sendRaw(socket, payload);
     }
     this.buffer(sessionId, eventId, wrapped);
   }
 
   private broadcastAll(event: ServerWsEvent): void {
-    for (const socket of this.clients) this.send(socket, event);
+    const payload = JSON.stringify(event);
+    for (const socket of this.clients) this.sendRaw(socket, payload);
   }
 
   private buffer(sessionId: string, id: string, event: ServerWsEvent & { eventId?: string }): void {
     const list = this.buffers.get(sessionId) ?? [];
     list.push({ id, event });
     while (list.length > MAX_BUFFER_PER_SESSION) list.shift();
+    this.buffers.delete(sessionId);
     this.buffers.set(sessionId, list);
     if (this.buffers.size > MAX_BUFFERED_SESSIONS) {
       const oldest = this.buffers.keys().next().value;
@@ -758,31 +816,41 @@ export class WsHub {
 
   private replay(socket: WebSocket, sessionId: string, lastEventId: string): void {
     const list = this.buffers.get(sessionId);
-    if (!list) return;
+    if (!list) {
+      this.send(socket, { type: "resume", sessionId, replayed: 0 });
+      return;
+    }
     const index = list.findIndex((entry) => entry.id === lastEventId);
-    const events = index >= 0 ? list.slice(index + 1) : list;
+    const events = index >= 0 ? list.slice(index + 1) : [];
     for (const entry of events) this.send(socket, entry.event);
     this.send(socket, { type: "resume", sessionId, replayed: events.length });
   }
 
-  private send(socket: WebSocket, event: ServerWsEvent & { eventId?: string }): void {
+  private sendRaw(socket: WebSocket, payload: string): void {
     if (socket.readyState !== 1) return;
+    if (socket.bufferedAmount && socket.bufferedAmount > 2 * 1024 * 1024) {
+      this.log.warn("WebSocket client buffer exceeded 2MB, dropping slow connection");
+      try {
+        socket.close(1008, "buffer overflow");
+      } catch {
+        // ignore
+      }
+      return;
+    }
     try {
-      socket.send(JSON.stringify(event));
+      socket.send(payload);
     } catch (error) {
       this.log.debug({ err: error }, "failed to send websocket event");
     }
   }
+
+  private send(socket: WebSocket, event: ServerWsEvent & { eventId?: string }): void {
+    this.sendRaw(socket, JSON.stringify(event));
+  }
 }
 
-function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-let counter = 0;
 function cryptoRandomId(): string {
-  counter += 1;
-  return `buf_${Date.now().toString(36)}_${counter.toString(36)}`;
+  return `buf_${Date.now().toString(36)}_${crypto.randomUUID().slice(0, 8)}`;
 }
 
 function metadataSource(metadata: Record<string, unknown> | undefined): Source | undefined {

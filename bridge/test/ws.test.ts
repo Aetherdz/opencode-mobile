@@ -514,4 +514,70 @@ describe("WsHub upstream mapping", () => {
     expect(state.pendingQuestions("ses_2")).toEqual([]);
     expect(state.findQuestion("frm_scoped")).toMatchObject({ sessionId: "ses_2", question: null, resolvedStatus: "answered" });
   });
+
+  it("replays buffer with lastEventId and emits exactly one resume event", async () => {
+    const { socket, internals } = await makeFixture();
+    internals.onUpstream(event("session.execution.started", { sessionID: "ses_1" }));
+    internals.onUpstream(event("session.text.delta", { sessionID: "ses_1", assistantMessageID: "msg_1", delta: "hello" }));
+    internals.onUpstream(event("session.text.ended", { sessionID: "ses_1", assistantMessageID: "msg_1", text: "hello" }));
+
+    const events = sentEvents(socket);
+    expect(events.length).toBeGreaterThanOrEqual(3);
+    const midIndex = 1;
+    const midEventId = (events[midIndex] as { eventId?: string })?.eventId;
+    expect(midEventId).toBeDefined();
+
+    const reconnectSocket = fakeSocket();
+    const hub = hubs[hubs.length - 1] as unknown as {
+      attach(socket: WebSocket): void;
+      onClientMessage(socket: WebSocket, raw: string): Promise<void>;
+    };
+    hub.attach(reconnectSocket as unknown as WebSocket);
+    reconnectSocket.sent.length = 0; // clear hello
+
+    await hub.onClientMessage(
+      reconnectSocket as unknown as WebSocket,
+      JSON.stringify({ type: "subscribe", sessionId: "ses_1", lastEventId: midEventId }),
+    );
+
+    const replayed = sentEvents(reconnectSocket);
+    const resumeEvents = replayed.filter((e) => e.type === "resume");
+    expect(resumeEvents).toHaveLength(1);
+    expect(resumeEvents[0]).toMatchObject({
+      type: "resume",
+      sessionId: "ses_1",
+      replayed: events.length - 1 - midIndex,
+    });
+  });
+
+  it("preserves reject decision on permission.replied", async () => {
+    const { socket, internals } = await makeFixture();
+    internals.onUpstream(
+      event("permission.asked", {
+        sessionID: "ses_1",
+        id: "per_reject",
+        action: "read",
+        resources: ["/tmp/file"],
+      }),
+    );
+    socket.sent.length = 0;
+
+    internals.onUpstream(
+      event("permission.replied", {
+        sessionID: "ses_1",
+        id: "per_reject",
+        decision: "reject",
+      }),
+    );
+
+    const received = sentEvents(socket);
+    expect(received).toContainEqual(
+      expect.objectContaining({
+        type: "approval.resolved",
+        sessionId: "ses_1",
+        requestId: "per_reject",
+        decision: "reject",
+      }),
+    );
+  });
 });

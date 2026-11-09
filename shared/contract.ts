@@ -17,6 +17,18 @@ export type SessionStatus =
   | "waiting_input";
 export type Delivery = "steer" | "queue";
 
+export interface AvailableModel {
+  providerId: string;
+  modelId: string;
+  name: string;
+  providerName: string;
+}
+
+export interface ModelSelection {
+  providerID: string;
+  modelID: string;
+}
+
 export interface SessionSummary {
   id: string;
   title: string;
@@ -108,6 +120,19 @@ export interface DiffFile {
   status: "added" | "deleted" | "modified";
 }
 
+export interface BridgeConfig {
+  version: string;
+  workdirs: string[];
+  maxUploadMB: number;
+  maxUploadTotalMB: number;
+  maxFilesPerMessage: number;
+}
+
+export interface MessagePage {
+  data: ChatMessage[];
+  cursor: { previous?: string | null; next?: string | null };
+}
+
 export type ServerWsEvent =
   | { type: "hello"; serverVersion: string; sessions: string[] }
   | {
@@ -142,7 +167,7 @@ export type ServerWsEvent =
   | { type: "resume"; sessionId: string; replayed: number }
   | { type: "ack"; sessionId: string; requestId: string }
   | { type: "pong"; t: number }
-  | { type: "error"; code: string; message: string };
+  | { type: "error"; code: string; message: string; requestId?: string };
 
 export type ClientWsEvent =
   | { type: "subscribe"; sessionId: string; lastEventId?: string }
@@ -152,6 +177,7 @@ export type ClientWsEvent =
       sessionId: string;
       text: string;
       fileIds?: string[];
+      model?: ModelSelection;
       delivery?: Delivery;
       requestId?: string;
     }

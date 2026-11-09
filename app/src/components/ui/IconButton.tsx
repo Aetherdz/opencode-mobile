@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react';
 import {
-  Pressable,
   StyleSheet,
   type AccessibilityState,
   type Insets,
@@ -9,6 +8,7 @@ import {
 } from 'react-native';
 import { hapticSelection } from '@/lib/haptics';
 import { useTheme } from '@/theme/ThemeProvider';
+import { PressableScale } from './PressableScale';
 
 export type IconButtonSize = 'sm' | 'md' | 'lg';
 export type IconButtonVariant = 'plain' | 'surface' | 'borderless';
@@ -45,7 +45,9 @@ export function IconButton({
   const theme = useTheme();
   const diameter = SIZES[size];
   return (
-    <Pressable
+    <PressableScale
+      scaleTo={0.92}
+      pressedOpacity={variant === 'borderless' ? 0.65 : undefined}
       onPress={() => {
         if (!onPress) return;
         if (haptic) hapticSelection();
@@ -60,6 +62,7 @@ export function IconButton({
         disabled: disabled || Boolean(accessibilityState?.disabled),
       }}
       hitSlop={hitSlop}
+      containerStyle={style}
       style={({ pressed }) => [
         styles.base,
         {
@@ -78,11 +81,10 @@ export function IconButton({
               : 1,
           ...(variant === 'plain' && pressed ? { backgroundColor: theme.colors.surface2 } : null),
         },
-        style,
       ]}
     >
       {icon}
-    </Pressable>
+    </PressableScale>
   );
 }
 

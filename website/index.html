@@ -49,12 +49,12 @@
     <a class="skip-link" href="#main">Skip to content</a>
 
 <header class="site-header">
-      <a class="brand" href="" aria-label="OpenCode Mobile home">
+      <a class="brand" href="./" aria-label="OpenCode Mobile home">
         <img class="brand-mark" src="assets/brand-mark.svg?v=mobile-mark-2" width="40" height="40" alt="" aria-hidden="true" />
         <span class="brand-name">OpenCode Mobile</span>
       </a>
       <nav class="site-nav" id="site-nav" aria-label="Primary">
-        <a href="" aria-current="page">Install</a>
+        <a href="./" aria-current="page">Install</a>
         <a href="features/">Features</a>
         <a href="guide/">Guide</a>
         <a href="security/">Security</a>
@@ -120,6 +120,7 @@
             <div class="phone-screen">
               <div class="phone-head">
                 <span class="phone-kicker">Session 04</span>
+                <span class="phone-model" title="Universal model selector active">Argon 4 · 120fps</span>
                 <span class="phone-status">Working</span>
               </div>
               <div class="bubble bubble-user">
@@ -177,18 +178,18 @@
           <div class="ticker-group">
             <p class="ticker-label">Work with your agent</p>
             <ul class="ticker-list">
-              <li>Session history</li>
-              <li>Live responses</li>
-              <li>Approvals and diffs</li>
-              <li>Files and push alerts</li>
+              <li>120fps fluid mobile UI</li>
+              <li>Universal model selector</li>
+              <li>Live tool activity &amp; diffs</li>
+              <li>Dual WebSocket + SSE streaming</li>
             </ul>
           </div>
           <div class="ticker-group">
             <p class="ticker-label">Private by design</p>
             <ul class="ticker-list">
-              <li>Private bridge</li>
-              <li>No relay server</li>
-              <li>No app telemetry</li>
+              <li>Private loopback bridge</li>
+              <li>Zero telemetry &amp; no relay</li>
+              <li>Timing-safe token auth</li>
               <li>Light and dark themes</li>
             </ul>
           </div>
@@ -251,7 +252,6 @@
               </div>
               <pre id="cmd-bridge"><code>curl -fsSL https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>main/<wbr>install.sh | bash</code></pre>
             </div>
-            <p class="cmd-note">After setup, run <code>opencode-mobile</code> whenever you want to create a phone connection link.</p>
             <div class="cmd-panel" id="install-panel-win">
               <div class="cmd-bar">
                 <span class="cmd-prompt" aria-hidden="true">&gt;</span>
@@ -268,6 +268,7 @@ irm https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobi
 if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksum mismatch" }
 .\install.ps1 -Command install -WorkDir "$env:USERPROFILE\projects"</code></pre>
             </div>
+            <p class="cmd-note">After setup, run <code>opencode-mobile</code> whenever you want to create a phone connection link.</p>
           </div>
           </div>
           <div class="docs-note">

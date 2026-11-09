@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
   Animated,
+  Easing,
   StyleSheet,
   type StyleProp,
   type ViewStyle,
@@ -31,13 +32,15 @@ export function Skeleton({
     const loop = Animated.loop(
       Animated.sequence([
         Animated.timing(opacity, {
-          toValue: 0.9,
-          duration: 700,
+          toValue: 0.88,
+          duration: 650,
+          easing: Easing.inOut(Easing.quad),
           useNativeDriver: true,
         }),
         Animated.timing(opacity, {
-          toValue: 0.45,
-          duration: 700,
+          toValue: 0.42,
+          duration: 650,
+          easing: Easing.inOut(Easing.quad),
           useNativeDriver: true,
         }),
       ]),

@@ -16,12 +16,26 @@ export function constantTimeEqual(a: string, b: string): boolean {
 export class AuthGuard {
   private readonly failures = new Map<string, FailureRecord>();
   private readonly wsTickets = new Map<string, number>();
+  private pruner: NodeJS.Timeout | null = null;
 
   constructor(
     private readonly token: string,
     private readonly banAfter: number,
     private readonly banMs: number,
   ) {}
+
+  startPruner(intervalMs = 60_000): void {
+    if (this.pruner) return;
+    this.pruner = setInterval(() => this.prune(), intervalMs);
+    this.pruner.unref();
+  }
+
+  stopPruner(): void {
+    if (this.pruner) {
+      clearInterval(this.pruner);
+      this.pruner = null;
+    }
+  }
 
   issueWsTicket(ttlMs = 30_000): { ticket: string; expiresIn: number } {
     const ticket = crypto.randomBytes(32).toString("base64url");
@@ -83,7 +97,10 @@ export class AuthGuard {
 
 export function bearerFromRequest(request: FastifyRequest): string | undefined {
   const header = request.headers.authorization;
-  if (header?.startsWith("Bearer ")) return header.slice(7).trim();
+  if (header) {
+    const match = /^Bearer\s+(.+)$/i.exec(header);
+    if (match?.[1]?.trim()) return match[1].trim();
+  }
   const direct = request.headers["x-auth-token"];
   if (typeof direct === "string" && direct.trim()) return direct.trim();
   return undefined;
@@ -117,16 +134,25 @@ export function registerAuth(
   guard: AuthGuard,
   allowedOrigins: string[] = [],
 ): (request: FastifyRequest, reply: FastifyReply) => Promise<void> {
-  setInterval(() => guard.prune(), 60_000).unref();
+  guard.startPruner();
 
   return async (request, reply) => {
     const key = request.ip || "unknown";
     if (request.routeOptions?.url === "/ws") {
       if (!wsOriginAllowed(request.headers.origin, request.headers.host, allowedOrigins)) {
+        guard.fail(key);
         reply.code(403).send({
           code: "origin_not_allowed",
           error: "origin_not_allowed",
           message: "WebSocket origin is not allowed.",
+        });
+        return;
+      }
+      if (guard.isBanned(key)) {
+        reply.code(429).send({
+          code: "banned",
+          error: "banned",
+          message: "Too many failed attempts. Try again later.",
         });
         return;
       }

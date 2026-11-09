@@ -1,4 +1,4 @@
-import { useMemo, type ReactElement, type ReactNode } from 'react';
+import { memo, useMemo, type ReactElement, type ReactNode } from 'react';
 import {
   Linking,
   ScrollView,
@@ -1040,7 +1040,7 @@ function renderBlocks(
   );
 }
 
-export function Markdown({
+export const Markdown = memo(function Markdown({
   text,
   selectable = false,
   compact = false,
@@ -1071,7 +1071,7 @@ export function Markdown({
       {renderBlocks(blocks, context, 'md')}
     </View>
   );
-}
+});
 
 function createStyles(
   colors: ThemeColors,

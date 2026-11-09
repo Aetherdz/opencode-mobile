@@ -10,24 +10,31 @@ pre-1.0 beta; minor versions may change the bridge protocol.
 
 ### Added
 
-- Added support for the **Gemini 4 Argon** (`antigravity-gemini-4-argon`) high-reasoning model with automatic local configuration fallback (`readConfiguredModels`).
+- Added universal model switcher supporting all configured OpenCode models (including **Gemini 4 Argon**, **DeepSeek V3/R1**, **Claude 3.7 Sonnet**, **OpenAI GPT-4o**, and local **Ollama** models) with automatic local configuration discovery (`readConfiguredModels`) and 1-tap switching in the chat composer.
+- Added dual-transport streaming engine featuring a primary high-frequency **WebSocket** connection (`/ws`) with automatic heartbeat ping/pong, sub-50ms message latency, and resilient auto-fallback to Server-Sent Events (SSE).
 - Streamlined Connect screen with 1-tap **QR Auto-Connect** (instant credential scan & pairing without secondary taps) and smart clipboard paste.
 - Added colorful OpenCode-style ANSI terminal TUI banner in `scripts/mobile-share.mjs` with integrated terminal QR code generation.
 - Added explicit runtime-only access grants and 1-tap cross-platform dialog for individual sessions outside `ALLOWED_WORKDIRS`.
+- Added ultra-smooth, lightweight `cubic-bezier(0.22, 1, 0.36, 1)` hover, tab-switching, and scroll-reveal micro-interactions (`prefers-reduced-motion` safe) across the showcase website.
 - Simplified the one-line POSIX installation command to `curl -fsSL https://raw.githubusercontent.com/Aetherdz/opencode-mobile-dist/main/install.sh | bash`.
 
 ### Improved
 
-- Completely redesigned session rows into modern elevated cards with tactile scaling feedback and smooth border curves.
+- Upgraded mobile UI physics to **120fps fluid responsiveness** inspired by Claude mobile, featuring tactile `PressableScale` spring dynamics, refined elevated card surfaces, and streamlined live tool activity diffs.
+- Hardened Fastify bridge security with constant-time token comparison (`crypto.timingSafeEqual`) to prevent timing side-channel attacks.
+- Strengthened attachment upload validation against directory traversal and enforced strict workdir isolation.
 - Re-architected settings screen with grouped color-coded category cards and seamless model preferences.
 - Eliminated redundant text clutter, helper verbosity, and unnecessary security lectures across all app views.
-- Expanded native Arabic and French internationalization with modern, punchy phrasing.
+- Expanded native Arabic and French internationalization with modern, punchy phrasing and RTL alignment.
+- Improved interactive command-copy controls with multiline formatting preservation for Windows PowerShell and subtle mobile haptic feedback.
 
 ### Fixed
 
 - Fixed `ALLOWED_WORKDIRS` friction where sessions in outside directories previously showed an error and redirected to `/new-session`.
 - Fixed Web compatibility for session authorization dialogs by replacing `Alert.alert` with `DialogProvider`.
 - Resolved `qrcode-terminal` resolution in CLI scripts via scoped `createRequire`.
+- Fixed `clearStatus()` reference crash in `scripts/mobile-share.mjs`.
+- Fixed website link checks, brand-mark asset resolution, and Docker compose configuration guards.
 
 ## [1.0.0-beta.9] - 2026-10-24
 

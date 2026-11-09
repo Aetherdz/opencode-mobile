@@ -32,6 +32,8 @@ afterEach(async () => {
 describe("bearerFromRequest", () => {
   it("extracts the token from Authorization and x-auth-token on any route", () => {
     expect(bearerFromRequest(request({ authorization: "Bearer abc123" }))).toBe("abc123");
+    expect(bearerFromRequest(request({ authorization: "bearer abc123" }))).toBe("abc123");
+    expect(bearerFromRequest(request({ authorization: "BEARER abc123" }))).toBe("abc123");
     expect(bearerFromRequest(request({ "x-auth-token": "  xyz789  " }))).toBe("xyz789");
   });
 
@@ -154,5 +156,35 @@ describe("registerAuth", () => {
     });
     expect(badOrigin.statusCode).toBe(403);
     expect(badOrigin.json()).toMatchObject({ error: "origin_not_allowed" });
+  });
+
+  it("blocks banned IP from using WebSocket tickets and counts origin failures towards ban", async () => {
+    const guard = new AuthGuard(TOKEN, 2, 60_000);
+    const app = Fastify();
+    const auth = registerAuth(app, guard, ["https://app.example"]);
+    app.get("/ws", { preValidation: auth }, async () => ({ ok: true }));
+    apps.push(app);
+
+    // Two origin failures from the same client
+    await app.inject({
+      method: "GET",
+      url: "/ws",
+      headers: { origin: "https://evil.example" },
+    });
+    await app.inject({
+      method: "GET",
+      url: "/ws",
+      headers: { origin: "https://evil.example" },
+    });
+
+    // Client is now banned
+    const { ticket } = guard.issueWsTicket();
+    const banned = await app.inject({
+      method: "GET",
+      url: `/ws?ticket=${encodeURIComponent(ticket)}`,
+      headers: { origin: "https://app.example" },
+    });
+    expect(banned.statusCode).toBe(429);
+    expect(banned.json()).toMatchObject({ error: "banned" });
   });
 });

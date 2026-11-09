@@ -1,14 +1,15 @@
 import * as Clipboard from 'expo-clipboard';
 import { useEffect, useMemo, useRef, useState, type ReactElement, type ReactNode } from 'react';
 import {
-  Pressable,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
   View,
   type TextStyle,
-  Platform,
 } from 'react-native';
+import { Icon } from '@/components/ui/Icon';
+import { PressableScale } from '@/components/ui/PressableScale';
 import { hapticSelection } from '@/lib/haptics';
 import { useI18n } from '@/lib/i18n';
 import { useTheme } from '@/theme/ThemeProvider';
@@ -613,41 +614,50 @@ export function CodeBlock({ code, language }: CodeBlockProps): ReactElement {
           {languageLabel}
         </Text>
         <View style={styles.actions}>
-          <Pressable
+          <PressableScale
             accessibilityLabel={t('diff.wrap')}
             accessibilityRole="button"
             accessibilityState={{ selected: wrap }}
             hitSlop={HIT_SLOP}
+            scaleTo={0.94}
             onPress={() => {
               hapticSelection();
               setWrap((value) => !value);
             }}
-            style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
+            style={[styles.button, wrap && styles.buttonActive]}
           >
             <Text numberOfLines={1} style={[styles.buttonText, wrap && styles.buttonTextActive]}>
               {t('diff.wrap')}
             </Text>
-          </Pressable>
-          <Pressable
+          </PressableScale>
+          <PressableScale
             accessibilityLabel={copyLabel}
             accessibilityRole="button"
             hitSlop={HIT_SLOP}
+            scaleTo={0.94}
             onPress={() => {
               void handleCopy();
             }}
-            style={({ pressed }) => [
+            style={[
               styles.button,
               styles.copyButton,
-              pressed && styles.buttonPressed,
+              copied && styles.buttonActive,
             ]}
           >
-            <Text
-              accessibilityLiveRegion="polite"
-              style={[styles.buttonText, copied && styles.buttonTextActive]}
-            >
-              {copyLabel}
-            </Text>
-          </Pressable>
+            <View style={styles.copyContent}>
+              {copied ? (
+                <Icon name="checkmark" size={13} color="accent" />
+              ) : (
+                <Icon name="copy-outline" size={13} color="text2" />
+              )}
+              <Text
+                accessibilityLiveRegion="polite"
+                style={[styles.buttonText, copied && styles.buttonTextActive]}
+              >
+                {copyLabel}
+              </Text>
+            </View>
+          </PressableScale>
         </View>
       </View>
 
@@ -667,20 +677,21 @@ export function CodeBlock({ code, language }: CodeBlockProps): ReactElement {
 
       {needsCollapse ? (
         <View style={styles.footer}>
-          <Pressable
+          <PressableScale
             accessibilityLabel={expanded ? collapseLabel : showAllLabel}
             accessibilityRole="button"
             accessibilityState={{ expanded }}
+            scaleTo={0.96}
             onPress={() => {
               hapticSelection();
               setExpanded((value) => !value);
             }}
-            style={({ pressed }) => [styles.footerButton, pressed && styles.buttonPressed]}
+            style={styles.footerButton}
           >
             <Text style={styles.footerText}>
               {expanded ? collapseLabel : showAllLabel}
             </Text>
-          </Pressable>
+          </PressableScale>
         </View>
       ) : null}
     </View>
@@ -731,7 +742,15 @@ function createStyles(colors: ThemeColors, isRTL: boolean) {
     copyButton: {
       minWidth: 56,
     },
+    copyContent: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 5,
+    },
     buttonPressed: {
+      backgroundColor: colors.surface3,
+    },
+    buttonActive: {
       backgroundColor: colors.surface3,
     },
     buttonText: {
