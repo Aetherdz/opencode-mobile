@@ -12,8 +12,8 @@ The project uses a split distribution model:
 ## Versioning
 
 The current public beta version is recorded in the root and app package
-metadata. At this revision it is `1.0.0-beta.9`; the release tag is `v` plus
-that version (`v1.0.0-beta.9`).
+metadata. At this revision it is `1.0.0-beta.10`; the release tag is `v` plus
+that version (`v1.0.0-beta.10`).
 
 When you bump the version, update all of these together:
 
@@ -123,8 +123,8 @@ sha256sum -c opencode-mobile-*.apk.sha256
 Rename the verified file to the stable asset name and attach it to the release:
 
 ```bash
-cp opencode-mobile-1.0.0-beta.9-<sha>.apk opencode-mobile-1.0.0-beta.9.apk
-gh release upload v1.0.0-beta.9 opencode-mobile-1.0.0-beta.9.apk
+cp opencode-mobile-1.0.0-beta.10-<sha>.apk opencode-mobile-1.0.0-beta.10.apk
+gh release upload v1.0.0-beta.10 opencode-mobile-1.0.0-beta.10.apk
 ```
 
 Then regenerate `SHA256SUMS` over every release asset and upload it with

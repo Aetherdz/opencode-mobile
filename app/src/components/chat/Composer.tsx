@@ -442,7 +442,39 @@ export function Composer({
 
         </View>
 
-        <View style={[styles.actionsRow, { direction: 'ltr' }]}>
+        <View style={styles.actionsRow}>
+          <IconButton
+            label={t('chat.attach')}
+            onPress={() => setMenuOpen(true)}
+            disabled={attachments.length >= maxFiles}
+            size="sm"
+            variant="borderless"
+            hitSlop={layout.hitSlop}
+            icon={<Icon name="add" size={layout.icon} color="textStrong" />}
+            style={styles.plus}
+          />
+
+          <Pressable
+            onPress={onModelSelect}
+            accessibilityRole="button"
+            accessibilityLabel={`${t('model.selector')}${modelName ? `: ${modelName}` : ''}`}
+            hitSlop={{ top: 6, bottom: 6, left: 4, right: 4 }}
+            style={({ pressed }) => [
+              styles.modelSelector,
+              {
+                borderColor: theme.colors.border,
+                backgroundColor: pressed ? theme.colors.raised : 'transparent',
+              },
+            ]}
+          >
+            <AppText variant="caption" color="secondary" numberOfLines={1} style={styles.modelName}>
+              {modelName || t('model.selector')}
+            </AppText>
+            <Icon name="chevron-down" size={14} color="secondary" />
+          </Pressable>
+
+          <View style={styles.actionsSpacer} />
+
           {sending ? (
             <View
               style={[
@@ -458,6 +490,7 @@ export function Composer({
           ) : status === 'running' && !text.trim() && !hasFiles ? (
             <Pressable
               onPress={onStop}
+              hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
               accessibilityRole="button"
               accessibilityLabel={t('chat.stop')}
               style={({ pressed }) => [
@@ -476,6 +509,7 @@ export function Composer({
             <Pressable
               onPress={() => void submit()}
               disabled={!canSend}
+              hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
               accessibilityRole="button"
               accessibilityLabel={
                 busy
@@ -502,39 +536,7 @@ export function Composer({
               />
             </Pressable>
           )}
-
-        <View style={styles.actionsSpacer} />
-
-        <Pressable
-          onPress={onModelSelect}
-          accessibilityRole="button"
-          accessibilityLabel={`${t('model.selector')}${modelName ? `: ${modelName}` : ''}`}
-          style={({ pressed }) => [
-            styles.modelSelector,
-            {
-              alignSelf: 'flex-start',
-              borderColor: theme.colors.border,
-              backgroundColor: pressed ? theme.colors.raised : 'transparent',
-            },
-          ]}
-        >
-          <AppText variant="caption" color="secondary" numberOfLines={1} style={styles.modelName}>
-            {modelName || t('model.selector')}
-          </AppText>
-          <Icon name="chevron-down" size={14} color="secondary" />
-        </Pressable>
-
-        <IconButton
-          label={t('chat.attach')}
-          onPress={() => setMenuOpen(true)}
-          disabled={attachments.length >= maxFiles}
-          size="sm"
-          variant="borderless"
-          hitSlop={layout.hitSlop}
-          icon={<Icon name="add" size={layout.icon} color="textStrong" />}
-          style={styles.plus}
-        />
-      </View>
+        </View>
       </View>
 
       <Sheet
@@ -647,9 +649,9 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   send: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 38,
+    height: 38,
+    borderRadius: 19,
     alignItems: 'center',
     justifyContent: 'center',
   },

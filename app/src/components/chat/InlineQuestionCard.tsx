@@ -471,7 +471,7 @@ export function InlineQuestionCard({
         <View style={{ gap: 6 }}>
           <Button
             design="new"
-            size="sm"
+            size="md"
             label={index < total - 1 ? t('questions.next') : t('questions.submit')}
             disabled={!complete}
             loading={submitting}
@@ -482,7 +482,7 @@ export function InlineQuestionCard({
             {index > 0 ? (
               <Button
                 design="new"
-                size="sm"
+                size="md"
                 variant="ghost"
                 label={t('questions.back')}
                 disabled={submitting}
@@ -496,7 +496,7 @@ export function InlineQuestionCard({
             )}
             <Button
               design="new"
-              size="sm"
+              size="md"
               variant="ghost"
               label={t('questions.skip')}
               disabled={submitting}
@@ -535,7 +535,7 @@ const styles = StyleSheet.create({
     maxHeight: 240,
   },
   option: {
-    minHeight: 42,
+    minHeight: 44,
     borderWidth: layout.border,
     borderRadius: layout.radiusS,
     borderCurve: 'continuous',

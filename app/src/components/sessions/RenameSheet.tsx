@@ -45,6 +45,7 @@ export function RenameSheet({
       <View style={{ padding: theme.spacing.xl, gap: theme.spacing.lg }}>
         <AppText variant="title">{t('sessions.renameTitle')}</AppText>
         <TextField
+          design="new"
           ref={inputRef}
           value={title}
           onChangeText={setTitle}
@@ -57,8 +58,11 @@ export function RenameSheet({
           </AppText>
         ) : null}
         <View style={{ flexDirection: 'row', gap: theme.spacing.md, justifyContent: 'flex-end' }}>
-          <Button label={t('common.cancel')} variant="ghost" onPress={onClose} disabled={busy} />
+          <Button design="new" shape="pill" size="sm" label={t('common.cancel')} variant="ghost" onPress={onClose} disabled={busy} />
           <Button
+            design="new"
+            shape="pill"
+            size="sm"
             label={t('common.save')}
             loading={busy}
             onPress={() => {
