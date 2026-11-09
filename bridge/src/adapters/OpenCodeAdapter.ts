@@ -1,3 +1,6 @@
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
 import type { BackendAdapter } from "./BackendAdapter.js";
 import { OpenCodeHttp } from "../opencode/client.js";
 import type {
@@ -13,6 +16,74 @@ import type {
 } from "../types.js";
 
 type Wrapped<T> = { data: T };
+
+export function readConfiguredModels(customFiles?: string[]): AvailableModel[] {
+  const candidates = customFiles ?? [
+    path.join(process.env.XDG_CONFIG_HOME || path.join(os.homedir(), ".config"), "opencode", "opencode.json"),
+    path.join(os.homedir(), ".config", "opencode", "opencode.json"),
+    path.join(process.cwd(), "opencode.json"),
+    path.join(os.homedir(), "opencode.json"),
+  ];
+
+  const models: AvailableModel[] = [];
+  const seen = new Set<string>();
+
+  for (const filePath of candidates) {
+    if (!fs.existsSync(filePath)) continue;
+    try {
+      const content = fs.readFileSync(filePath, "utf8");
+      const parsed = JSON.parse(content) as Record<string, unknown>;
+      if (!parsed || typeof parsed !== "object") continue;
+
+      const providers =
+        parsed.providers && typeof parsed.providers === "object"
+          ? (parsed.providers as Record<string, Record<string, unknown>>)
+          : {};
+
+      for (const [providerId, providerObj] of Object.entries(providers)) {
+        if (!providerObj || typeof providerObj !== "object") continue;
+        const providerName =
+          typeof providerObj.name === "string"
+            ? providerObj.name
+            : providerId === "google"
+              ? "Google"
+              : providerId.charAt(0).toUpperCase() + providerId.slice(1);
+        const providerModels =
+          providerObj.models && typeof providerObj.models === "object"
+            ? (providerObj.models as Record<string, Record<string, unknown>>)
+            : {};
+
+        for (const [modelId, modelObj] of Object.entries(providerModels)) {
+          if (!modelObj || typeof modelObj !== "object") continue;
+          const key = `${providerId}:${modelId}`;
+          if (seen.has(key)) continue;
+          seen.add(key);
+          const name = typeof modelObj.name === "string" ? modelObj.name : modelId;
+          models.push({
+            providerId,
+            modelId,
+            name,
+            providerName,
+          });
+        }
+      }
+    } catch {
+      // Ignore unreadable or malformed config
+    }
+  }
+
+  // Ensure Gemini 4 Argon is always present for task workflows
+  if (!seen.has("google:antigravity-gemini-4-argon")) {
+    models.push({
+      providerId: "google",
+      modelId: "antigravity-gemini-4-argon",
+      name: "Gemini 4 Argon (Antigravity)",
+      providerName: "Google",
+    });
+  }
+
+  return models;
+}
 
 export function mapAvailableModels(rawModels: unknown, rawProviders: unknown): AvailableModel[] {
   const models = Array.isArray(rawModels) ? rawModels : [];
@@ -68,11 +139,27 @@ export class OpenCodeAdapter implements BackendAdapter {
   }
 
   async listModels(): Promise<AvailableModel[]> {
-    const [modelsResponse, providersResponse] = await Promise.all([
-      this.http.request<Wrapped<unknown[]>>("GET", "/api/model"),
-      this.http.request<Wrapped<unknown[]>>("GET", "/api/provider").catch(() => ({ data: [] })),
-    ]);
-    return mapAvailableModels(unwrap(modelsResponse), unwrap(providersResponse));
+    let dynamicModels: AvailableModel[] = [];
+    try {
+      const [modelsResponse, providersResponse] = await Promise.all([
+        this.http.request<Wrapped<unknown[]>>("GET", "/api/model"),
+        this.http.request<Wrapped<unknown[]>>("GET", "/api/provider").catch(() => ({ data: [] })),
+      ]);
+      dynamicModels = mapAvailableModels(unwrap(modelsResponse), unwrap(providersResponse));
+    } catch {
+      // Fallback to configured models when upstream model endpoint is unavailable
+    }
+    const configModels = readConfiguredModels();
+    const seen = new Set(dynamicModels.map((m) => `${m.providerId}:${m.modelId}`));
+    const merged = [...dynamicModels];
+    for (const model of configModels) {
+      const key = `${model.providerId}:${model.modelId}`;
+      if (!seen.has(key)) {
+        seen.add(key);
+        merged.push(model);
+      }
+    }
+    return merged;
   }
 
   async listSessions(options?: { limit?: number; directory?: string }): Promise<RawSession[]> {

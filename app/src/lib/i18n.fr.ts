@@ -223,6 +223,12 @@ export const frStrings: Record<string, string> = {
     "Le répertoire de travail de cette session est en dehors de ALLOWED_WORKDIRS du bridge, son contenu ne peut pas être ouvert. Créez une session depuis un répertoire autorisé (Nouvelle session) ou demandez à l'administrateur du bridge d'ajouter ce répertoire.",
 
   'settings.title': 'Réglages',
+  'settings.modelTitle': 'Modèle par défaut & tâches',
+  'settings.modelHint': 'Modèle préféré pour les nouvelles sessions et tâches.',
+  'settings.argon4Action': 'Utiliser Gemini 4 Argon',
+  'settings.workdirsTitle': 'Espaces de travail autorisés',
+  'settings.workdirsHint': 'Répertoires accessibles par le bridge.',
+  'settings.workdirsScoped': 'Protégé et circonscrit',
   'chat.chooseWorkdir': 'Choisir un répertoire de travail',
   'settings.appearance': 'Apparence',
   'settings.dark': 'Sombre',

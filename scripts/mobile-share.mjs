@@ -155,6 +155,67 @@ function startSpinner(initialMessage) {
   };
 }
 
+const c = {
+  reset: '\x1b[0m',
+  bold: '\x1b[1m',
+  dim: '\x1b[2m',
+  cyan: '\x1b[36m',
+  green: '\x1b[32m',
+  yellow: '\x1b[33m',
+  magenta: '\x1b[35m',
+  blue: '\x1b[34m',
+  white: '\x1b[37m',
+  gray: '\x1b[90m',
+};
+
+async function printTuiBanner(config, tunnel, options, bridge) {
+  const isLocal = options.local;
+  const link = tunnel?.link || `http://127.0.0.1:${config.port}`;
+  const statusAgent = bridge.connected
+    ? `${c.green}● Connected${c.reset}`
+    : `${c.yellow}● Standby / Starting${c.reset}`;
+  const statusBridge = `${c.green}● Online${c.reset} ${c.dim}(Port ${config.port})${c.reset}`;
+  const mode = isLocal
+    ? `${c.cyan}Local Network Only${c.reset}`
+    : `${c.magenta}Secure Cloudflare Tunnel${c.reset}`;
+
+  console.log(`
+${c.cyan}╭──────────────────────────────────────────────────────────────╮${c.reset}
+${c.cyan}│${c.reset}  ${c.bold}${c.white}✦ OpenCode Mobile${c.reset} ${c.dim}· Quick Connect${c.reset}                    ${c.cyan}│${c.reset}
+${c.cyan}├──────────────────────────────────────────────────────────────┤${c.reset}
+${c.cyan}│${c.reset}  ${c.bold}Bridge Service:${c.reset}    ${statusBridge.padEnd(38)}  ${c.cyan}│${c.reset}
+${c.cyan}│${c.reset}  ${c.bold}OpenCode Agent:${c.reset}    ${statusAgent.padEnd(38)}  ${c.cyan}│${c.reset}
+${c.cyan}│${c.reset}  ${c.bold}Connection Mode:${c.reset}   ${mode.padEnd(38)}  ${c.cyan}│${c.reset}
+${c.cyan}│${c.reset}                                                              ${c.cyan}│${c.reset}
+${c.cyan}│${c.reset}  ${c.dim}Connection URL:${c.reset}                                             ${c.cyan}│${c.reset}
+${c.cyan}│${c.reset}  ${c.bold}${c.cyan}${link}${c.reset}
+${c.cyan}│${c.reset}                                                              ${c.cyan}│${c.reset}
+${c.cyan}│${c.reset}  ${c.dim}Pairing Token:${c.reset}                                              ${c.cyan}│${c.reset}
+${c.cyan}│${c.reset}  ${c.yellow}${config.authToken}${c.reset}
+${c.cyan}│${c.reset}                                                              ${c.cyan}│${c.reset}
+${c.cyan}│${c.reset}  ${c.dim}Workdir:${c.reset} ${c.white}${config.allowedWorkdirs}${c.reset}
+${c.cyan}├──────────────────────────────────────────────────────────────┤${c.reset}
+${c.cyan}│${c.reset}  ${c.dim}Enter the URL & Token in the app, or scan the QR below.     ${c.cyan}│${c.reset}
+${c.cyan}│${c.reset}  ${c.dim}Press ${c.bold}Ctrl+C${c.reset}${c.dim} at any time to disconnect and stop.${c.reset}        ${c.cyan}│${c.reset}
+${c.cyan}╰──────────────────────────────────────────────────────────────╯${c.reset}
+`);
+
+  try {
+    const qrcodeModule = await import('qrcode-terminal').catch(() => null);
+    const qrcode = qrcodeModule?.default || qrcodeModule;
+    if (qrcode && typeof qrcode.generate === 'function') {
+      const payload = JSON.stringify({ url: link, token: config.authToken });
+      console.log(`  ${c.cyan}${c.bold}📱 Scan with OpenCode Mobile App Camera:${c.reset}\n`);
+      qrcode.generate(payload, { small: true }, (qr) => {
+        console.log(qr);
+      });
+      console.log('');
+    }
+  } catch {
+    // QR code is optional bonus
+  }
+}
+
 function parseLog(line) {
   try {
     return JSON.parse(line);
@@ -329,13 +390,7 @@ async function main() {
       throw new Error('A connection process stopped before setup finished. Retry the command.');
     }
     spinner.stop();
-    console.log('\n  OpenCode Mobile');
-    console.log('  ─────────────────────────');
-    console.log(`  ✓ Bridge ready${bridge.connected ? ' · OpenCode connected' : ''}`);
-    console.log(`  ${options.local ? 'Local' : 'Temporary link'}  ${tunnel?.link || `http://127.0.0.1:${config.port}`}`);
-    console.log(`  Pairing token  ${config.authToken}`);
-    console.log('  Enter both in the app · Ctrl+C stops the bridge and link');
-    if (tunnel) console.log('  Public temporary link · use only while testing');
+    await printTuiBanner(config, tunnel, options, bridge);
 
     await new Promise((resolve) => {
       bridge.child.once('exit', resolve);
