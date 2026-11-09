@@ -26,6 +26,7 @@ import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { useDialog } from '@/components/ui/DialogProvider';
 import { Icon, type IconName } from '@/components/ui/Icon';
+import { PressableScale } from '@/components/ui/PressableScale';
 import { Rtl } from '@/components/ui/Rtl';
 import { Screen } from '@/components/ui/Screen';
 import { ScreenHeader } from '@/components/ui/ScreenHeader';
@@ -158,17 +159,17 @@ function SettingsRow({
 
   if (!onPress) return content;
   return (
-    <Pressable
+    <PressableScale
       onPress={() => {
         hapticSelection();
         onPress();
       }}
+      scaleTo={0.985}
       accessibilityRole="button"
       accessibilityLabel={label}
-      style={({ pressed }) => ({ backgroundColor: pressed ? theme.colors.surface2 : 'transparent' })}
     >
       {content}
-    </Pressable>
+    </PressableScale>
   );
 }
 

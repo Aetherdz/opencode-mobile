@@ -2,6 +2,7 @@
 // Replace the theme-toggle icon with a crisp sun/moon pair.
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const NEW_SVG = `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <g class="sun">
@@ -11,7 +12,7 @@ const NEW_SVG = `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" str
             <path class="moon" d="M20.6 14.2A8.6 8.6 0 0 1 9.8 3.4a8.6 8.6 0 1 0 10.8 10.8Z" />
           </svg>`;
 
-const root = "/home/zaikabdou1/opencode-mobile-repo/website";
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "website");
 const files = [];
 (function walk(dir) {
   for (const name of fs.readdirSync(dir)) {

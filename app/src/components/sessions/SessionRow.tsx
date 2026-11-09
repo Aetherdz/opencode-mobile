@@ -1,7 +1,8 @@
 import { memo } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import type { SessionSummary } from '@/api/types';
 import { AppText } from '@/components/ui/AppText';
+import { PressableScale } from '@/components/ui/PressableScale';
 import { StatusIndicator } from '@/components/ui/StatusIndicator';
 import { basename, formatRelative, formatSessionTitle } from '@/lib/format';
 import { hapticSelection } from '@/lib/haptics';
@@ -36,7 +37,7 @@ export const SessionRow = memo(function SessionRow({
   const time = formatRelative(session.lastActivity, locale);
 
   return (
-    <Pressable
+    <PressableScale
       onPress={() => {
         hapticSelection();
         onPress(session);
@@ -46,19 +47,17 @@ export const SessionRow = memo(function SessionRow({
         onLongPress(session);
       }}
       delayLongPress={350}
+      scaleTo={0.985}
       accessibilityRole="button"
       accessibilityLabel={`${title}, ${folder}, ${time}${status ? `, ${status.label}` : ''}`}
       accessibilityState={{ selected }}
-      style={({ pressed }) => [
+      style={[
         styles.row,
         {
           borderColor: selected ? theme.colors.primary : theme.colors.border,
           backgroundColor: selected
             ? theme.colors.surface2
-            : pressed
-              ? theme.colors.surface2
-              : theme.colors.surface,
-          transform: [{ scale: pressed ? 0.985 : 1 }],
+            : theme.colors.surface,
         },
       ]}
     >
@@ -78,7 +77,7 @@ export const SessionRow = memo(function SessionRow({
           </AppText>
         </View>
       </View>
-    </Pressable>
+    </PressableScale>
   );
 });
 

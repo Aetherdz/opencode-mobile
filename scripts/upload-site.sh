@@ -3,7 +3,11 @@
 # Usage: ./scripts/upload-site.sh [commit message]
 set -euo pipefail
 
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT_DIR"
+
 MSG="${1:-Auto-upload site updates}"
+BRANCH="$(git rev-parse --abbrev-ref HEAD)"
 
 echo "=== Upload Site Script ==="
 echo "Step 1: Check site links..."
@@ -16,8 +20,8 @@ echo "Step 3: Add and commit..."
 git add website/
 git diff --cached --quiet || git commit -m "$MSG"
 
-echo "Step 4: Push to origin/main..."
-git push origin main
+echo "Step 4: Push to origin/$BRANCH..."
+git push origin "$BRANCH"
 
 echo "Step 5: Verify Pages deploy..."
 echo "Pages deploy is triggered by push (see .github/workflows/pages.yml)"

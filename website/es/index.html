@@ -120,6 +120,7 @@
             <div class="phone-screen">
               <div class="phone-head">
                 <span class="phone-kicker">Sesión 04</span>
+                <span class="phone-model" title="Selector universal de modelos activo">Argon 4 · 120fps</span>
                 <span class="phone-status">Trabajando</span>
               </div>
               <div class="bubble bubble-user">
@@ -178,18 +179,18 @@
           <div class="ticker-group">
             <p class="ticker-label">Trabaja con tu agente</p>
             <ul class="ticker-list">
-              <li>Historial de sesiones</li>
-              <li>Respuestas en directo</li>
-              <li>Aprobaciones y diferencias</li>
-              <li>Archivos y avisos push</li>
+              <li>Interfaz ultrafluida 120fps</li>
+              <li>Selector universal de modelos</li>
+              <li>Tarjetas de actividad y diffs en vivo</li>
+              <li>Doble transporte WebSocket y SSE</li>
             </ul>
           </div>
           <div class="ticker-group">
             <p class="ticker-label">Privacidad desde el inicio</p>
             <ul class="ticker-list">
-              <li>Puente privado</li>
-              <li>Sin servidor intermediario</li>
-              <li>Sin telemetría de la app</li>
+              <li>Puente local privado</li>
+              <li>Cero telemetría y sin servidores relay</li>
+              <li>Autenticación segura por tiempo constante</li>
               <li>Temas claro y oscuro</li>
             </ul>
           </div>
@@ -237,7 +238,6 @@
               <div class="cmd-bar"><span class="cmd-prompt" aria-hidden="true">$</span><button class="copy-button" type="button" data-copy-target="cmd-bridge" aria-label="Copiar el comando de instalación para Linux y macOS"><svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5.6" y="4.6" width="8" height="9.2" rx="1.2" /><path d="M10.4 4.6V3.2A1.2 1.2 0 0 0 9.2 2H2.6A1.2 1.2 0 0 0 1.4 3.2v7.6A1.2 1.2 0 0 0 2.6 12h3" /></svg><span class="copy-label" data-copy-label aria-live="polite">Copiar</span></button></div>
               <pre id="cmd-bridge"><code>curl -fsSL https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobile-dist/<wbr>main/<wbr>install.sh | bash</code></pre>
             </div>
-            <p class="cmd-note">Después de configurar, ejecuta <code>opencode-mobile</code> para crear el enlace de conexión del teléfono.</p>
             <div class="cmd-panel" id="install-panel-win">
               <div class="cmd-bar"><span class="cmd-prompt" aria-hidden="true">&gt;</span><button class="copy-button" type="button" data-copy-target="cmd-bridge-win" aria-label="Copiar el comando de instalación para Windows"><svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5.6" y="4.6" width="8" height="9.2" rx="1.2" /><path d="M10.4 4.6V3.2A1.2 1.2 0 0 0 9.2 2H2.6A1.2 1.2 0 0 0 1.4 3.2v7.6A1.2 1.2 0 0 0 2.6 12h3" /></svg><span class="copy-label" data-copy-label aria-live="polite">Copiar</span></button></div>
               <pre id="cmd-bridge-win"><code>$h = "3a493282e252468ed96012cd0019f5252314bfb5c7b810be34476602616a14aa"
@@ -245,6 +245,7 @@ irm https:/<wbr>/<wbr>raw.githubusercontent.com/<wbr>Aetherdz/<wbr>opencode-mobi
 if ((Get-FileHash .\install.ps1 -Algorithm SHA256).Hash -ne $h) { throw "checksum mismatch" }
 .\install.ps1 -Command install -WorkDir "$env:USERPROFILE\projects"</code></pre>
             </div>
+            <p class="cmd-note">Después de configurar, ejecuta <code>opencode-mobile</code> para crear el enlace de conexión del teléfono.</p>
             </div>
             <div class="docs-note">
               <strong>Primera conexión · Linux y macOS</strong>

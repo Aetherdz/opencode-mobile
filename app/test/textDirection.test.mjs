@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { isolateMixed, textDirection, visibleBidiControls } from '../src/lib/textDirection.ts';
 import { normalizeThemeMode } from '../src/state/settingsSchema.ts';
+import { parsePairingLink } from '../src/lib/pairingLink.ts';
 
 test('message direction follows first strong text, not the UI locale', () => {
   assert.equal(textDirection('Hello from OpenCode', true), 'ltr');
@@ -42,4 +43,21 @@ test('theme hydration accepts every supported mode and safely normalizes invalid
   assert.equal(normalizeThemeMode('system'), 'system');
   assert.equal(normalizeThemeMode('unknown'), 'light');
   assert.equal(normalizeThemeMode(null), 'light');
+});
+
+test('parsePairingLink does not mistake long URLs for tokens', () => {
+  const longUrl = 'https://my-long-tunnel-subdomain-12345678901234567890.example.com';
+  assert.equal(parsePairingLink(longUrl), null);
+
+  const plainWithToken = `URL: https://my-long-tunnel-subdomain-12345678901234567890.example.com Token: 12345678901234567890123456789012`;
+  assert.deepEqual(parsePairingLink(plainWithToken), {
+    url: 'https://my-long-tunnel-subdomain-12345678901234567890.example.com',
+    token: '12345678901234567890123456789012',
+  });
+
+  const deepLink = 'opencode-mobile://connect?url=https%3A%2F%2Fexample.com&token=12345678901234567890123456789012';
+  assert.deepEqual(parsePairingLink(deepLink), {
+    url: 'https://example.com',
+    token: '12345678901234567890123456789012',
+  });
 });

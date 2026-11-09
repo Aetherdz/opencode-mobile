@@ -17,6 +17,11 @@ if [ ! -d "$OUT" ]; then
   mkdir -p "$OUT"
 fi
 
+if ! sudo -n true 2>/dev/null && [ "$(id -u)" -ne 0 ]; then
+  echo "sudo privileges required for bind mounts. Run with sudo or set SKIP_BUILD_BIND_MOUNTS=1." >&2
+  exit 1
+fi
+
 bind_dir() {
   local src="$1" dst="$2"
   mkdir -p "$(dirname "$dst")" "$dst"

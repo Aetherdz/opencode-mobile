@@ -48,8 +48,8 @@ export function Sheet({ visible, onClose, children, footer, title, titleAlign = 
     dismissKeyboard();
     // Keep the content mounted a beat longer so the blur settles before the
     // inputs unmount; the Modal itself lingers for the exit animation.
-    const hide = setTimeout(() => setContentVisible(false), reduced ? 0 : 80);
-    const timeout = setTimeout(() => setMounted(false), reduced ? 120 : 210);
+    const hide = setTimeout(() => setContentVisible(false), reduced ? 0 : 60);
+    const timeout = setTimeout(() => setMounted(false), reduced ? 90 : 170);
     return () => {
       clearTimeout(hide);
       clearTimeout(timeout);
@@ -69,8 +69,8 @@ export function Sheet({ visible, onClose, children, footer, title, titleAlign = 
           <>
             <Animated.View
               style={StyleSheet.absoluteFill}
-              entering={FadeIn.duration(reduced ? 100 : 150)}
-              exiting={FadeOut.duration(reduced ? 80 : 120)}
+              entering={FadeIn.duration(reduced ? 80 : 120)}
+              exiting={FadeOut.duration(reduced ? 60 : 100)}
             >
               <Pressable
                 style={[StyleSheet.absoluteFill, { backgroundColor: theme.colors.scrim }]}
@@ -83,13 +83,13 @@ export function Sheet({ visible, onClose, children, footer, title, titleAlign = 
               <Animated.View
                 entering={
                   reduced
-                    ? FadeIn.duration(120)
-                    : SlideInDown.duration(240).easing(Easing.out(Easing.cubic))
+                    ? FadeIn.duration(100)
+                    : SlideInDown.springify().damping(28).mass(0.8).stiffness(380)
                 }
                 exiting={
                   reduced
-                    ? FadeOut.duration(100)
-                    : SlideOutDown.duration(190).easing(Easing.in(Easing.cubic))
+                    ? FadeOut.duration(80)
+                    : SlideOutDown.duration(160).easing(Easing.in(Easing.quad))
                 }
                 style={[
                   styles.sheet,

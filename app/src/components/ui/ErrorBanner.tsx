@@ -1,5 +1,7 @@
 import { Icon } from './Icon';
 import { StyleSheet, View } from 'react-native';
+import Animated, { FadeIn, useReducedMotion } from 'react-native-reanimated';
+import { motion } from '@/theme/tokens';
 import { useI18n } from '@/lib/i18n';
 import { useTheme } from '@/theme/ThemeProvider';
 import { layout } from '@/theme/layout';
@@ -23,9 +25,11 @@ export function ErrorBanner({
 }) {
   const theme = useTheme();
   const { t } = useI18n();
+  const reduced = useReducedMotion();
   const isNew = design === 'new';
   return (
-    <View
+    <Animated.View
+      entering={reduced ? undefined : FadeIn.duration(motion.duration.fast)}
       style={[
         styles.root,
         {
@@ -77,7 +81,7 @@ export function ErrorBanner({
           ) : null}
         </View>
       ) : null}
-    </View>
+    </Animated.View>
   );
 }
 

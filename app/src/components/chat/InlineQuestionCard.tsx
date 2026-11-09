@@ -1,10 +1,12 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { memo, useEffect, useMemo, useRef, useState } from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import type { QuestionItem, QuestionRequest } from '@/api/types';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { Icon } from '@/components/ui/Icon';
 import { IconButton } from '@/components/ui/IconButton';
+import { PressableScale } from '@/components/ui/PressableScale';
 import { TextField } from '@/components/ui/TextField';
 import { hapticError, hapticSelection, hapticSuccess, hapticWarning } from '@/lib/haptics';
 import { useI18n } from '@/lib/i18n';
@@ -45,7 +47,7 @@ function isComplete(question: QuestionItem, answer: AnswerState | undefined): bo
   return true;
 }
 
-export function InlineQuestionCard({
+export const InlineQuestionCard = memo(function InlineQuestionCard({
   request,
   collapsed,
   onToggle,
@@ -216,21 +218,21 @@ export function InlineQuestionCard({
 
   if (collapsed) {
     return (
-      <Pressable
+      <PressableScale
         onPress={() => {
           hapticSelection();
           onToggle();
         }}
+        scaleTo={0.985}
         accessibilityRole="button"
         accessibilityLabel={t('questions.title')}
         accessibilityState={{ expanded: false }}
-        style={({ pressed }) => [
+        style={[
           styles.card,
           styles.collapsed,
           {
             backgroundColor: theme.colors.surface,
             borderColor: theme.colors.strong,
-            opacity: pressed ? 0.7 : 1,
           },
         ]}
       >
@@ -246,7 +248,7 @@ export function InlineQuestionCard({
           </AppText>
         </View>
         <Icon name="chevron-down" size={layout.icon} color="secondary" />
-      </Pressable>
+      </PressableScale>
     );
   }
 
@@ -316,24 +318,23 @@ export function InlineQuestionCard({
           {current.options.map((option) => {
             const selected = currentAnswer?.selected.includes(option.value) ?? false;
             return (
-              <Pressable
+              <PressableScale
                 key={option.value}
                 onPress={() => selectOption(option.value)}
                 disabled={submitting}
+                scaleTo={0.985}
                 accessibilityRole={current.multiple ? 'checkbox' : 'radio'}
                 accessibilityState={{ checked: selected, disabled: submitting }}
                 accessibilityLabel={`${option.label}${
                   option.description ? `. ${option.description}` : ''
                 }`}
-                style={({ pressed }) => [
+                style={[
                   styles.option,
                   {
                     borderColor: selected ? theme.colors.strong : theme.colors.border,
                     backgroundColor: selected
                       ? theme.colors.raised
-                      : pressed
-                        ? theme.colors.raised
-                        : 'transparent',
+                      : 'transparent',
                   },
                 ]}
               >
@@ -366,26 +367,25 @@ export function InlineQuestionCard({
                     </AppText>
                   ) : null}
                 </View>
-              </Pressable>
+              </PressableScale>
             );
           })}
 
           {customVisible && current.options.length > 0 ? (
-            <Pressable
+            <PressableScale
               onPress={toggleCustom}
               disabled={submitting}
+              scaleTo={0.985}
               accessibilityRole={current.multiple ? 'checkbox' : 'radio'}
               accessibilityState={{ checked: customActive, disabled: submitting }}
               accessibilityLabel={t('questions.custom')}
-              style={({ pressed }) => [
+              style={[
                 styles.option,
                 {
                   borderColor: customActive ? theme.colors.strong : theme.colors.border,
                   backgroundColor: customActive
                     ? theme.colors.raised
-                    : pressed
-                      ? theme.colors.raised
-                      : 'transparent',
+                    : 'transparent',
                 },
               ]}
             >
@@ -413,7 +413,7 @@ export function InlineQuestionCard({
               <AppText variant="body15" style={styles.flex}>
                 {t('questions.custom')}
               </AppText>
-            </Pressable>
+            </PressableScale>
           ) : null}
 
           {customVisible && customActive ? (
@@ -432,13 +432,15 @@ export function InlineQuestionCard({
       </ScrollView>
 
       {error ? (
-        <AppText variant="helper" color="danger" accessibilityLiveRegion="polite">
-          {error}
-        </AppText>
+        <Animated.View entering={FadeIn.duration(160)} exiting={FadeOut.duration(120)}>
+          <AppText variant="helper" color="danger" accessibilityLiveRegion="polite">
+            {error}
+          </AppText>
+        </Animated.View>
       ) : null}
 
       {confirmSkip ? (
-        <View style={{ gap: 10 }}>
+        <Animated.View entering={FadeIn.duration(160)} exiting={FadeOut.duration(120)} style={{ gap: 10 }}>
           <AppText variant="helper" color="secondary">
             {t('questions.skipBody')}
           </AppText>
@@ -466,7 +468,7 @@ export function InlineQuestionCard({
               />
             </View>
           </View>
-        </View>
+        </Animated.View>
       ) : (
         <View style={{ gap: 6 }}>
           <Button
@@ -510,7 +512,7 @@ export function InlineQuestionCard({
       )}
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   card: {

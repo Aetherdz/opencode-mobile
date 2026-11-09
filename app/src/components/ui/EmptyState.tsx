@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
 import { StyleSheet, View } from 'react-native';
+import Animated, { FadeIn, useReducedMotion } from 'react-native-reanimated';
+import { motion } from '@/theme/tokens';
 import { useTheme } from '@/theme/ThemeProvider';
 import { AppText } from './AppText';
 import { Icon, type IconName } from './Icon';
@@ -13,8 +15,12 @@ export interface EmptyStateProps {
 
 export function EmptyState({ icon = 'chatbubble-ellipses-outline', title, body, action }: EmptyStateProps) {
   const theme = useTheme();
+  const reduced = useReducedMotion();
   return (
-    <View style={[styles.root, { padding: theme.spacing.xl }]}>
+    <Animated.View
+      entering={reduced ? undefined : FadeIn.duration(motion.duration.normal)}
+      style={[styles.root, { padding: theme.spacing.xl }]}
+    >
       <View
         style={[
           styles.icon,
@@ -42,7 +48,7 @@ export function EmptyState({ icon = 'chatbubble-ellipses-outline', title, body, 
         </AppText>
       ) : null}
       {action ? <View style={{ marginTop: theme.spacing.xl }}>{action}</View> : null}
-    </View>
+    </Animated.View>
   );
 }
 

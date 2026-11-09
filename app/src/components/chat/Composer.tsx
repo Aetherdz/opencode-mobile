@@ -13,7 +13,7 @@ import {
 import type { Delivery, SessionStatus } from '@/api/types';
 import { AppText } from '@/components/ui/AppText';
 import { Icon } from '@/components/ui/Icon';
-import { IconButton } from '@/components/ui/IconButton';
+import { PressableScale } from '@/components/ui/PressableScale';
 import { useRtl } from '@/components/ui/Rtl';
 import { Sheet } from '@/components/ui/Sheet';
 import type { PendingAttachment } from '@/lib/useAttachments';
@@ -24,6 +24,7 @@ import { hapticSelection } from '@/lib/haptics';
 import { useI18n } from '@/lib/i18n';
 import { hasArabic, textDirection } from '@/lib/textDirection';
 import { layout } from '@/theme/layout';
+import { radii } from '@/theme/tokens';
 import { useTheme } from '@/theme/ThemeProvider';
 import type { SendResult } from '@/state/chat';
 
@@ -233,24 +234,23 @@ export function Composer({
           {(['queue', 'steer'] as const).map((mode, index) => {
             const selected = delivery === mode;
             return (
-              <Pressable
+              <PressableScale
                 key={mode}
                 onPress={() => {
                   hapticSelection();
                   setDelivery(mode);
                 }}
+                scaleTo={0.96}
                 accessibilityRole="button"
                 accessibilityState={{ selected }}
-                style={({ pressed }) => [
+                style={[
                   styles.segmentItem,
                   {
                     borderStartWidth: index === 0 ? 0 : 1,
                     borderStartColor: theme.colors.border,
                     backgroundColor: selected
                       ? theme.colors.raised
-                      : pressed
-                        ? theme.colors.surface
-                        : 'transparent',
+                      : 'transparent',
                   },
                 ]}
               >
@@ -261,7 +261,7 @@ export function Composer({
                 >
                   {mode === 'queue' ? t('chat.queue') : t('chat.steer')}
                 </AppText>
-              </Pressable>
+              </PressableScale>
             );
           })}
         </View>
@@ -443,35 +443,43 @@ export function Composer({
         </View>
 
         <View style={styles.actionsRow}>
-          <IconButton
-            label={t('chat.attach')}
+          <PressableScale
             onPress={() => setMenuOpen(true)}
             disabled={attachments.length >= maxFiles}
-            size="sm"
-            variant="borderless"
-            hitSlop={layout.hitSlop}
-            icon={<Icon name="add" size={layout.icon} color="textStrong" />}
-            style={styles.plus}
-          />
-
-          <Pressable
-            onPress={onModelSelect}
+            scaleTo={0.92}
             accessibilityRole="button"
-            accessibilityLabel={`${t('model.selector')}${modelName ? `: ${modelName}` : ''}`}
-            hitSlop={{ top: 6, bottom: 6, left: 4, right: 4 }}
-            style={({ pressed }) => [
-              styles.modelSelector,
+            accessibilityLabel={t('chat.attach')}
+            style={[
+              styles.attachBtn,
               {
-                borderColor: theme.colors.border,
-                backgroundColor: pressed ? theme.colors.raised : 'transparent',
+                backgroundColor: theme.colors.raised,
+                opacity: attachments.length >= maxFiles ? 0.4 : 1,
               },
             ]}
           >
+            <Icon name="add" size={18} color="textStrong" />
+          </PressableScale>
+
+          <PressableScale
+            onPress={onModelSelect}
+            scaleTo={0.96}
+            accessibilityRole="button"
+            accessibilityLabel={`${t('model.selector')}${modelName ? `: ${modelName}` : ''}`}
+            hitSlop={{ top: 6, bottom: 6, left: 4, right: 4 }}
+            style={[
+              styles.modelSelector,
+              {
+                borderColor: theme.colors.border,
+                backgroundColor: theme.colors.surface,
+              },
+            ]}
+          >
+            <View style={[styles.modelDot, { backgroundColor: theme.colors.secondary }]} />
             <AppText variant="caption" color="secondary" numberOfLines={1} style={styles.modelName}>
               {modelName || t('model.selector')}
             </AppText>
-            <Icon name="chevron-down" size={14} color="secondary" />
-          </Pressable>
+            <Icon name="chevron-down" size={13} color="secondary" />
+          </PressableScale>
 
           <View style={styles.actionsSpacer} />
 
@@ -488,28 +496,27 @@ export function Composer({
               <ActivityIndicator size="small" color={theme.colors.onPrimary} />
             </View>
           ) : status === 'running' && !text.trim() && !hasFiles ? (
-            <Pressable
+            <PressableScale
               onPress={onStop}
-              hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+              scaleTo={0.92}
               accessibilityRole="button"
               accessibilityLabel={t('chat.stop')}
-              style={({ pressed }) => [
+              style={[
                 styles.send,
                 {
                   backgroundColor: theme.colors.raised,
                   borderWidth: 1,
                   borderColor: theme.colors.border,
-                  opacity: pressed ? 0.6 : 1,
                 },
               ]}
             >
-              <Icon name="stop" size={16} color="textStrong" />
-            </Pressable>
+              <Icon name="stop" size={15} color="textStrong" />
+            </PressableScale>
           ) : (
-            <Pressable
+            <PressableScale
               onPress={() => void submit()}
               disabled={!canSend}
-              hitSlop={{ top: 6, bottom: 6, left: 6, right: 6 }}
+              scaleTo={canSend ? 0.92 : 1}
               accessibilityRole="button"
               accessibilityLabel={
                 busy
@@ -519,13 +526,13 @@ export function Composer({
                   : t('chat.send')
               }
               accessibilityState={{ disabled: !canSend }}
-              style={({ pressed }) => [
+              style={[
                 styles.send,
                 {
                   backgroundColor: activeSend ? theme.colors.primary : 'transparent',
                   borderWidth: activeSend ? 0 : 1,
                   borderColor: theme.colors.border,
-                  opacity: activeSend ? (pressed ? 0.7 : 1) : 1,
+                  opacity: canSend || sending ? 1 : 0.45,
                 },
               ]}
             >
@@ -534,7 +541,7 @@ export function Composer({
                 size={18}
                 color={activeSend ? 'onPrimary' : 'textDisabled'}
               />
-            </Pressable>
+            </PressableScale>
           )}
         </View>
       </View>
@@ -613,11 +620,23 @@ const styles = StyleSheet.create({
   card: {
     borderWidth: 1,
     borderCurve: 'continuous',
-    borderRadius: layout.radiusL,
+    borderRadius: radii.composer,
     paddingTop: 12,
-    paddingHorizontal: 12,
+    paddingHorizontal: 14,
     paddingBottom: 10,
     gap: 10,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.08,
+        shadowRadius: 10,
+      },
+      android: {
+        elevation: 3,
+      },
+      default: {},
+    }),
   },
   inputRow: {
     flexDirection: 'row',
@@ -631,16 +650,28 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   actionsSpacer: { flex: 1 },
+  attachBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   modelSelector: {
     minHeight: 32,
-    maxWidth: 188,
+    maxWidth: 196,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: 6,
     alignSelf: 'flex-start',
-    paddingHorizontal: 10,
+    paddingHorizontal: 11,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 999,
+  },
+  modelDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
   },
   modelName: {
     maxWidth: 190,
@@ -662,7 +693,7 @@ const styles = StyleSheet.create({
     width: 236,
     height: 64,
     borderWidth: 1,
-    borderRadius: layout.radiusS,
+    borderRadius: 14,
     borderCurve: 'continuous',
     flexDirection: 'row',
     alignItems: 'center',

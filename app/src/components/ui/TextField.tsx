@@ -1,4 +1,4 @@
-import { forwardRef, useState, type ComponentRef, type ReactNode } from 'react';
+import { forwardRef, useEffect, useState, type ComponentRef, type ReactNode } from 'react';
 import {
   StyleSheet,
   TextInput,
@@ -7,6 +7,14 @@ import {
   type TextInputProps,
   type ViewStyle,
 } from 'react-native';
+import Animated, {
+  interpolateColor,
+  useAnimatedStyle,
+  useReducedMotion,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
+import { motion } from '@/theme/tokens';
 import { useTheme } from '@/theme/ThemeProvider';
 import { hasArabic } from '@/lib/textDirection';
 import { AppText } from './AppText';
@@ -52,19 +60,29 @@ export const TextField = forwardRef<ComponentRef<typeof TextInput>, TextFieldPro
   const isRtl = theme.isRTL || forcedRtl;
   const isNew = design === 'new';
   const [focused, setFocused] = useState(false);
-  const borderWidth = focused ? (isNew ? 2 : 1.5) : 1;
   const basePadding = isNew ? 14 : theme.spacing.md;
-  const borderColor = error
-    ? isNew
-      ? theme.colors.strong
-      : theme.colors.danger
-    : focused
-      ? isNew
-        ? theme.colors.primary
-        : theme.colors.accent
-      : isNew
-        ? theme.colors.border
-        : theme.colors.controlLine;
+  const focusProgress = useSharedValue(0);
+  const reduced = useReducedMotion();
+
+  useEffect(() => {
+    if (reduced) {
+      focusProgress.value = focused ? 1 : 0;
+      return;
+    }
+    focusProgress.value = withTiming(focused ? 1 : 0, { duration: motion.duration.fast });
+  }, [focused, focusProgress, reduced]);
+
+  const defaultBorder = error
+    ? (isNew ? theme.colors.strong : theme.colors.danger)
+    : (isNew ? theme.colors.border : theme.colors.controlLine);
+  const activeBorder = error
+    ? (isNew ? theme.colors.strong : theme.colors.danger)
+    : (isNew ? theme.colors.primary : theme.colors.accent);
+
+  const animatedFieldStyle = useAnimatedStyle(() => ({
+    borderColor: interpolateColor(focusProgress.value, [0, 1], [defaultBorder, activeBorder]),
+  }));
+
   const useMono = mono ?? ltr;
   const inputFont = useMono
     ? theme.fonts.mono
@@ -83,17 +101,17 @@ export const TextField = forwardRef<ComponentRef<typeof TextInput>, TextFieldPro
           {label}
         </AppText>
       ) : null}
-      <View
+      <Animated.View
         style={[
           styles.field,
+          animatedFieldStyle,
           {
-            borderColor,
-            borderWidth,
+            borderWidth: isNew ? (focused ? 1.5 : 1) : 1.5,
             backgroundColor: isNew ? theme.colors.surface : theme.colors.surface1,
             borderRadius: theme.radii.md,
             borderCurve: 'continuous',
             minHeight: fieldMinHeight,
-            paddingHorizontal: basePadding - (borderWidth - 1),
+            paddingHorizontal: basePadding,
           },
         ]}
       >
@@ -132,7 +150,7 @@ export const TextField = forwardRef<ComponentRef<typeof TextInput>, TextFieldPro
           ]}
         />
         {rightAccessory ? <View style={styles.accessory}>{rightAccessory}</View> : null}
-      </View>
+      </Animated.View>
       {error ? (
         <AppText
           variant={isNew ? 'helper' : 'caption'}

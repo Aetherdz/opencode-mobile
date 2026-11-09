@@ -289,20 +289,38 @@ export function uploadFile(
 
   const form = new FormData();
   if (Platform.OS === 'web') {
+    let activeAbort: (() => void) | null = null;
+    let aborted = false;
+    const fetchController = new AbortController();
     const promise = (async () => {
+      if (aborted) throw new ApiError(0, 'aborted', 'The upload was cancelled.');
       let response: Response;
       try {
-        response = await fetch(asset.uri);
-      } catch {
+        response = await fetch(asset.uri, { signal: fetchController.signal });
+      } catch (fetchError) {
+        if (aborted || (fetchError instanceof Error && fetchError.name === 'AbortError')) {
+          throw new ApiError(0, 'aborted', 'The upload was cancelled.');
+        }
         throw new ApiError(0, 'file_read', 'Could not read the selected file.');
       }
       if (!response.ok) {
         throw new ApiError(0, 'file_read', 'Could not read the selected file.');
       }
-      form.append('files', await response.blob(), asset.name);
-      return sendUploadRequest(sessionId, asset, token, form, onProgress);
-    })().then((request) => request.promise);
-    return { promise, abort: () => undefined };
+      const blob = await response.blob();
+      if (aborted) throw new ApiError(0, 'aborted', 'The upload was cancelled.');
+      form.append('files', blob, asset.name);
+      const req = sendUploadRequest(sessionId, asset, token, form, onProgress);
+      activeAbort = req.abort;
+      return req.promise;
+    })();
+    return {
+      promise,
+      abort: () => {
+        aborted = true;
+        fetchController.abort();
+        activeAbort?.();
+      },
+    };
   } else {
     form.append('files', {
       uri: asset.uri,

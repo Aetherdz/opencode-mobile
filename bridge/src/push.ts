@@ -48,6 +48,7 @@ export class PushService {
     this.saveTimer = setTimeout(() => {
       this.saveTimer = null;
       const temp = `${this.indexPath}.${process.pid}.tmp`;
+      fs.mkdirSync(path.dirname(this.indexPath), { recursive: true, mode: 0o700 });
       fs.writeFileSync(temp, JSON.stringify([...this.targets.values()], null, 2), { mode: 0o600 });
       fs.renameSync(temp, this.indexPath);
     }, 100);

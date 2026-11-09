@@ -1,9 +1,10 @@
 import type { ReactNode } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { hapticSelection } from '@/lib/haptics';
 import { layout } from '@/theme/layout';
 import { useTheme } from '@/theme/ThemeProvider';
 import { AppText } from './AppText';
+import { PressableScale } from './PressableScale';
 
 export interface PillProps {
   label: string;
@@ -56,7 +57,9 @@ export function Pill({
   }
 
   return (
-    <Pressable
+    <PressableScale
+      scaleTo={0.95}
+      pressedOpacity={0.75}
       onPress={() => {
         hapticSelection();
         onPress();
@@ -64,18 +67,17 @@ export function Pill({
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel ?? label}
       accessibilityState={{ selected }}
-      style={({ pressed }) => [
+      style={[
         styles.pill,
         {
           backgroundColor: selected ? theme.colors.primary : 'transparent',
           borderColor: selected ? theme.colors.primary : theme.colors.border,
-          opacity: pressed ? 0.6 : 1,
         },
         style,
       ]}
     >
       {content}
-    </Pressable>
+    </PressableScale>
   );
 }
 

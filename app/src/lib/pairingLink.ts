@@ -72,12 +72,19 @@ export function parsePairingLink(raw: string): PairingDetails | null {
 
   // 3. Plain text with URL and Token (e.g., copied from terminal output)
   const urlMatch = /(https?:\/\/[^\s"'<>]+)/i.exec(trimmed);
-  const tokenMatch = /(?:token[:=\s]+)?([a-zA-Z0-9_-]{32,})/i.exec(trimmed);
-  if (urlMatch && tokenMatch) {
+  if (urlMatch) {
     const u = urlMatch[1].trim();
-    const t = tokenMatch[1].trim();
-    if (isValidEndpoint(u) && isValidToken(t) && u !== t) {
-      return { url: u, token: t };
+    if (isValidEndpoint(u)) {
+      // Look for the token in the text outside the matched URL so the URL itself
+      // cannot be mistaken for a token when its host or path is 32+ characters.
+      const remainder = trimmed.replace(urlMatch[0], '');
+      const tokenMatch = /(?:token[:=\s]+)?([a-zA-Z0-9_-]{32,})/i.exec(remainder);
+      if (tokenMatch) {
+        const t = tokenMatch[1].trim();
+        if (isValidToken(t)) {
+          return { url: u, token: t };
+        }
+      }
     }
   }
 

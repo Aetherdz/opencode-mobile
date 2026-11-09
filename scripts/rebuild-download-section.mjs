@@ -1,11 +1,14 @@
 #!/usr/bin/env node
 // Rebuild the homepage "The build" (#download) section without duplicated CTAs.
 import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-const root = "/home/zaikabdou1/opencode-mobile-repo/website";
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "website");
 
+const VERSION = "1.0.0-beta.10";
 const APK =
-  "https://github.com/Aetherdz/opencode-mobile/releases/download/v1.0.0-beta.3/opencode-mobile-1.0.0-beta.3.apk";
+  `https://github.com/Aetherdz/opencode-mobile/releases/download/v${VERSION}/opencode-mobile-${VERSION}.apk`;
 const REPO = "https://github.com/Aetherdz/opencode-mobile";
 
 const copy = {
@@ -76,7 +79,7 @@ ${chips}
           </div>
           <div class="release-panel">
             <p class="release-kicker">${c.kicker}</p>
-            <p class="release-version">1.0.0-beta.3</p>
+            <p class="release-version">${VERSION}</p>
             <p class="release-meta">${c.meta}</p>
             <a
               class="button button-primary release-download"

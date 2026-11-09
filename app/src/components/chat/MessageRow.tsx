@@ -3,6 +3,8 @@ import { Image } from 'expo-image';
 import { memo, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import Animated, {
+  FadeIn,
+  FadeOut,
   useAnimatedStyle,
   useReducedMotion,
   useSharedValue,
@@ -13,6 +15,7 @@ import { absoluteUrl, authHeader } from '@/api/client';
 import type { ChatMessage, MessageFile } from '@/api/types';
 import { AppText } from '@/components/ui/AppText';
 import { Icon } from '@/components/ui/Icon';
+import { PressableScale } from '@/components/ui/PressableScale';
 import { FileChip } from '@/components/attachments/FileChip';
 import { Markdown } from '@/components/markdown/Markdown';
 import { ActivityChip } from '@/components/chat/ActivityChip';
@@ -22,6 +25,7 @@ import { formatClock } from '@/lib/format';
 import { hapticSelection } from '@/lib/haptics';
 import { textDirection, visibleBidiControls } from '@/lib/textDirection';
 import { useI18n } from '@/lib/i18n';
+import { motion } from '@/theme/tokens';
 import { useTheme } from '@/theme/ThemeProvider';
 
 export interface MessageRowProps {
@@ -55,7 +59,7 @@ function StreamingCaret() {
   const reduced = useReducedMotion();
   const opacity = useSharedValue(1);
   useEffect(() => {
-    if (!reduced) opacity.value = withRepeat(withTiming(0.2, { duration: 900 }), -1, true);
+    if (!reduced) opacity.value = withRepeat(withTiming(0.15, { duration: 650 }), -1, true);
     else opacity.value = 1;
   }, [opacity, reduced]);
   const style = useAnimatedStyle(() => ({ opacity: opacity.value }));
@@ -79,45 +83,68 @@ function ReasoningBlock({ text }: { text: string }) {
   const theme = useTheme();
   const { t } = useI18n();
   const [open, setOpen] = useState(false);
+  const reduced = useReducedMotion();
+  const rotation = useSharedValue(0);
+
+  useEffect(() => {
+    rotation.value = reduced
+      ? (open ? 1 : 0)
+      : withTiming(open ? 1 : 0, { duration: motion.duration.normal });
+  }, [open, reduced, rotation]);
+
+  const chevronStyle = useAnimatedStyle(() => ({
+    transform: [{ rotate: `${rotation.value * 180}deg` }],
+  }));
+
   if (!text.trim()) return null;
   return (
     <View style={{ marginBottom: 10 }}>
-      <Pressable
+      <PressableScale
         onPress={() => {
           hapticSelection();
           setOpen((value) => !value);
         }}
+        scaleTo={0.96}
         accessibilityRole="button"
         accessibilityLabel={t('chat.reasoning')}
         accessibilityState={{ expanded: open }}
         hitSlop={8}
-        style={({ pressed }) => [styles.reasoningButton, pressed && { opacity: 0.6 }]}
+        style={styles.reasoningButton}
       >
         <Icon name="bulb-outline" size={16} color="secondary" />
         <AppText variant="helper" color="secondary">
           {t('chat.reasoning')}
         </AppText>
-        <Icon
-          name={open ? 'chevron-up' : 'chevron-down'}
-          size={16}
-          color="secondary"
-        />
-      </Pressable>
+        <Animated.View style={chevronStyle}>
+          <Icon
+            name="chevron-down"
+            size={16}
+            color="secondary"
+          />
+        </Animated.View>
+      </PressableScale>
       {open ? (
-        <AppText
-          variant="helper"
-          color="secondary"
+        <Animated.View
+          entering={reduced ? undefined : FadeIn.duration(160)}
+          exiting={reduced ? undefined : FadeOut.duration(120)}
           style={{
             marginTop: 6,
             backgroundColor: theme.colors.surface,
             borderColor: theme.colors.border,
+            borderLeftWidth: 2,
             borderWidth: 1,
             borderRadius: 12,
+            borderCurve: 'continuous',
             padding: 12,
           }}
         >
-          {text}
-        </AppText>
+          <AppText
+            variant="helper"
+            color="secondary"
+          >
+            {text}
+          </AppText>
+        </Animated.View>
       ) : null}
     </View>
   );

@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState, type ComponentRef } from 'react';
+import { memo, useEffect, useRef, useState, type ComponentRef } from 'react';
 import { TextInput, View } from 'react-native';
+import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { AppText } from '@/components/ui/AppText';
 import { Button } from '@/components/ui/Button';
 import { Sheet } from '@/components/ui/Sheet';
@@ -7,7 +8,7 @@ import { TextField } from '@/components/ui/TextField';
 import { useI18n } from '@/lib/i18n';
 import { useTheme } from '@/theme/ThemeProvider';
 
-export function RenameSheet({
+export const RenameSheet = memo(function RenameSheet({
   visible,
   initial,
   onClose,
@@ -53,9 +54,11 @@ export function RenameSheet({
           placeholder={t('sessions.untitled')}
         />
         {error ? (
-          <AppText variant="caption" color="danger">
-            {error}
-          </AppText>
+          <Animated.View entering={FadeIn.duration(160)} exiting={FadeOut.duration(120)}>
+            <AppText variant="caption" color="danger">
+              {error}
+            </AppText>
+          </Animated.View>
         ) : null}
         <View style={{ flexDirection: 'row', gap: theme.spacing.md, justifyContent: 'flex-end' }}>
           <Button design="new" shape="pill" size="sm" label={t('common.cancel')} variant="ghost" onPress={onClose} disabled={busy} />
@@ -81,4 +84,4 @@ export function RenameSheet({
       </View>
     </Sheet>
   );
-}
+});

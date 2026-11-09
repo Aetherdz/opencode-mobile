@@ -6,11 +6,12 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { hapticSelection } from '@/lib/haptics';
 import { useI18n } from '@/lib/i18n';
 import { useTheme } from '@/theme/ThemeProvider';
 import { AppText } from './AppText';
+import { PressableScale } from './PressableScale';
 import { Sheet } from './Sheet';
 
 export type DialogActionVariant = 'default' | 'cancel' | 'destructive';
@@ -93,8 +94,9 @@ export function DialogProvider({ children }: { children: ReactNode }) {
                     ? 'text2'
                     : 'text';
               return (
-                <Pressable
+                <PressableScale
                   key={`${action.label}-${index}`}
+                  scaleTo={0.98}
                   onPress={() => {
                     hapticSelection();
                     close();
@@ -116,7 +118,7 @@ export function DialogProvider({ children }: { children: ReactNode }) {
                   <AppText variant="label" color={color} align="center">
                     {action.label}
                   </AppText>
-                </Pressable>
+                </PressableScale>
               );
             })}
           </View>

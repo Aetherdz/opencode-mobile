@@ -83,7 +83,7 @@ export async function buildServer(config: Config): Promise<BuiltServer> {
 
   registerRoutes(app, { config, adapter, state, files, sources, push, access });
 
-  app.post("/ws-ticket", async () => guard.issueWsTicket());
+  app.post("/ws-ticket", { preHandler: authenticate }, async () => guard.issueWsTicket());
 
   app.get("/ws", { websocket: true, preValidation: authenticate }, (socket) => {
     hub.attach(socket);

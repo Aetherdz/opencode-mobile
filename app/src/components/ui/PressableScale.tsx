@@ -4,12 +4,13 @@ import Animated, {
   useAnimatedStyle,
   useReducedMotion,
   useSharedValue,
+  withSpring,
   withTiming,
 } from 'react-native-reanimated';
+import { motion } from '@/theme/tokens';
 
-export interface PressableScaleProps extends Omit<PressableProps, 'children' | 'style'> {
+export interface PressableScaleProps extends Omit<PressableProps, 'children'> {
   children: ReactNode;
-  style?: StyleProp<ViewStyle>;
   containerStyle?: StyleProp<ViewStyle>;
   scaleTo?: number;
   duration?: number;
@@ -20,8 +21,8 @@ export function PressableScale({
   children,
   style,
   containerStyle,
-  scaleTo = 0.97,
-  duration = 160,
+  scaleTo = 0.965,
+  duration,
   pressedOpacity,
   onPressIn,
   onPressOut,
@@ -44,13 +45,25 @@ export function PressableScale({
         disabled={disabled}
         style={style}
         onPressIn={(event) => {
-          if (!reduced) scale.value = withTiming(scaleTo, { duration });
-          if (pressedOpacity != null) opacity.value = withTiming(pressedOpacity, { duration });
+          if (!reduced) {
+            scale.value = duration
+              ? withTiming(scaleTo, { duration })
+              : withSpring(scaleTo, motion.spring.press);
+          }
+          if (pressedOpacity != null) {
+            opacity.value = withTiming(pressedOpacity, { duration: motion.duration.instant });
+          }
           onPressIn?.(event);
         }}
         onPressOut={(event) => {
-          if (!reduced) scale.value = withTiming(1, { duration });
-          if (pressedOpacity != null) opacity.value = withTiming(1, { duration });
+          if (!reduced) {
+            scale.value = duration
+              ? withTiming(1, { duration })
+              : withSpring(1, motion.spring.press);
+          }
+          if (pressedOpacity != null) {
+            opacity.value = withTiming(1, { duration: motion.duration.fast });
+          }
           onPressOut?.(event);
         }}
       >

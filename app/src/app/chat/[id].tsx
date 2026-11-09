@@ -11,6 +11,7 @@ import {
   type NativeScrollEvent,
   type NativeSyntheticEvent,
 } from 'react-native';
+import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated';
 import {
   ApiError,
   authorizeSessionAccess,
@@ -36,6 +37,7 @@ import { useDialog } from '@/components/ui/DialogProvider';
 import { ErrorBanner } from '@/components/ui/ErrorBanner';
 import { Icon } from '@/components/ui/Icon';
 import { KeyboardAvoider } from '@/components/ui/KeyboardAvoider';
+import { PressableScale } from '@/components/ui/PressableScale';
 import { Rtl } from '@/components/ui/Rtl';
 import { Screen } from '@/components/ui/Screen';
 import { Skeleton } from '@/components/ui/Skeleton';
@@ -770,29 +772,34 @@ export default function ChatScreen() {
           )}
 
           {showLatest && messages.length > 0 ? (
-            <Pressable
-              onPress={() => {
-                hapticSelection();
-                scrollToLatest();
-              }}
-              accessibilityRole="button"
-              accessibilityLabel={t('chat.latest')}
-              hitSlop={4}
-              style={({ pressed }) => [
-                styles.latest,
-                {
-                  backgroundColor: theme.colors.surface,
-                  borderColor: theme.colors.border,
-                  bottom: 12,
-                  opacity: pressed ? 0.65 : 1,
-                },
-              ]}
+            <Animated.View
+              entering={FadeInDown.duration(180)}
+              exiting={FadeOutDown.duration(140)}
+              style={styles.latestContainer}
             >
-              <Icon name="arrow-down" size={16} color="textStrong" />
-              <AppText variant="helper" weight="500" color="textStrong">
-                {t('chat.latest')}
-              </AppText>
-            </Pressable>
+              <PressableScale
+                onPress={() => {
+                  hapticSelection();
+                  scrollToLatest();
+                }}
+                scaleTo={0.94}
+                accessibilityRole="button"
+                accessibilityLabel={t('chat.latest')}
+                hitSlop={4}
+                style={[
+                  styles.latest,
+                  {
+                    backgroundColor: theme.colors.surface,
+                    borderColor: theme.colors.border,
+                  },
+                ]}
+              >
+                <Icon name="arrow-down" size={15} color="textStrong" />
+                <AppText variant="helper" weight="600" color="textStrong">
+                  {t('chat.latest')}
+                </AppText>
+              </PressableScale>
+            </Animated.View>
           ) : null}
         </View>
 
@@ -908,16 +915,32 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 4,
   },
-  latest: {
+  latestContainer: {
     position: 'absolute',
-    end: layout.padX,
-    minHeight: 44,
-    paddingHorizontal: 14,
+    bottom: 12,
+    alignSelf: 'center',
+    zIndex: 10,
+  },
+  latest: {
+    minHeight: 38,
+    paddingHorizontal: 16,
     borderRadius: 999,
     borderWidth: 1,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.16,
+        shadowRadius: 10,
+      },
+      android: {
+        elevation: 6,
+      },
+      default: {},
+    }),
   },
   empty: {
     paddingVertical: 32,

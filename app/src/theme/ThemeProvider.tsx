@@ -9,6 +9,7 @@ import {
   iconSizes,
   typography,
   fonts,
+  motion,
   type ColorSchemeName,
   type ThemeColors,
 } from './tokens';
@@ -21,6 +22,7 @@ export interface ThemeValue {
   iconSizes: typeof iconSizes;
   typography: typeof typography;
   fonts: typeof fonts;
+  motion: typeof motion;
   dir: 'rtl' | 'ltr';
   isRTL: boolean;
 }
@@ -43,6 +45,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       iconSizes,
       typography,
       fonts,
+      motion,
       dir,
       isRTL,
     }),

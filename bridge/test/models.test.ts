@@ -83,6 +83,46 @@ describe("available model mapping", () => {
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
+  it("reads configured models from opencode.json with singular provider block", () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "opencode-models-singular-"));
+    const configPath = path.join(tmpDir, "opencode.json");
+    fs.writeFileSync(
+      configPath,
+      JSON.stringify({
+        provider: {
+          lumosel: {
+            name: "Lumosel",
+            models: {
+              "claude-sonnet-5": {
+                name: "Claude Sonnet 5",
+              },
+            },
+          },
+        },
+      }),
+    );
+
+    const models = readConfiguredModels([configPath]);
+    expect(models).toEqual(
+      expect.arrayContaining([
+        {
+          providerId: "lumosel",
+          modelId: "claude-sonnet-5",
+          name: "Claude Sonnet 5",
+          providerName: "Lumosel",
+        },
+        {
+          providerId: "google",
+          modelId: "antigravity-gemini-4-argon",
+          name: "Gemini 4 Argon (Antigravity)",
+          providerName: "Google",
+        },
+      ]),
+    );
+
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
   it("falls back to configured models when upstream /api/model fails", async () => {
     const http = {
       request: async (_method: string, _path: string) => {

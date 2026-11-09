@@ -1,10 +1,11 @@
 import * as Clipboard from 'expo-clipboard';
 import * as React from 'react';
-import { Pressable, ScrollView, StyleSheet, View, Platform} from 'react-native';
+import { ScrollView, StyleSheet, View, Platform } from 'react-native';
 
 import type { DiffFile } from '@/api/types';
 import { AppText } from '@/components/ui/AppText';
 import { Icon, type IconName } from '@/components/ui/Icon';
+import { PressableScale } from '@/components/ui/PressableScale';
 import { hapticSelection } from '@/lib/haptics';
 import { useI18n } from '@/lib/i18n';
 import { useTheme } from '@/theme/ThemeProvider';
@@ -142,6 +143,7 @@ const createStyles = (colors: ThemeColors) =>
       borderColor: colors.line,
       borderWidth: StyleSheet.hairlineWidth,
       borderRadius: radii.lg,
+      borderCurve: 'continuous',
       overflow: 'hidden',
     },
     header: {
@@ -257,7 +259,7 @@ const createStyles = (colors: ThemeColors) =>
 
 type DiffStyles = ReturnType<typeof createStyles>;
 
-function DiffLineRow({
+const DiffLineRow = React.memo(function DiffLineRow({
   line,
   numbered,
   wrap,
@@ -313,9 +315,9 @@ function DiffLineRow({
       </AppText>
     </View>
   );
-}
+});
 
-function DiffBody({
+const DiffBody = React.memo(function DiffBody({
   patch,
   wrap,
   styles,
@@ -376,9 +378,9 @@ function DiffBody({
       ) : null}
     </View>
   );
-}
+});
 
-function FileDiffCard({
+const FileDiffCard = React.memo(function FileDiffCard({
   file,
   expanded,
   onToggle,
@@ -419,15 +421,13 @@ function FileDiffCard({
   return (
     <View style={styles.card}>
       <View style={styles.header}>
-        <Pressable
+        <PressableScale
           onPress={() => {
             hapticSelection();
             onToggle();
           }}
-          style={({ pressed }) => [
-            styles.toggle,
-            pressed && styles.buttonPressed,
-          ]}
+          scaleTo={0.99}
+          style={styles.toggle}
           accessibilityRole="button"
           accessibilityState={{ expanded }}
           accessibilityLabel={`${statusLabel}. ${file.file}. ${t('diff.added')} ${file.additions}. ${t('diff.deleted')} ${file.deletions}.`}
@@ -457,15 +457,16 @@ function FileDiffCard({
               {`-${file.deletions}`}
             </AppText>
           </View>
-        </Pressable>
+        </PressableScale>
 
         <View style={styles.actions}>
-          <Pressable
+          <PressableScale
             onPress={() => {
               hapticSelection();
               setWrap((value) => !value);
             }}
-            style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
+            scaleTo={0.92}
+            style={styles.button}
             accessibilityRole="button"
             accessibilityLabel={t('diff.wrap')}
             accessibilityState={{ selected: wrap }}
@@ -475,12 +476,13 @@ function FileDiffCard({
               size="xs"
               color={wrap ? 'accent' : 'text3'}
             />
-          </Pressable>
-          <Pressable
+          </PressableScale>
+          <PressableScale
             onPress={() => {
               void copyPath();
             }}
-            style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
+            scaleTo={0.92}
+            style={styles.button}
             accessibilityRole="button"
             accessibilityLabel={copied ? t('common.copied') : t('diff.copyPath')}
           >
@@ -489,16 +491,16 @@ function FileDiffCard({
               size="xs"
               color={copied ? 'accent' : 'text3'}
             />
-          </Pressable>
+          </PressableScale>
         </View>
       </View>
 
       {expanded ? <DiffBody patch={file.patch} wrap={wrap} styles={styles} colors={colors} /> : null}
     </View>
   );
-}
+});
 
-export function DiffView(props: {
+export const DiffView = React.memo(function DiffView(props: {
   files: DiffFile[];
   emptyLabel?: string;
 }): React.ReactElement {
@@ -552,4 +554,4 @@ export function DiffView(props: {
       })}
     </View>
   );
-}
+});

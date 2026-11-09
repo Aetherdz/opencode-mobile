@@ -35,12 +35,16 @@ export function readConfiguredModels(customFiles?: string[]): AvailableModel[] {
       const parsed = JSON.parse(content) as Record<string, unknown>;
       if (!parsed || typeof parsed !== "object") continue;
 
-      const providers =
-        parsed.providers && typeof parsed.providers === "object"
+      const rawProviders = {
+        ...(parsed.provider && typeof parsed.provider === "object"
+          ? (parsed.provider as Record<string, Record<string, unknown>>)
+          : {}),
+        ...(parsed.providers && typeof parsed.providers === "object"
           ? (parsed.providers as Record<string, Record<string, unknown>>)
-          : {};
+          : {}),
+      };
 
-      for (const [providerId, providerObj] of Object.entries(providers)) {
+      for (const [providerId, providerObj] of Object.entries(rawProviders)) {
         if (!providerObj || typeof providerObj !== "object") continue;
         const providerName =
           typeof providerObj.name === "string"

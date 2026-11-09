@@ -1,5 +1,13 @@
-import { useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
+import Animated, {
+  FadeIn,
+  FadeOut,
+  useAnimatedStyle,
+  useReducedMotion,
+  useSharedValue,
+  withTiming,
+} from 'react-native-reanimated';
 import type { Activity } from '@/api/types';
 import { AppText } from '@/components/ui/AppText';
 import { Chip } from '@/components/ui/Chip';
@@ -7,12 +15,25 @@ import { Icon } from '@/components/ui/Icon';
 import { StatusIndicator } from '@/components/ui/StatusIndicator';
 import { useI18n } from '@/lib/i18n';
 import { layout } from '@/theme/layout';
+import { motion } from '@/theme/tokens';
 import { useTheme } from '@/theme/ThemeProvider';
 
-export function ActivityChip({ activities }: { activities: Activity[] }) {
+export const ActivityChip = memo(function ActivityChip({ activities }: { activities: Activity[] }) {
   const theme = useTheme();
   const { t } = useI18n();
   const [expanded, setExpanded] = useState(false);
+  const reduced = useReducedMotion();
+  const rotation = useSharedValue(0);
+
+  useEffect(() => {
+    rotation.value = reduced
+      ? (expanded ? 1 : 0)
+      : withTiming(expanded ? 1 : 0, { duration: motion.duration.normal });
+  }, [expanded, reduced, rotation]);
+
+  const chevronStyle = useAnimatedStyle(() => ({
+    transform: [{ rotate: `${rotation.value * 180}deg` }],
+  }));
 
   const running = activities.filter((activity) => activity.status === 'running');
   const failed = activities.find((activity) => activity.status === 'error');
@@ -54,16 +75,20 @@ export function ActivityChip({ activities }: { activities: Activity[] }) {
           )
         }
         trailing={
-          <Icon
-            name={expanded ? 'chevron-up' : 'chevron-down'}
-            size={16}
-            color="secondary"
-          />
+          <Animated.View style={chevronStyle}>
+            <Icon
+              name="chevron-down"
+              size={16}
+              color="secondary"
+            />
+          </Animated.View>
         }
       />
 
       {expanded ? (
-        <View
+        <Animated.View
+          entering={reduced ? undefined : FadeIn.duration(160)}
+          exiting={reduced ? undefined : FadeOut.duration(120)}
           style={[
             styles.steps,
             {
@@ -110,7 +135,10 @@ export function ActivityChip({ activities }: { activities: Activity[] }) {
                 <View
                   style={[
                     styles.detail,
-                    { backgroundColor: theme.colors.raised },
+                    {
+                      backgroundColor: theme.colors.raised,
+                      borderColor: theme.colors.border,
+                    },
                   ]}
                 >
                   <AppText variant="mono13" color="secondary" mono numberOfLines={8}>
@@ -120,11 +148,11 @@ export function ActivityChip({ activities }: { activities: Activity[] }) {
               ) : null}
             </View>
           ))}
-        </View>
+        </Animated.View>
       ) : null}
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   steps: {
@@ -143,6 +171,7 @@ const styles = StyleSheet.create({
   },
   detail: {
     borderRadius: 8,
+    borderWidth: layout.border,
     padding: 8,
   },
 });

@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import {
   Modal,
   Pressable,
@@ -20,6 +20,7 @@ import Animated, {
   runOnJS,
   useAnimatedStyle,
   useSharedValue,
+  withSpring,
   withTiming,
   useReducedMotion,
 } from 'react-native-reanimated';
@@ -27,11 +28,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { SessionSummary } from '@/api/types';
 import { AppText } from '@/components/ui/AppText';
 import { Icon } from '@/components/ui/Icon';
+import { PressableScale } from '@/components/ui/PressableScale';
 import { Rtl } from '@/components/ui/Rtl';
 import { useI18n } from '@/lib/i18n';
 import { dismissKeyboard } from '@/lib/keyboard';
 import { formatSessionTitle } from '@/lib/format';
 import { layout } from '@/theme/layout';
+import { motion } from '@/theme/tokens';
 import { useTheme } from '@/theme/ThemeProvider';
 
 export function AppDrawer({
@@ -67,7 +70,7 @@ export function AppDrawer({
     },
     onDeactivate: (event) => {
       if (event.canceled) {
-        dragX.value = withTiming(0, { duration: reduced ? 0 : 100 });
+        dragX.value = reduced ? withTiming(0, { duration: 80 }) : withSpring(0, motion.spring.snappy);
         return;
       }
       const distance = dragX.value * closeDirection;
@@ -80,7 +83,7 @@ export function AppDrawer({
           runOnJS(onClose)();
         });
       } else {
-        dragX.value = withTiming(0, { duration: reduced ? 80 : 160 });
+        dragX.value = reduced ? withTiming(0, { duration: 80 }) : withSpring(0, motion.spring.snappy);
       }
     },
   });
@@ -88,6 +91,8 @@ export function AppDrawer({
   const dragStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: dragX.value }],
   }));
+
+  const recentSessions = useMemo(() => sessions.slice(0, 12), [sessions]);
 
   useEffect(() => {
     if (visible) {
@@ -102,7 +107,7 @@ export function AppDrawer({
     }
     dismissKeyboard();
     setContentVisible(false);
-    const timeout = setTimeout(() => setMounted(false), reduced ? 120 : 200);
+    const timeout = setTimeout(() => setMounted(false), reduced ? 100 : 170);
     return () => clearTimeout(timeout);
   }, [visible, reduced, dragX]);
 
@@ -127,8 +132,8 @@ export function AppDrawer({
           <>
             <Animated.View
               pointerEvents="box-none"
-              entering={FadeIn.duration(reduced ? 80 : 140)}
-              exiting={FadeOut.duration(reduced ? 80 : 120)}
+              entering={FadeIn.duration(reduced ? 80 : 120)}
+              exiting={FadeOut.duration(reduced ? 80 : 100)}
               style={StyleSheet.absoluteFill}
             >
               <Pressable
@@ -141,121 +146,136 @@ export function AppDrawer({
             <GestureDetector gesture={pan}>
               <Animated.View
                 accessibilityViewIsModal
-              entering={
-                reduced
-                  ? FadeIn.duration(100)
-                  : isRTL
-                    ? SlideInRight.duration(220)
-                    : SlideInLeft.duration(220)
-              }
-              exiting={
-                reduced
-                  ? FadeOut.duration(100)
-                  : isRTL
-                    ? SlideOutRight.duration(180)
-                    : SlideOutLeft.duration(180)
-              }
+                entering={
+                  reduced
+                    ? FadeIn.duration(100)
+                    : isRTL
+                      ? SlideInRight.springify().damping(28).stiffness(380).mass(0.8)
+                      : SlideInLeft.springify().damping(28).stiffness(380).mass(0.8)
+                }
+                exiting={
+                  reduced
+                    ? FadeOut.duration(100)
+                    : isRTL
+                      ? SlideOutRight.duration(150)
+                      : SlideOutLeft.duration(150)
+                }
                 style={[
                   styles.panel,
                   dragStyle,
-                {
-                  // Use the logical leading edge. React Native may swap
-                  // physical left/right styles in RTL, which can otherwise
-                  // anchor this drawer to the left even for Arabic.
-                  start: 0,
-                  backgroundColor: theme.colors.canvas,
-                  borderEndColor: theme.colors.line,
-                  paddingTop: Math.max(insets.top, 16) + 12,
-                  paddingBottom: Math.max(insets.bottom, 16) + 12,
-                },
-              ]}
-            >
-          <View style={styles.brandRow}>
-            <View style={styles.brandIdentity}>
-              <Image source={require('../../../assets/images/brand-mark.png')} style={styles.brandMark} accessibilityLabel="OpenCode Mobile" />
-              <AppText variant="wordmark" style={{ fontFamily: theme.fonts.serif }}>
-                OpenCode
-              </AppText>
-            </View>
-            <Pressable
-              onPress={onClose}
-              accessibilityRole="button"
-              accessibilityLabel={t('common.close')}
-              style={styles.closeButton}
-            >
-              <Icon name="close" size={layout.icon} color="textStrong" />
-            </Pressable>
-          </View>
-
-          <View style={styles.navigation}>
-            <Pressable style={styles.navRow} onPress={() => open('/sessions')}>
-              <AppText variant="title">{t('sessions.title')}</AppText>
-              <Icon name="chatbubbles-outline" size={layout.icon} color="secondary" />
-            </Pressable>
-            <Pressable style={styles.navRow} onPress={() => open('/settings')}>
-              <AppText variant="title">{t('sessions.settings')}</AppText>
-              <Icon name="settings-outline" size={layout.icon} color="secondary" />
-            </Pressable>
-          </View>
-
-          <View style={[styles.separator, { backgroundColor: theme.colors.divider }]} />
-          <View style={styles.recentsHeading}>
-            <AppText variant="section" color="secondary">
-              {t('sessions.recent')}
-            </AppText>
-            <Pressable
-              onPress={() => open('/sessions')}
-              accessibilityRole="button"
-              accessibilityLabel={t('home.search')}
-              hitSlop={8}
-            >
-              <Icon name="search-outline" size={layout.icon} color="secondary" />
-            </Pressable>
-          </View>
-
-          <ScrollView style={styles.recents} showsVerticalScrollIndicator={false}>
-            {sessions.slice(0, 12).map((session) => (
-              <Pressable
-                key={session.id}
-                onPress={() => {
-                  dismissKeyboard();
-                  onClose();
-                  router.push({ pathname: '/chat/[id]', params: { id: session.id } } as never);
-                }}
-                style={({ pressed }) => [
-                  styles.recentRow,
-                  { backgroundColor: pressed ? theme.colors.surface1 : 'transparent' },
+                  {
+                    // Use the logical leading edge. React Native may swap
+                    // physical left/right styles in RTL, which can otherwise
+                    // anchor this drawer to the left even for Arabic.
+                    start: 0,
+                    backgroundColor: theme.colors.canvas,
+                    borderEndColor: theme.colors.line,
+                    paddingTop: Math.max(insets.top, 16) + 12,
+                    paddingBottom: Math.max(insets.bottom, 16) + 12,
+                  },
                 ]}
-                accessibilityRole="button"
-                accessibilityLabel={formatSessionTitle(session.title, session.createdAt, locale)}
               >
-                <Icon name="chatbubble-outline" size={16} color="text3" />
-                <AppText variant="body15" numberOfLines={1} style={styles.recentTitle}>
-                  {formatSessionTitle(session.title, session.createdAt, locale)}
-                </AppText>
-              </Pressable>
-            ))}
-            {sessions.length === 0 ? (
-              <AppText variant="helper" color="secondary" style={styles.empty}>
-                {t('sessions.emptyHint')}
-              </AppText>
-            ) : null}
-          </ScrollView>
+                <View style={styles.brandRow}>
+                  <View style={styles.brandIdentity}>
+                    <Image source={require('../../../assets/images/brand-mark.png')} style={styles.brandMark} accessibilityLabel="OpenCode Mobile" />
+                    <AppText variant="wordmark" style={{ fontFamily: theme.fonts.serif }}>
+                      OpenCode
+                    </AppText>
+                  </View>
+                  <PressableScale
+                    onPress={onClose}
+                    scaleTo={0.92}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('common.close')}
+                    style={styles.closeButton}
+                  >
+                    <Icon name="close" size={layout.icon} color="textStrong" />
+                  </PressableScale>
+                </View>
 
-          <View style={styles.footer}>
-            <Pressable
-              onPress={() => open('/new-session')}
-              style={[styles.newButton, { backgroundColor: theme.colors.primary }]}
-              accessibilityRole="button"
-            >
-              <AppText variant="buttonLabel" color="onPrimary">
-                {t('home.newChat')}  +
-              </AppText>
-            </Pressable>
-            <View style={[styles.avatar, { backgroundColor: theme.colors.surface3 }]}>
-              <AppText variant="label">OC</AppText>
-            </View>
-          </View>
+                <View style={styles.navigation}>
+                  <PressableScale
+                    style={styles.navRow}
+                    scaleTo={0.98}
+                    pressedOpacity={0.7}
+                    onPress={() => open('/sessions')}
+                  >
+                    <AppText variant="title">{t('sessions.title')}</AppText>
+                    <Icon name="chatbubbles-outline" size={layout.icon} color="secondary" />
+                  </PressableScale>
+                  <PressableScale
+                    style={styles.navRow}
+                    scaleTo={0.98}
+                    pressedOpacity={0.7}
+                    onPress={() => open('/settings')}
+                  >
+                    <AppText variant="title">{t('sessions.settings')}</AppText>
+                    <Icon name="settings-outline" size={layout.icon} color="secondary" />
+                  </PressableScale>
+                </View>
+
+                <View style={[styles.separator, { backgroundColor: theme.colors.divider }]} />
+                <View style={styles.recentsHeading}>
+                  <AppText variant="section" color="secondary">
+                    {t('sessions.recent')}
+                  </AppText>
+                  <PressableScale
+                    scaleTo={0.9}
+                    onPress={() => open('/sessions')}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('home.search')}
+                    hitSlop={8}
+                  >
+                    <Icon name="search-outline" size={layout.icon} color="secondary" />
+                  </PressableScale>
+                </View>
+
+                <ScrollView style={styles.recents} showsVerticalScrollIndicator={false}>
+                  {recentSessions.map((session) => (
+                    <PressableScale
+                      key={session.id}
+                      scaleTo={0.98}
+                      onPress={() => {
+                        dismissKeyboard();
+                        onClose();
+                        router.push({ pathname: '/chat/[id]', params: { id: session.id } } as never);
+                      }}
+                      style={({ pressed }) => [
+                        styles.recentRow,
+                        { backgroundColor: pressed ? theme.colors.surface1 : 'transparent' },
+                      ]}
+                      accessibilityRole="button"
+                      accessibilityLabel={formatSessionTitle(session.title, session.createdAt, locale)}
+                    >
+                      <Icon name="chatbubble-outline" size={16} color="text3" />
+                      <AppText variant="body15" numberOfLines={1} style={styles.recentTitle}>
+                        {formatSessionTitle(session.title, session.createdAt, locale)}
+                      </AppText>
+                    </PressableScale>
+                  ))}
+                  {recentSessions.length === 0 ? (
+                    <AppText variant="helper" color="secondary" style={styles.empty}>
+                      {t('sessions.emptyHint')}
+                    </AppText>
+                  ) : null}
+                </ScrollView>
+
+                <View style={styles.footer}>
+                  <PressableScale
+                    onPress={() => open('/new-session')}
+                    scaleTo={0.96}
+                    pressedOpacity={0.85}
+                    style={[styles.newButton, { backgroundColor: theme.colors.primary }]}
+                    accessibilityRole="button"
+                  >
+                    <AppText variant="buttonLabel" color="onPrimary">
+                      {t('home.newChat')}  +
+                    </AppText>
+                  </PressableScale>
+                  <View style={[styles.avatar, { backgroundColor: theme.colors.surface3 }]}>
+                    <AppText variant="label">OC</AppText>
+                  </View>
+                </View>
               </Animated.View>
             </GestureDetector>
           </>

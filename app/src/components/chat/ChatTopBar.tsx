@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useI18n } from '@/lib/i18n';
 import { layout } from '@/theme/layout';
@@ -6,7 +7,7 @@ import { AppText } from '@/components/ui/AppText';
 import { Icon } from '@/components/ui/Icon';
 import { IconButton } from '@/components/ui/IconButton';
 
-export function ChatTopBar({
+export const ChatTopBar = memo(function ChatTopBar({
   title,
   subtitle,
   onBack,
@@ -63,7 +64,7 @@ export function ChatTopBar({
       />
     </View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   root: {

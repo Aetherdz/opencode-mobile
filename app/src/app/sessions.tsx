@@ -2,7 +2,7 @@ import { FlashList } from '@shopify/flash-list';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { router } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Image, Platform, Pressable, RefreshControl, StyleSheet, TextInput, View } from 'react-native';
+import { Image, Platform, RefreshControl, StyleSheet, TextInput, View } from 'react-native';
 import { ApiError, deleteSession, getModels, listSessions, renameSession } from '@/api/client';
 import type { ModelSelection, SessionSummary } from '@/api/types';
 import { ModelSheet } from '@/components/chat/ModelSheet';
@@ -10,7 +10,6 @@ import { RenameSheet } from '@/components/sessions/RenameSheet';
 import { SessionRow } from '@/components/sessions/SessionRow';
 import { AppDrawer } from '@/components/nav/AppDrawer';
 import { AppText } from '@/components/ui/AppText';
-import { KeyboardAvoider } from '@/components/ui/KeyboardAvoider';
 import { Button } from '@/components/ui/Button';
 import { ConnectionBanner } from '@/components/ui/ConnectionBanner';
 import { useDialog } from '@/components/ui/DialogProvider';
@@ -18,6 +17,8 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { ErrorBanner } from '@/components/ui/ErrorBanner';
 import { Icon } from '@/components/ui/Icon';
 import { IconButton } from '@/components/ui/IconButton';
+import { KeyboardAvoider } from '@/components/ui/KeyboardAvoider';
+import { PressableScale } from '@/components/ui/PressableScale';
 import { Rtl } from '@/components/ui/Rtl';
 import { Screen } from '@/components/ui/Screen';
 import { SectionLabel } from '@/components/ui/SectionLabel';
@@ -471,32 +472,36 @@ export default function SessionsScreen() {
               }}
               style={[styles.homeInput, { color: theme.colors.textStrong, textAlign: theme.isRTL ? 'right' : 'left' }]}
             />
-            <Pressable
+            <PressableScale
               onPress={() => {
                 dismissKeyboard();
                 const seed = homePrompt.trim();
                 router.push({ pathname: '/new-session', params: seed ? { seed } : {} } as never);
               }}
+              scaleTo={0.92}
               accessibilityRole="button"
               accessibilityLabel={t('chat.send')}
               hitSlop={layout.hitSlop}
-              style={({ pressed }) => [styles.sendButton, { backgroundColor: homePrompt.trim() ? theme.colors.primary : theme.colors.surface3, opacity: pressed ? 0.78 : 1 }]}
+              style={[
+                styles.sendButton,
+                { backgroundColor: homePrompt.trim() ? theme.colors.primary : theme.colors.surface3 },
+              ]}
             >
               <Icon name="arrow-up" size={20} color={homePrompt.trim() ? 'onPrimary' : 'text3'} />
-            </Pressable>
+            </PressableScale>
           </View>
           <View style={styles.dockActions}>
-            <Pressable
+            <PressableScale
               onPress={openNewSession}
+              scaleTo={0.96}
               accessibilityRole="button"
               accessibilityLabel={t('sessions.new')}
               hitSlop={{ top: 6, bottom: 6, left: 4, right: 4 }}
-              style={({ pressed }) => [
+              style={[
                 styles.newChip,
                 {
                   backgroundColor: theme.colors.surface,
                   borderColor: theme.colors.border,
-                  opacity: pressed ? 0.75 : 1,
                 },
               ]}
             >
@@ -504,26 +509,27 @@ export default function SessionsScreen() {
               <AppText variant="caption" weight="600" color="textStrong">
                 {t('sessions.new')}
               </AppText>
-            </Pressable>
-            <Pressable
+            </PressableScale>
+            <PressableScale
               onPress={() => setModelSheetOpen(true)}
+              scaleTo={0.96}
               accessibilityRole="button"
               accessibilityLabel={`${t('model.selector')}${selectedModelName ? `: ${selectedModelName}` : ''}`}
               hitSlop={{ top: 6, bottom: 6, left: 4, right: 4 }}
-              style={({ pressed }) => [
+              style={[
                 styles.modelChip,
                 {
                   backgroundColor: theme.colors.surface,
                   borderColor: theme.colors.border,
-                  opacity: pressed ? 0.75 : 1,
                 },
               ]}
             >
+              <View style={[styles.modelDot, { backgroundColor: theme.colors.secondary }]} />
               <AppText variant="caption" color="secondary" numberOfLines={1} style={styles.modelChipLabel}>
                 {selectedModelName ?? t('model.selector')}
               </AppText>
-              <Icon name="chevron-down" size={14} color="secondary" />
-            </Pressable>
+              <Icon name="chevron-down" size={13} color="secondary" />
+            </PressableScale>
           </View>
         </View>
       </Rtl>
@@ -622,7 +628,20 @@ const styles = StyleSheet.create({
     minHeight: 56,
     paddingHorizontal: 16,
     borderWidth: StyleSheet.hairlineWidth,
-    borderRadius: 26,
+    borderCurve: 'continuous',
+    borderRadius: 24,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.08,
+        shadowRadius: 10,
+      },
+      android: {
+        elevation: 3,
+      },
+      default: {},
+    }),
   },
   newChip: {
     minHeight: layout.chip,
@@ -638,10 +657,16 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 5,
+    gap: 6,
     paddingHorizontal: 12,
     borderWidth: StyleSheet.hairlineWidth,
     borderRadius: 20,
+  },
+  modelDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    opacity: 0.7,
   },
   modelChipLabel: { flexShrink: 1 },
   homeInput: {

@@ -180,13 +180,16 @@ async function printTuiBanner(config, tunnel, options, bridge) {
     ? `${c.cyan}Local Network Only${c.reset}`
     : `${c.magenta}Secure Cloudflare Tunnel${c.reset}`;
 
+  const stripAnsi = (str) => String(str).replace(/\x1b\[[0-9;]*m/g, '');
+  const padAnsi = (str, len) => str + ' '.repeat(Math.max(0, len - stripAnsi(str).length));
+
   console.log(`
 ${c.cyan}╭──────────────────────────────────────────────────────────────╮${c.reset}
 ${c.cyan}│${c.reset}  ${c.bold}${c.white}✦ OpenCode Mobile${c.reset} ${c.dim}· Quick Connect${c.reset}                    ${c.cyan}│${c.reset}
 ${c.cyan}├──────────────────────────────────────────────────────────────┤${c.reset}
-${c.cyan}│${c.reset}  ${c.bold}Bridge Service:${c.reset}    ${statusBridge.padEnd(38)}  ${c.cyan}│${c.reset}
-${c.cyan}│${c.reset}  ${c.bold}OpenCode Agent:${c.reset}    ${statusAgent.padEnd(38)}  ${c.cyan}│${c.reset}
-${c.cyan}│${c.reset}  ${c.bold}Connection Mode:${c.reset}   ${mode.padEnd(38)}  ${c.cyan}│${c.reset}
+${c.cyan}│${c.reset}  ${c.bold}Bridge Service:${c.reset}    ${padAnsi(statusBridge, 38)}  ${c.cyan}│${c.reset}
+${c.cyan}│${c.reset}  ${c.bold}OpenCode Agent:${c.reset}    ${padAnsi(statusAgent, 38)}  ${c.cyan}│${c.reset}
+${c.cyan}│${c.reset}  ${c.bold}Connection Mode:${c.reset}   ${padAnsi(mode, 38)}  ${c.cyan}│${c.reset}
 ${c.cyan}│${c.reset}                                                              ${c.cyan}│${c.reset}
 ${c.cyan}│${c.reset}  ${c.dim}Connection URL:${c.reset}                                             ${c.cyan}│${c.reset}
 ${c.cyan}│${c.reset}  ${c.bold}${c.cyan}${link}${c.reset}
@@ -332,12 +335,18 @@ async function startTunnel(port) {
 
 async function commandExists(command) {
   const paths = (process.env.PATH || '').split(path.delimiter);
+  const extensions = process.platform === 'win32'
+    ? (process.env.PATHEXT || '.EXE;.CMD;.BAT').split(';').map((ext) => ext.toLowerCase())
+    : [''];
   for (const directory of paths) {
-    try {
-      await fs.access(path.join(directory, command), constants.X_OK);
-      return true;
-    } catch {
-      // Keep searching PATH without printing probe noise.
+    for (const ext of extensions) {
+      try {
+        const full = path.join(directory, process.platform === 'win32' && !command.toLowerCase().endsWith(ext) ? `${command}${ext}` : command);
+        await fs.access(full, constants.X_OK);
+        return true;
+      } catch {
+        // Keep searching PATH without printing probe noise.
+      }
     }
   }
   return false;
@@ -384,7 +393,7 @@ async function main() {
   process.once('SIGTERM', cleanup);
   bridge.child.once('exit', (code) => {
     if (!stopping && code !== 0) {
-      clearStatus();
+      spinner.stop();
       console.error('  Bridge stopped. Check the OpenCode service and bridge/.env.');
       cleanup();
       process.exitCode = 1;

@@ -61,16 +61,17 @@ function Navigator() {
           screenOptions={{
             headerShown: false,
             animation: theme.isRTL ? 'slide_from_left' : 'slide_from_right',
+            animationDuration: 180,
             contentStyle: { backgroundColor: theme.colors.canvas },
           }}
         >
           <Stack.Screen name="index" options={{ animation: 'none' }} />
-          <Stack.Screen name="connect" options={{ animation: 'fade' }} />
+          <Stack.Screen name="connect" options={{ animation: 'fade', animationDuration: 140 }} />
           <Stack.Screen name="sessions" />
-          <Stack.Screen name="new-session" />
+          <Stack.Screen name="new-session" options={{ animation: 'fade_from_bottom', animationDuration: 200 }} />
           <Stack.Screen name="chat/[id]" />
-          <Stack.Screen name="diff/[id]" />
-          <Stack.Screen name="settings" />
+          <Stack.Screen name="diff/[id]" options={{ animation: 'fade_from_bottom', animationDuration: 200 }} />
+          <Stack.Screen name="settings" options={{ animation: 'slide_from_bottom', animationDuration: 200 }} />
         </Stack>
       </Rtl>
     </>

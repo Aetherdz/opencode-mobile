@@ -11,7 +11,8 @@ services:
     # Desktop for macOS or Windows, run the bridge natively instead.
     network_mode: host
     env_file:
-      - .env
+      - path: .env
+        required: false
     environment:
       HOST: 127.0.0.1
       PORT: "8787"

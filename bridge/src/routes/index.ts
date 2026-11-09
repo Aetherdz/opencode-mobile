@@ -131,6 +131,8 @@ async function requireSessionWorkdir(
   return workdir ? { session, workdir } : null;
 }
 
+const inFlightPrompts = new Set<string>();
+
 export function registerRoutes(app: FastifyInstance, deps: Deps): void {
   const { config, adapter, state, files, sources, push } = deps;
   const access = deps.access ?? new SessionAccess(config.allowedWorkdirs);
@@ -317,6 +319,14 @@ export function registerRoutes(app: FastifyInstance, deps: Deps): void {
         return fail(reply, 403, "outside_workdir", "Session directory is outside ALLOWED_WORKDIRS.");
       }
       await adapter.deleteSession(params.value.id);
+      access.revoke(params.value.id);
+      const sessionFiles = files.listSession(params.value.id);
+      await Promise.all(sessionFiles.map((file) => files.remove(file.id)));
+      state.apply({
+        id: `del_${Date.now()}`,
+        type: "session.deleted",
+        data: { sessionID: params.value.id },
+      });
       return reply.code(204).send();
     } catch (error) {
       return handleError(reply, error);
@@ -397,7 +407,7 @@ export function registerRoutes(app: FastifyInstance, deps: Deps): void {
     }
 
     const runtime = state.statusOf(params.value.id);
-    if (runtime.status === "running" && !body.value.delivery) {
+    if ((runtime.status === "running" || inFlightPrompts.has(params.value.id)) && !body.value.delivery) {
       return reply.code(409).send({
         error: "busy",
         message: runtime.busyOrigin
@@ -421,6 +431,7 @@ export function registerRoutes(app: FastifyInstance, deps: Deps): void {
     }));
 
     try {
+      inFlightPrompts.add(params.value.id);
       const result = await adapter.sendPrompt(params.value.id, {
         text: withReadInstructions(text, records),
         ...(attachments.length > 0 ? { files: attachments } : {}),
@@ -430,6 +441,8 @@ export function registerRoutes(app: FastifyInstance, deps: Deps): void {
       return reply.code(202).send({ ok: true, id: result.id });
     } catch (error) {
       return handleError(reply, error);
+    } finally {
+      inFlightPrompts.delete(params.value.id);
     }
   });
 
@@ -465,6 +478,13 @@ export function registerRoutes(app: FastifyInstance, deps: Deps): void {
           );
         }
         const buffer = await part.toBuffer();
+        if ((part as { file?: { truncated?: boolean } }).file?.truncated) {
+          throw new UploadError(
+            "file_too_large",
+            `File exceeds the ${Math.floor(config.maxUploadBytes / 1024 / 1024)} MB limit.`,
+            413,
+          );
+        }
         totalBytes += buffer.length;
         if (totalBytes > config.maxUploadTotalBytes) {
           throw new UploadError(
@@ -579,13 +599,16 @@ export function registerRoutes(app: FastifyInstance, deps: Deps): void {
       if (!scoped) {
         return fail(reply, 403, "outside_workdir", "Session directory is outside ALLOWED_WORKDIRS.");
       }
+      if (state.wasPermissionResolved(params.value.id)) {
+        return reply.send({ ok: true, alreadyResolved: true });
+      }
       await adapter.replyPermission(
         sessionId,
         params.value.id,
         body.value.decision,
         body.value.message,
       );
-      state.resolvePermission(sessionId, params.value.id);
+      state.resolvePermission(sessionId, params.value.id, body.value.decision);
       return reply.send({ ok: true });
     } catch (error) {
       if (alreadySettled(error)) {
@@ -611,11 +634,11 @@ export function registerRoutes(app: FastifyInstance, deps: Deps): void {
         body.value.decision,
         body.value.message,
       );
-      state.resolvePermission(params.value.id, params.value.requestId);
+      state.resolvePermission(params.value.id, params.value.requestId, body.value.decision);
       return reply.code(204).send();
     } catch (error) {
       if (alreadySettled(error)) {
-        state.resolvePermission(params.value.id, params.value.requestId);
+        state.resolvePermission(params.value.id, params.value.requestId, body.value.decision);
         return reply.code(200).send({ ok: true, alreadyResolved: true });
       }
       return handleError(reply, error);
@@ -649,17 +672,18 @@ export function registerRoutes(app: FastifyInstance, deps: Deps): void {
 
     const found = state.findQuestion(params.value.id);
     if (!found) return fail(reply, 404, "not_found", "Question not found.");
-    if (!found.question) {
-      return reply.send({ ok: true, alreadyResolved: true, status: found.resolvedStatus });
-    }
-    const validation = validateAnswers(found.question, body.value.answers);
-    if (validation) return fail(reply, 400, "bad_request", validation);
 
     try {
       const scoped = await requireSessionWorkdir(adapter, config, found.sessionId, access);
       if (!scoped) {
         return fail(reply, 403, "outside_workdir", "Session directory is outside ALLOWED_WORKDIRS.");
       }
+      if (!found.question) {
+        return reply.send({ ok: true, alreadyResolved: true, status: found.resolvedStatus });
+      }
+      const validation = validateAnswers(found.question, body.value.answers);
+      if (validation) return fail(reply, 400, "bad_request", validation);
+
       await adapter.replyForm(
         found.sessionId,
         params.value.id,
@@ -684,14 +708,14 @@ export function registerRoutes(app: FastifyInstance, deps: Deps): void {
 
     const found = state.findQuestion(params.value.id);
     if (!found) return fail(reply, 404, "not_found", "Question not found.");
-    if (!found.question) {
-      return reply.send({ ok: true, alreadyResolved: true, status: found.resolvedStatus });
-    }
 
     try {
       const scoped = await requireSessionWorkdir(adapter, config, found.sessionId, access);
       if (!scoped) {
         return fail(reply, 403, "outside_workdir", "Session directory is outside ALLOWED_WORKDIRS.");
+      }
+      if (!found.question) {
+        return reply.send({ ok: true, alreadyResolved: true, status: found.resolvedStatus });
       }
       await adapter.cancelForm(found.sessionId, params.value.id, body.value.message);
       state.resolveQuestion(found.sessionId, params.value.id, "rejected");
@@ -736,7 +760,14 @@ export function registerRoutes(app: FastifyInstance, deps: Deps): void {
         "content-disposition",
         `${inline ? "inline" : "attachment"}; filename="${sanitizeFilename(record.name)}"`,
       );
-    return reply.send(fs.createReadStream(resolved));
+    const stream = fs.createReadStream(resolved);
+    stream.on("error", (err) => {
+      reply.log.error({ err }, "file read stream error");
+      if (!reply.raw.headersSent) {
+        reply.code(500).send({ code: "internal_error", error: "internal_error", message: "Error reading file." });
+      }
+    });
+    return reply.send(stream);
   });
 
   app.get("/files/:fileId/text", async (request, reply) => {
