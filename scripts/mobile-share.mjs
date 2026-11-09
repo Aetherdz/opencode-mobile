@@ -4,6 +4,7 @@ import { randomBytes } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { constants } from 'node:fs';
 import fs from 'node:fs/promises';
+import { createRequire } from 'node:module';
 import net from 'node:net';
 import os from 'node:os';
 import path from 'node:path';
@@ -195,21 +196,29 @@ ${c.cyan}│${c.reset}  ${c.yellow}${config.authToken}${c.reset}
 ${c.cyan}│${c.reset}                                                              ${c.cyan}│${c.reset}
 ${c.cyan}│${c.reset}  ${c.dim}Workdir:${c.reset} ${c.white}${config.allowedWorkdirs}${c.reset}
 ${c.cyan}├──────────────────────────────────────────────────────────────┤${c.reset}
-${c.cyan}│${c.reset}  ${c.dim}Enter the URL & Token in the app, or scan the QR below.     ${c.cyan}│${c.reset}
-${c.cyan}│${c.reset}  ${c.dim}Press ${c.bold}Ctrl+C${c.reset}${c.dim} at any time to disconnect and stop.${c.reset}        ${c.cyan}│${c.reset}
+${c.cyan}│${c.reset}  ${c.dim}Scan the QR below with OpenCode Mobile for auto-connection. ${c.cyan}│${c.reset}
+${c.cyan}│${c.reset}  ${c.dim}Or copy-paste the URL and Token into the app.               ${c.cyan}│${c.reset}
+${c.cyan}│${c.reset}  ${c.dim}Press ${c.bold}Ctrl+C${c.reset}${c.dim} to stop the connection at any time.          ${c.cyan}│${c.reset}
 ${c.cyan}╰──────────────────────────────────────────────────────────────╯${c.reset}
 `);
 
   try {
-    const qrcodeModule = await import('qrcode-terminal').catch(() => null);
-    const qrcode = qrcodeModule?.default || qrcodeModule;
+    let qrcode = null;
+    try {
+      const bridgeReq = createRequire(path.join(BRIDGE_DIR, 'package.json'));
+      qrcode = bridgeReq('qrcode-terminal');
+    } catch {
+      const mod = await import('qrcode-terminal').catch(() => null);
+      qrcode = mod?.default || mod;
+    }
+
     if (qrcode && typeof qrcode.generate === 'function') {
-      const payload = JSON.stringify({ url: link, token: config.authToken });
-      console.log(`  ${c.cyan}${c.bold}📱 Scan with OpenCode Mobile App Camera:${c.reset}\n`);
+      const payload = `opencode-mobile://connect?url=${encodeURIComponent(link)}&token=${encodeURIComponent(config.authToken)}`;
+      console.log(`  ${c.cyan}${c.bold}📱 Scan with OpenCode Mobile App (Auto-Connect):${c.reset}\n`);
       qrcode.generate(payload, { small: true }, (qr) => {
         console.log(qr);
       });
-      console.log('');
+      console.log(`  ${c.green}✓ Scanned credentials auto-register and connect in the app.${c.reset}\n`);
     }
   } catch {
     // QR code is optional bonus

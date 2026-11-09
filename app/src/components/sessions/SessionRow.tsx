@@ -6,7 +6,6 @@ import { StatusIndicator } from '@/components/ui/StatusIndicator';
 import { basename, formatRelative, formatSessionTitle } from '@/lib/format';
 import { hapticSelection } from '@/lib/haptics';
 import { useI18n } from '@/lib/i18n';
-import { layout } from '@/theme/layout';
 import { useTheme } from '@/theme/ThemeProvider';
 import { useChat } from '@/state/chat';
 
@@ -53,13 +52,13 @@ export const SessionRow = memo(function SessionRow({
       style={({ pressed }) => [
         styles.row,
         {
-          borderBottomColor: theme.colors.divider,
+          borderColor: selected ? theme.colors.primary : theme.colors.border,
           backgroundColor: selected
             ? theme.colors.surface2
             : pressed
-              ? theme.colors.surface
-              : 'transparent',
-          borderStartColor: selected ? theme.colors.primary : 'transparent',
+              ? theme.colors.surface2
+              : theme.colors.surface,
+          transform: [{ scale: pressed ? 0.985 : 1 }],
         },
       ]}
     >
@@ -72,7 +71,7 @@ export const SessionRow = memo(function SessionRow({
         </View>
         <View style={styles.metaLine}>
           <AppText variant="helper" color="secondary" numberOfLines={1} style={styles.folder}>
-            {folder}
+            📁 {folder}
           </AppText>
           <AppText variant="helper" color="secondary" style={styles.time}>
             {time}
@@ -86,13 +85,16 @@ export const SessionRow = memo(function SessionRow({
 const styles = StyleSheet.create({
   row: {
     minHeight: 68,
-    paddingHorizontal: layout.padX,
-    paddingVertical: layout.rowPadY,
-    borderBottomWidth: layout.border,
-    borderStartWidth: 3,
+    marginHorizontal: 16,
+    marginVertical: 4,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderWidth: 1,
+    borderRadius: 14,
+    borderCurve: 'continuous',
     justifyContent: 'center',
   },
-  content: { gap: 5 },
+  content: { gap: 6 },
   line: {
     flexDirection: 'row',
     alignItems: 'center',
