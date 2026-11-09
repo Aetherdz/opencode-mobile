@@ -8,7 +8,7 @@
     "@expo/metro-runtime": "~58.0.14",
     "@expo/ui": "~58.0.22",
     "@expo/vector-icons": "^15.0.2",
-    "@shopify/flash-list": "2.3.2",
+    "@shopify/flash-list": "2.3.3",
     "@tanstack/react-query": "^5.104.5",
     "expo": "~58.0.17",
     "expo-build-properties": "~58.0.11",
